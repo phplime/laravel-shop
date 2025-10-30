@@ -17,6 +17,18 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('user_role')->default('user');
+            $table->tinyInteger('is_verify')->default(0);
+            $table->tinyInteger('is_active')->default(0);
+            $table->tinyInteger('status')->default(1);
+            $table->string('thumb')->nullable();
+            $table->string('images')->nullable();
+            $table->string('cover_photo')->nullable();
+            $table->string('profile_pic')->nullable();
+            $table->timestamp('login_time')->nullable();
+            $table->foreignId('country_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('set null');
+            $table->foreignId('subscription_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('set null');
+            $table->foreignId('package_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('set null');
             $table->rememberToken();
             $table->timestamps();
         });

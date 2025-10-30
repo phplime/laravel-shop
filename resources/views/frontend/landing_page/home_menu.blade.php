@@ -2,7 +2,7 @@
     <div class="container">
         <nav class="navbar navbar-expand-lg">
             <div class="navButton">
-                <a class="navbar-brand" href="{{ url('home') }}"><img src="{{ asset('frontend/images/shop2.png') }}"
+                <a class="navbar-brand" href="{{ url('home') }}"><img src="{{ asset('assets/frontend/images/shop2.png') }}"
                         alt="logo"></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

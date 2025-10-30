@@ -7,8 +7,8 @@
                 <h4>Create Your Dreams Shop / Restaurant.</h4>
                 <a href="" class="btn getStart_btn"><i class="icofont-hand-drawn-right"></i> Get Start</a>
             </div>
-            <div class="hero_rightContent" style="background-image: url('{{ asset('frontend/images/suggest.jpeg') }}');">
-                <img data-aos="zoom-in" data-aos-delay="1000" src="{{ asset('frontend/images/freame1.png') }}"
+            <div class="hero_rightContent" style="background-image: url('{{ asset('assets/frontend/images/suggest.jpeg') }}');">
+                <img data-aos="zoom-in" data-aos-delay="1000" src="{{ asset('assets/frontend/images/freame1.png') }}"
                     alt="image">
             </div>
         </div>
@@ -25,7 +25,7 @@
                 <div class="col-md-6 col-lg-4 col-sm-12">
                     <div class="serviceBox">
                         <div class="icon-img">
-                            <img src="{{ asset('frontend/images/service3.jpeg') }}" alt="img">
+                            <img src="{{ asset('assets/frontend/images/service3.jpeg') }}" alt="img">
                         </div>
                         <div class="content">
                             <h5>24 Hours Service</h5>
@@ -39,7 +39,7 @@
                 <div class="col-md-6 col-lg-4 col-sm-12">
                     <div class="serviceBox">
                         <div class="icon-img">
-                            <img src="{{ asset('frontend/images/service1.jpeg') }}" alt="img">
+                            <img src="{{ asset('assets/frontend/images/service1.jpeg') }}" alt="img">
                         </div>
                         <div class="content">
                             <h5>Easy To Pay</h5>
@@ -53,7 +53,7 @@
                 <div class="col-md-6 col-lg-4 col-sm-12">
                     <div class="serviceBox">
                         <div class="icon-img">
-                            <img src="{{ asset('frontend/images/service2.png') }}" alt="img">
+                            <img src="{{ asset('assets/frontend/images/service2.png') }}" alt="img">
                         </div>
                         <div class="content">
                             <h5>Secure Payment Method</h5>
@@ -79,7 +79,7 @@
                 <div class="col-md-12">
                     <div class="serviceContainer">
                         <div class="serviceImage">
-                            <img src="{{ asset('frontend/images/app-design2.jpeg') }}" alt="img">
+                            <img src="{{ asset('assets/frontend/images/app-design2.jpeg') }}" alt="img">
                         </div>
                         <div class="serviceDetails">
                             <div class="top_service">
@@ -104,7 +104,7 @@
                 <div class="col-md-12">
                     <div class="serviceContainer flex-row-reverse">
                         <div class="serviceImage">
-                            <img src="{{ asset('frontend/images/app-design1.jpeg') }}" alt="img">
+                            <img src="{{ asset('assets/frontend/images/app-design1.jpeg') }}" alt="img">
                         </div>
                         <div class="serviceDetails">
                             <div class="top_service">
