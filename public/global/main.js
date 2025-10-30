@@ -12,10 +12,12 @@ $(function () {
     });
 
     //Single Item View In The Modal
-    $(document).on("click", ".itemView", function (s) {
-        s.preventDefault();
-        s.stopImmediatePropagation();
+    $(document).on("click", ".itemView", function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
         let id = $(this).data("id");
+
+        console.log('herer');
 
         $("#itemDetailsModel").modal("show");
     });

@@ -1,4 +1,4 @@
-@include('frontend.inc.header')
+{{-- @include('frontend.inc.header')
 @include('frontend.layouts.top_navbar')
 
 @yield('content')
@@ -10,4 +10,4 @@
     @include('frontend.layouts.footer_area')
 @endif
 
-@include('frontend.inc.footer')
+@include('frontend.inc.footer') --}}

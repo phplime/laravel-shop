@@ -2,7 +2,11 @@
     <div class="container">
         <nav class="navbar navbar-expand-lg">
             <div class="navButton">
+<<<<<<< Updated upstream
                 <a class="navbar-brand" href="{{ url('home') }}"><img src="{{ asset('assets/frontend/images/shop2.png') }}"
+=======
+                <a class="navbar-brand" href="{{ url('') }}"><img src="{{ asset('assets/frontend/images/shop2.png') }}"
+>>>>>>> Stashed changes
                         alt="logo"></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -13,7 +17,7 @@
                 <ul class="navbar-nav mr-auto homeNav_items mt-2 mt-lg-0">
                     <li class="nav-item mr-2">
                         <a class="{{ isset($data['page_title']) && $data['page_title'] == 'Home' ? 'active' : '' }}"
-                            href="{{ url('home') }}"> Home <span class="sr-only">(current)</span></a>
+                            href="{{ url('') }}"> Home <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="{{ isset($data['page_title']) && $data['page_title'] == 'Pricing' ? 'active' : '' }}"

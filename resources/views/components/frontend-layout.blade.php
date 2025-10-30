@@ -8,7 +8,7 @@
     <link rel="icon" type="image/png" href="{{ asset('frontend/images/title-logo.png') }}">
     <title>Shop | {{ isset($data['page_title']) ? $data['page_title'] : '' }}</title>
 
-    @include('frontend.partials.landing.header')
+    @include('frontend.partials.header')
 
 </head>
 
@@ -17,7 +17,7 @@
         {{ $slot }}
 
     </div>
-    @include('frontend.partials.landing.footer')
+    @include('frontend.partials.footer')
 
 
     {{-- Page-specific JS --}}

@@ -7,7 +7,7 @@
 
             <a href="#" class="singleCategoryItem decoration-none">
                 <div class="image">
-                    <img src="{{ asset('frontend/images/food1.jpg') }}" alt="images">
+                    <img src="{{ asset('assets/frontend/images/food1.jpg') }}" alt="images">
                 </div>
                 <div class="categoryName">
                     <h6>Pizza</h6>
@@ -16,7 +16,7 @@
 
             <a href="#" class="singleCategoryItem decoration-none">
                 <div class="image">
-                    <img src="{{ asset('frontend/images/food1.jpg') }}" alt="images">
+                    <img src="{{ asset('assets/frontend/images/food1.jpg') }}" alt="images">
                 </div>
                 <div class="categoryName">
                     <h6>Pizza</h6>
@@ -25,7 +25,7 @@
 
             <a href="#" class="singleCategoryItem decoration-none">
                 <div class="image">
-                    <img src="{{ asset('frontend/images/food1.jpg') }}" alt="images">
+                    <img src="{{ asset('assets/frontend/images/food1.jpg') }}" alt="images">
                 </div>
                 <div class="categoryName">
                     <h6>Pizza</h6>
@@ -34,7 +34,7 @@
 
             <a href="#" class="singleCategoryItem decoration-none">
                 <div class="image">
-                    <img src="{{ asset('frontend/images/food1.jpg') }}" alt="images">
+                    <img src="{{ asset('assets/frontend/images/food1.jpg') }}" alt="images">
                 </div>
                 <div class="categoryName">
                     <h6>Pizza</h6>
@@ -43,7 +43,7 @@
 
             <a href="#" class="singleCategoryItem decoration-none">
                 <div class="image">
-                    <img src="{{ asset('frontend/images/food1.jpg') }}" alt="images">
+                    <img src="{{ asset('assets/frontend/images/food1.jpg') }}" alt="images">
                 </div>
                 <div class="categoryName">
                     <h6>Pizza</h6>
@@ -52,7 +52,7 @@
 
             <a href="#" class="singleCategoryItem decoration-none">
                 <div class="image">
-                    <img src="{{ asset('frontend/images/food1.jpg') }}" alt="images">
+                    <img src="{{ asset('assets/frontend/images/food1.jpg') }}" alt="images">
                 </div>
                 <div class="categoryName">
                     <h6>Pizza</h6>
@@ -61,7 +61,7 @@
 
             <a href="#" class="singleCategoryItem decoration-none">
                 <div class="image">
-                    <img src="{{ asset('frontend/images/food1.jpg') }}" alt="images">
+                    <img src="{{ asset('assets/frontend/images/food1.jpg') }}" alt="images">
                 </div>
                 <div class="categoryName">
                     <h6>Pizza</h6>
@@ -70,7 +70,7 @@
 
             <a href="#" class="singleCategoryItem decoration-none">
                 <div class="image">
-                    <img src="{{ asset('frontend/images/food1.jpg') }}" alt="images">
+                    <img src="{{ asset('assets/frontend/images/food1.jpg') }}" alt="images">
                 </div>
                 <div class="categoryName">
                     <h6>Pizza</h6>
@@ -79,7 +79,7 @@
 
             <a href="#" class="singleCategoryItem decoration-none">
                 <div class="image">
-                    <img src="{{ asset('frontend/images/food1.jpg') }}" alt="images">
+                    <img src="{{ asset('assets/frontend/images/food1.jpg') }}" alt="images">
                 </div>
                 <div class="categoryName">
                     <h6>Pizza</h6>
