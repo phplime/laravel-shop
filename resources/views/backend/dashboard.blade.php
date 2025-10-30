@@ -3,7 +3,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header flex space-between align-center">
                     <h5 class="card-title">User List</h5>
                     <a href="" class="btn addNewBtn"><i class="fa fa-plus"></i> Add New</a>
                 </div>

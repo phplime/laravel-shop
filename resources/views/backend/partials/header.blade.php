@@ -25,7 +25,7 @@
     <!-- sweetalert -->
     <link rel="stylesheet" href="{{ asset('assets/backend/plugins/sweetalert/sweetalert.min.css') }}">
     <!-- style.css -->
-    <link rel="stylesheet" href="{{ asset('assets/plugins/common.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/plugins/commoncss.php') }}">
     <link rel="stylesheet" href="{{ asset('assets/backend/css/adminlte.css') }}">
     <link rel="stylesheet" href="{{ asset('global/admin.main.css') }}">
     <link rel="stylesheet" href="{{ asset('global/admin.responsive.css') }}">

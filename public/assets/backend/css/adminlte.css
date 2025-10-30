@@ -28744,13 +28744,13 @@ html.maximized-card {
   overflow: hidden;
 }
 
-.card-header::after,
+/* .card-header::after,
 .card-body::after,
 .card-footer::after {
   display: block;
   clear: both;
   content: "";
-}
+} */
 
 .card-header {
   background-color: transparent;
