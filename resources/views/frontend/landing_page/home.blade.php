@@ -7,12 +7,10 @@
                 <h4>Create Your Dreams Shop / Restaurant.</h4>
                 <a href="" class="btn getStart_btn"><i class="icofont-hand-drawn-right"></i> Get Start</a>
             </div>
-<<<<<<< Updated upstream
-            <div class="hero_rightContent" style="background-image: url('{{ asset('assets/frontend/images/suggest.jpeg') }}');">
-=======
+
             <div class="hero_rightContent"
                 style="background-image: url('{{ asset('assets/frontend/images/suggest.jpeg') }}');">
->>>>>>> Stashed changes
+
                 <img data-aos="zoom-in" data-aos-delay="1000" src="{{ asset('assets/frontend/images/freame1.png') }}"
                     alt="image">
             </div>
