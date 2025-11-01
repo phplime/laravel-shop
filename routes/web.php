@@ -18,24 +18,20 @@ Route::get('/assets/plugins/commoncss.php', function () {
 
 Route::get('/', [FrontendController::class, 'index']);
 
-<<<<<<< Updated upstream
-        /* ======================================
+
+/* ======================================
         Profile Controller
 ======================================== */
-Route::controller(ProfileController::class)->group(function ()
-{
-    Route::get('/{slug}', [ProfileController::class, 'home'])->name('home.index');
-    Route::get('/menu/{slug}', [ProfileController::class, 'menu'])->name('menu.index');
-    Route::get('/all_items/{slug}', [ProfileController::class, 'all_items'])->name('all_items.index');
-    Route::get('/special/items/{slug}', [ProfileController::class, 'special_items'])->name('special.index');
-    Route::get('/my_profile/{slug}', [ProfileController::class, 'index'])->name('profile.index');
-    Route::get('/my_orders/{slug}', [ProfileController::class, 'my_order'])->name('my_orders.index');
-    Route::get('/view-order/{order_id}/{slug}', [ProfileController::class, 'view_order'])->name('view_order.index');
-    Route::get('/checkout/{slug}', [ProfileController::class, 'checkout'])->name('checkout.index');
-});
-
-=======
->>>>>>> Stashed changes
+// Route::controller(ProfileController::class)->group(function () {
+//     Route::get('/{slug}', [ProfileController::class, 'home'])->name('home.index');
+//     Route::get('/menu/{slug}', [ProfileController::class, 'menu'])->name('menu.index');
+//     Route::get('/all_items/{slug}', [ProfileController::class, 'all_items'])->name('all_items.index');
+//     Route::get('/special/items/{slug}', [ProfileController::class, 'special_items'])->name('special.index');
+//     Route::get('/my_profile/{slug}', [ProfileController::class, 'index'])->name('profile.index');
+//     Route::get('/my_orders/{slug}', [ProfileController::class, 'my_order'])->name('my_orders.index');
+//     Route::get('/view-order/{order_id}/{slug}', [ProfileController::class, 'view_order'])->name('view_order.index');
+//     Route::get('/checkout/{slug}', [ProfileController::class, 'checkout'])->name('checkout.index');
+// });
 
 
 

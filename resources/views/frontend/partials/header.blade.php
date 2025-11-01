@@ -7,11 +7,11 @@
    <!-- animation -->
    <link rel="stylesheet" href="{{ asset('assets/backend/plugins/animate/animate.css') }}">
    <link rel="stylesheet" href="{{ asset('assets/backend/plugins/animate/aos.css') }}">
-<<<<<<< Updated upstream
+
    <!-- main.style.css -->
    <link rel="stylesheet" href="{{ asset('assets/plugins/commoncss.php') }}">
-   <link rel="stylesheet" href="{{ asset('global/frontend.main.css') }}">
-=======
+
+
    <!-- Slider -->
    <link rel="stylesheet" href="{{ asset('assets/frontend/slider/slick.css') }}">
    <link rel="stylesheet" href="{{ asset('assets/frontend/slider/slick-theme.css') }}">
@@ -20,7 +20,8 @@
    <!-- main.style.css -->
    <link rel="stylesheet" href="{{ asset('assets/plugins/commoncss.php') }}">
    <link rel="stylesheet" href="{{ asset('global/main.style.css') }}">
->>>>>>> Stashed changes
+   <link rel="stylesheet" href="{{ asset('global/frontend.main.css') }}">
+
    <!-- Responsive.css -->
    <link rel="stylesheet" href="{{ asset('global/responsive.css') }}">
    <!-- js -->
