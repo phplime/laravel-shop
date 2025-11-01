@@ -1,13 +1,13 @@
-@extends('index')
-@section('content')
-    @include('frontend.home.home_menu')
-
-    <section class="loginSection" style="background-image: url('{{ asset('frontend/images/login-bg.jpg') }}')">
+<x-frontend-layout>
+    @include('frontend.landing_page.home_menu')
+    <section class="loginSection" style="background-image: url('{{ asset('assets/frontend/images/login-bg.jpg') }}')">
         <div class="container">
-            <div class="row align-center justify-center">
+            <div class="row align-center justify-content-center">
                 <div class="col-md-8 col-lg-5 col-sm-12">
-                    <form action="" method="post">
-                        <div class="card shadow-none">
+                    <form action="{{ url('weblogin') }}" method="post" onsubmit="formSubmit(event,this)">
+                        @csrf;
+                        <div class="card
+                        shadow-none">
                             <div class="card-body">
                                 <div class="topTitle">
                                     <h3>Login</h3>
@@ -20,12 +20,13 @@
                                             <div class="input-group-append">
                                                 <i class="icofont-envelope"></i>
                                             </div>
-                                            <input type="text" name="email" class="form-control">
+                                            <input type="text" name="identifier" class="form-control">
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="password">Password <span class="error">*</span> <a href="">Forgot</a></label>
+                                        <label for="password">Password <span class="error">*</span> <a
+                                                href="">Forgot</a></label>
                                         <div class="input-group">
                                             <div class="input-group-append">
                                                 <i class="icofont-ui-lock"></i>
@@ -37,8 +38,10 @@
                                 </div>
                             </div>
                             <div class="card-footer loginCard-footer">
-                                <button type="submit" class="btn submit-btn block ml-auto"><i class="icofont-hand-drag1"></i> Login</button>
-                                <p class="m-0 text-color">Don't have an account..?? <a href="{{ route('register') }}">Register</a></p>
+                                <button type="submit" class="btn submit-btn block ml-auto"><i
+                                        class="icofont-hand-drag1"></i> Login</button>
+                                <p class="m-0 text-color">Don't have an account..?? <a
+                                        href="{{ url('register') }}">Register</a></p>
                             </div>
                         </div>
                     </form>
@@ -46,4 +49,4 @@
             </div>
         </div>
     </section>
-@endsection
+</x-frontend-layout>

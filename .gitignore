@@ -23,3 +23,6 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 routes/web.php
+routes/api.php
+routes/web.php
+routes/web.php
