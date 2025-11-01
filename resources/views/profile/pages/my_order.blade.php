@@ -1,8 +1,7 @@
-@extends('frontend.baseapp')
-@section('content')
+<x-profile-layout>
     <section class="myOrder_section">
         <div class="container">
-            <div class="row justify-center">
+            <div class="row justify-content-center">
                 <div class="col-md-9">
                     <div class="myOrders_historyArea">
 
@@ -27,7 +26,7 @@
                                         </div>
                                         <div class="bottom">
                                             <b class="totalPrice">Total: <span>$540:00</span></b>
-                                            <a href="{{ route('view_order', ['order_id' => 'hgaj76234jha']) }}"
+                                            <a href="{{ url('view-order/3453452/kinbo') }}"
                                                 class="viewOrder">View Details <i class="icofont-double-right"></i></a>
                                         </div>
                                     </div>
@@ -164,8 +163,9 @@
                                         </div>
                                         <div class="bottom">
                                             <b class="totalPrice">Total: <span>$540:00</span></b>
-                                            <a href="{{ route('view_order', ['order_id' => 'hgaj76234jha']) }}"
-                                                class="viewOrder">View Details <i class="icofont-double-right"></i></a>
+                                            <a href="{{ url('view-order/hgaj76234jha/kinbo') }}"
+                                                class="viewOrder">View Details <i
+                                                    class="icofont-double-right"></i></a>
                                         </div>
                                     </div>
                                 </div>
@@ -179,4 +179,4 @@
             </div>
         </div>
     </section>
-@endsection
+</x-profile-layout>

@@ -9,7 +9,7 @@
 
                 <div class="singleCartItem">
                     <div class="image">
-                        <img src="{{ asset('frontend/images/food2.jpg') }}" alt="img">
+                        <img src="{{ asset('assets/frontend/images/food2.jpg') }}" alt="img">
                     </div>
                     <div class="cartItem_details">
                         <div class="topTitle">
@@ -44,7 +44,7 @@
 
                 <div class="singleCartItem">
                     <div class="image">
-                        <img src="{{ asset('frontend/images/food2.jpg') }}" alt="img">
+                        <img src="{{ asset('assets/frontend/images/food2.jpg') }}" alt="img">
                     </div>
                     <div class="cartItem_details">
                         <div class="topTitle">
@@ -72,7 +72,7 @@
 
                 <div class="singleCartItem">
                     <div class="image">
-                        <img src="{{ asset('frontend/images/food2.jpg') }}" alt="img">
+                        <img src="{{ asset('assets/frontend/images/food2.jpg') }}" alt="img">
                     </div>
                     <div class="cartItem_details">
                         <div class="topTitle">
@@ -100,7 +100,7 @@
 
                 <div class="singleCartItem">
                     <div class="image">
-                        <img src="{{ asset('frontend/images/food4.jpg') }}" alt="img">
+                        <img src="{{ asset('assets/frontend/images/food4.jpg') }}" alt="img">
                     </div>
                     <div class="cartItem_details">
                         <div class="topTitle">
@@ -128,7 +128,7 @@
 
                 <div class="singleCartItem">
                     <div class="image">
-                        <img src="{{ asset('frontend/images/food4.jpg') }}" alt="img">
+                        <img src="{{ asset('assets/frontend/images/food4.jpg') }}" alt="img">
                     </div>
                     <div class="cartItem_details">
                         <div class="topTitle">
@@ -156,7 +156,7 @@
 
                 <div class="singleCartItem">
                     <div class="image">
-                        <img src="{{ asset('frontend/images/food4.jpg') }}" alt="img">
+                        <img src="{{ asset('assets/frontend/images/food4.jpg') }}" alt="img">
                     </div>
                     <div class="cartItem_details">
                         <div class="topTitle">
@@ -193,7 +193,7 @@
                     <span class="totalPrice">381.80 $</span>
                 </div>
             </div>
-            <a href="" class="btn btn-primary w-full">Checkout</a>
+            <a href="{{ url('checkout/kinbo') }}" class="btn btn-primary w-100">Checkout</a>
         </div>
     </div>
 </aside>

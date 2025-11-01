@@ -1,3 +1,8 @@
+<script>
+    $(function() {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
 <script src="{{ asset('assets/backend/plugins/animate/aos.js') }}"></script>
 <script>
     AOS.init();

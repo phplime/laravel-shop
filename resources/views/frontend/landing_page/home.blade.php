@@ -1,5 +1,4 @@
 <x-frontend-layout>
-    @include('frontend.landing_page.home_menu')
     <section class="home-heroSection">
         <div class="home_heroContainer">
             <div class="hero_leftContent" data-aos="zoom-in" data-aos-delay="1000">

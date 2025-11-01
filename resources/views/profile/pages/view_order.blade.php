@@ -1,12 +1,11 @@
-@extends('frontend.baseapp')
-
-@section('content')
+<x-profile-layout>
     <section class="viewOrder_section">
         <div class="container">
+            <a href="{{ url('my_orders/kinbo') }}" class="back-btn"><i class="icofont-arrow-left"></i> Black</a>
             <div class="row">
-                <div class="col-md-12 col-lg-8 col-sm-12 mb-lg-0 mb-5">
+                <div class="col-md-12 col-lg-8 col-sm-12 mb-lg-0 mb-25">
 
-                    <div class="card mb-4">
+                    <div class="card mb-20">
                         <div class="card-header trackingHeader">
                             <p>Order Tracking</p>
                             <h6 class="order_id">Order ID: <b>#yt6734h89nf</b></h6>
@@ -103,7 +102,7 @@
                             <div class="orderItems_container">
                                 <div class="singleCartItem">
                                     <div class="image">
-                                        <img src="http://shop.test/frontend/images/food2.jpg" alt="img">
+                                        <img src="{{ asset('assets/frontend/images/food2.jpg') }}" alt="img">
                                     </div>
                                     <div class="cartItem_details">
                                         <div class="topTitle">
@@ -124,7 +123,7 @@
                                 </div>
                                 <div class="singleCartItem">
                                     <div class="image">
-                                        <img src="http://shop.test/frontend/images/food2.jpg" alt="img">
+                                        <img src="{{ asset('assets/frontend/images/food2.jpg') }}" alt="img">
                                     </div>
                                     <div class="cartItem_details">
                                         <div class="topTitle">
@@ -145,7 +144,7 @@
                                 </div>
                                 <div class="singleCartItem">
                                     <div class="image">
-                                        <img src="http://shop.test/frontend/images/food2.jpg" alt="img">
+                                        <img src="{{ asset('assets/frontend/images/food2.jpg') }}" alt="img">
                                     </div>
                                     <div class="cartItem_details">
                                         <div class="topTitle">
@@ -191,11 +190,11 @@
                             </div>
                         </div>
                     </div><!-- card./ -->
-                    <div class="mt-4">
+                    <div class="mt-15">
                         <button type="button" class="btn viewOrder_invoiceBtn"><i class="fa-regular fa-file-lines"></i> Invoice</button>
                     </div>
                 </div><!-- col./ -->
             </div><!-- row -->
         </div>
     </section>
-@endsection
+</x-profile-layout>

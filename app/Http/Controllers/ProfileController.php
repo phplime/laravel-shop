@@ -12,7 +12,7 @@ class ProfileController extends Controller
     {
         $data = [];
         $data['page_title'] = 'Profile';
-        return view('profile.home', compact('data'));
+        return view('profile.pages.my_profile', compact('data'));
     }
     /* ======================================
     Profile Index End
@@ -23,7 +23,7 @@ class ProfileController extends Controller
     {
         $data = [];
         $data['page_title'] = 'Home';
-        return view('profile.pages.my_profile', compact('data'));
+        return view('profile.home', compact('data'));
     }
     /* ======================================
     Home Index Area End
@@ -81,5 +81,17 @@ class ProfileController extends Controller
         $data = [];
         $data['page_title'] = 'View Order';
         return view('profile.pages.view_order', compact('data'));
+    }
+    /* ======================================
+    View Order Index Area End
+    ======================================== */
+
+
+
+    public function checkout($slug)
+    {
+        $data = [];
+        $data['page_title'] = 'View Order';
+        return view('profile.pages.checkout', compact('data'));
     }
 }

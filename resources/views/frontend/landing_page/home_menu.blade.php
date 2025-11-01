@@ -21,7 +21,7 @@
                             href="#pricing">Pricing</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ url('Home', ['slug' => 'kinbo']) }}">Demo</a>
+                        <a href="{{ url('kinbo') }}">Demo</a>
 
                     </li>
                 </ul>

@@ -14,6 +14,8 @@
 
 <body class="theme-light">
     <div class="mainWrapper">
+
+        @include('frontend.landing_page.home_menu')
         {{ $slot }}
 
     </div>

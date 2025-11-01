@@ -82,9 +82,20 @@
     .order_infoContent > .top > .orderID {
         font-size: 17px;
     }
+
+    .sm_customerInfo_sidebar {
+        width: 320px !important;
+    }
+    .addressInfoArea {
+        width: 100%;
+    }
 }
 
 @media (min-width: 320px) and (max-width: 426px) {
+    .addressInfoArea {
+        width: 10.8rem;
+    }
+
     ul.tracking_container {
         display: flex;
         align-items: self-start;
@@ -542,10 +553,26 @@
         width: 100%;
         height: 100%;
     }
+    .dropdown.topNavbar-dropdown {
+        display: none;
+    }
 }
 
 /* TAB Mobile devices (portrait and landscape, less than 576px) */
 @media (min-width: 426px) and (max-width: 768px) {
+    .dropdown.topNavbar-dropdown {
+        display: none;
+    }
+
+    ul.customer_info_area > li > b {
+        color: var(--color);
+        min-width: 4rem;
+        font-size: 15px;
+    }
+
+    ul.customer_info_area > li > h6 {
+        font-size: 16px;
+    }
 
     .orderTracking_system {
         margin: 0;
@@ -750,6 +777,9 @@
  TAB
 ----------------------------------------------*/
 @media (min-width: 769px) and (max-width: 991.98px) {
+    .dropdown.topNavbar-dropdown {
+        display: none;
+    }
     .myOrders_historyArea {
         display: flex;
         align-items: self-start;

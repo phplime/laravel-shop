@@ -9,17 +9,17 @@
                         <div class="single_itemContainer">
                             <div class="item_topHeader">
                                 <div class="itemImg">
-                                    <img src="{{ asset('frontend/images/food3.jpg') }}" alt="">
+                                    <img src="{{ asset('assets/frontend/images/food3.jpg') }}" alt="">
                                 </div>
                                 <div class="defaultImage">
                                     <div class="singleImg">
-                                        <img src="{{ asset('frontend/images/food1.jpg') }}" alt="">
+                                        <img src="{{ asset('assets/frontend/images/food1.jpg') }}" alt="">
                                     </div>
                                     <div class="singleImg">
-                                        <img src="{{ asset('frontend/images/food2.jpg') }}" alt="">
+                                        <img src="{{ asset('assets/frontend/images/food2.jpg') }}" alt="">
                                     </div>
                                     <div class="singleImg">
-                                        <img src="{{ asset('frontend/images/food3.jpg') }}" alt="">
+                                        <img src="{{ asset('assets/frontend/images/food3.jpg') }}" alt="">
                                     </div>
                                 </div>
                             </div>
@@ -76,15 +76,15 @@
                                     </div>
                                     <ul class="allergensItemsList">
                                         <li>
-                                            <img src="{{ asset('frontend/images/food2.jpg') }}" alt="img">
+                                            <img src="{{ asset('assets/frontend/images/food2.jpg') }}" alt="img">
                                             <span>Milk</span>
                                         </li>
                                         <li>
-                                            <img src="{{ asset('frontend/images/food2.jpg') }}" alt="img">
+                                            <img src="{{ asset('assets/frontend/images/food2.jpg') }}" alt="img">
                                             <span>Milk</span>
                                         </li>
                                         <li>
-                                            <img src="{{ asset('frontend/images/food2.jpg') }}" alt="img">
+                                            <img src="{{ asset('assets/frontend/images/food2.jpg') }}" alt="img">
                                             <span>Milk</span>
                                         </li>
                                     </ul>
@@ -108,7 +108,7 @@
                                             <label class="extraItem extraItemsBtn">
                                                 <input type="checkbox" name="extra" class="extras d-none">
                                                 <div class="extraItemContent">
-                                                    <img src="{{ asset('frontend/images/food2.jpg') }}" alt="img">
+                                                    <img src="{{ asset('assets/frontend/images/food2.jpg') }}" alt="img">
                                                     <div class="flex flex-column space-between">
                                                         <h6 class="name">Burger</h6>
                                                         <span class="price">$50.00</span>
@@ -127,7 +127,7 @@
                                             <label class="extraItem extraItemsBtn">
                                                 <input type="checkbox" name="extra" class="extras d-none">
                                                 <div class="extraItemContent">
-                                                    <img src="{{ asset('frontend/images/food2.jpg') }}"
+                                                    <img src="{{ asset('assets/frontend/images/food2.jpg') }}"
                                                         alt="img">
                                                     <div class="flex flex-column space-between">
                                                         <h6 class="name">Burger</h6>

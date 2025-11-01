@@ -1,6 +1,4 @@
 <x-profile-layout>
-    @include('profile.partials.top_navbar')
-
     <section class="hero-SliderSection relative">
     <div class="container w-full h-full flex align-center">
         <div class="topSlider_wrap">
@@ -16,7 +14,7 @@
         </div>
     </div>
     </section>
-
+    {{-- {{ $data['page_title'] }} --}}
     <!-- Category List  -->
     @include('profile.layouts.category_list')
     <!-- Category List  -->
@@ -192,7 +190,7 @@
             <section class="featureItems_section">
                 <div class="sectionTitle flex align-center space-between">
                     <h4 class="title underlineStyle">Recommended For You</h4>
-                    <a href="{{ url('all_items', ['slug' => 'kinbo']) }}" class="sell_btn">See all</a>
+                    <a href="{{ url('all_items/kinbo') }}" class="sell_btn">See all</a>
                 </div>
                 <div class="masonry-container">
 
@@ -322,7 +320,7 @@
             <section class="specialItemsSection">
                 <div class="sectionTitle flex align-center space-between">
                     <h4 class="title underlineStyle">Our Special Dishes</h4>
-                    <a href="" class="sell_btn">See all</a>
+                    <a href="{{ url('special/items/kinbo') }}" class="sell_btn">See all</a>
                 </div>
                 <div class="row specialRow">
 
@@ -403,5 +401,4 @@
 
         </div><!-- Container -->
     </div><!-- Full Wrapper./ -->
-    @include('profile.partials.footer_area')
 </x-profile-layout>

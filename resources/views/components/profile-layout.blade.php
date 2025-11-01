@@ -14,11 +14,17 @@
 
 <body class="theme-light">
     <div class="mainWrapper">
+        @include('profile.partials.top_navbar')
+
         {{ $slot }}
 
+        @include('profile.partials.footer_area')
     </div>
-    @include('profile.partials.footer')
 
+    @include('profile.common.single_itemDetails')
+    @include('profile.common.shopping_cart')
+
+    @include('profile.partials.footer')
 
     {{-- Page-specific JS --}}
     @stack('scripts')

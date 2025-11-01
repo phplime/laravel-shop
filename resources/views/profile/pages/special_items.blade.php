@@ -1,5 +1,4 @@
-@extends('frontend.baseapp')
-@section('content')
+<x-profile-layout>
     <section class="specialItems_section">
         <div class="container">
             <div class="sectionTitle lgTitle">
@@ -10,7 +9,7 @@
                 <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="specialItemContent">
                         <div class="topImage">
-                            <img src="{{ asset('frontend/images/food5.jpg') }}" alt="image">
+                            <img src="{{ asset('assets/frontend/images/food5.jpg') }}" alt="image">
                         </div>
                         <div class="itemDetails">
                             <h6 class="name">Burger</h6>
@@ -28,7 +27,7 @@
                 <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="specialItemContent">
                         <div class="topImage">
-                            <img src="{{ asset('frontend/images/food5.jpg') }}" alt="image">
+                            <img src="{{ asset('assets/frontend/images/food5.jpg') }}" alt="image">
                         </div>
                         <div class="itemDetails">
                             <h6 class="name">Burger</h6>
@@ -46,7 +45,7 @@
                 <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="specialItemContent">
                         <div class="topImage">
-                            <img src="{{ asset('frontend/images/food5.jpg') }}" alt="image">
+                            <img src="{{ asset('assets/frontend/images/food5.jpg') }}" alt="image">
                         </div>
                         <div class="itemDetails">
                             <h6 class="name">Burger</h6>
@@ -64,7 +63,7 @@
                 <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="specialItemContent">
                         <div class="topImage">
-                            <img src="{{ asset('frontend/images/food5.jpg') }}" alt="image">
+                            <img src="{{ asset('assets/frontend/images/food5.jpg') }}" alt="image">
                         </div>
                         <div class="itemDetails">
                             <h6 class="name">Burger</h6>
@@ -82,4 +81,5 @@
             </div>
         </div>
     </section>
-@endsection
+
+</x-profile-layout>
