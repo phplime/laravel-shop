@@ -550,6 +550,7 @@
               Hide sidebar
        ----------------------------------------------*/
     window.hideSidebar = function () {
+        console.log('object');
 
         if ($('.alert_msg').length == 0) {
             $(this).after('<span class="alert_msg"></span>');

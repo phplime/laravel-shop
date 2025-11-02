@@ -5,7 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\Admin\DashboardController;
-
+use App\Http\Controllers\Admin\PackageController;
 
 Route::get('/assets/plugins/commoncss.php', function () {
     // Make sure to set CSS header
@@ -15,6 +15,7 @@ Route::get('/assets/plugins/commoncss.php', function () {
     include public_path('assets/plugins/commoncss.php');
     exit();
 });
+
 
 Route::get('/', [FrontendController::class, 'index']);
 
@@ -34,23 +35,54 @@ Route::get('/', [FrontendController::class, 'index']);
 // });
 
 
+$urlStyle = config('localization.url_style', 'query');
+
+// if ($urlStyle === 'suffix') {
+//     Route::pattern('locale', implode('|', config('localization.supported_locales')));
+
+//     Route::get('/{locale}', [FrontendController::class, 'index'])->name('home');
+//     Route::get('/login/{locale}', [AuthController::class, 'index'])->name('login');
+//     Route::get('/registration/{locale}', [AuthController::class, 'registration'])->name('register');
+//     Route::get('/admin/{locale}', [AuthController::class, 'admin'])->name('admin');
+
+//     Route::get('/', function () {
+//         return redirect('/' . config('localization.fallback_locale', 'en'));
+//     });
+// } else {
+//     // Query style routes: /login?lang=en
+//     Route::get('/', [FrontendController::class, 'index'])->name('home');
+//     Route::get('/login', [AuthController::class, 'index'])->name('login');
+//     Route::get('/registration', [AuthController::class, 'registration'])->name('register');
+//     Route::get('/admin', [AuthController::class, 'index'])->name('admin');
+// }
 
 
 
 //Backend
 
 Route::get('/login', [AuthController::class, 'index'])->name('login');
-Route::get('/admin', [AuthController::class, 'index'])->name('login');
+// Route::get('/admin', [AuthController::class, 'index'])->name('login');
 
 Route::post('weblogin', [AuthController::class, 'weblogin'])->name('weblogin');
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::get('/admin/user_list', [DashboardController::class, 'user_list'])->name('user_list.index');
+    Route::get('/admin/user_details/{username}', [DashboardController::class, 'user_details'])->name('user_details.index');
+    Route::get('/subscription-invoice/{id}', [DashboardController::class, 'subscription_invoice'])->name('subscription_invoice.index');
+    Route::get('/admin/language', [DashboardController::class, 'language_list'])->name('language_list.index');
+    Route::get('/admin/language_data', [DashboardController::class, 'language_data'])->name('language_data.index');
+    Route::post('add/language_data', [DashboardController::class, 'add_language_data'])->name('language_data.store');
+
+    Route::get('/admin/package', [PackageController::class, 'index'])->name('package.index');
+    Route::get('/admin/package/create', [PackageController::class, 'package_create'])->name('package.create');
+    Route::get('/admin/feature', [PackageController::class, 'feature'])->name('feature.index');
+    Route::get('/admin/feature/create', [PackageController::class, 'feature_create'])->name('feature.create');
 });
 
 
 
 
 
-Route::get('/{slug}', [ProfileController::class, 'index']);
+// Route::get('/{slug}', [ProfileController::class, 'index']);
