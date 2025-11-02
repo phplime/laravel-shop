@@ -22,6 +22,11 @@ class AuthController extends Controller
         return view('frontend.auth.login');
     }
 
+    public function registration()
+    {
+        return view('frontend.auth.login');
+    }
+
     public function login(Request $request)
     {
         try {
