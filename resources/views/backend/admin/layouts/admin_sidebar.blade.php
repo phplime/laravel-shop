@@ -159,14 +159,13 @@
                                 class="nav-link {{ isset($page_title) && $page_title == 'Language List' ? 'active' : '' }} {{ $page_title }}">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
                                 @lang('language_list')
-                                {{ __('language_list') }}
                             </a>
                         </li>
 
 
                         <li class="nav-item ">
                             <a href="{{ url('admin/language-data') }}"
-                                class="nav-link <?= isset($page_title) && $page_title == 'Dashboard Language' ? 'active' : '' ?>">
+                                class="nav-link <?= isset($page_title) && $page_title == 'Language Data' ? 'active' : '' ?>">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
                                 @lang('language_data')
                             </a>

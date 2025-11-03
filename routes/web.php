@@ -41,12 +41,12 @@ function registerLocalizedRoutes()
     Route::get('/{locale?}', [FrontendController::class, 'index'])->name('home');
     Route::get('/login/{locale?}', [AuthController::class, 'index'])->name('login');
     Route::get('/registration/{locale?}', [AuthController::class, 'registration'])->name('register');
-    Route::get('/admin/{locale?}', [AuthController::class, 'admin'])->name('admin');
     Route::post('/weblogin/{locale?}', [AuthController::class, 'weblogin'])->name('weblogin');
 
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/admin/dashboard/{locale?}', [DashboardController::class, 'index'])->name('dashboard.index');
         Route::get('/admin/language-list/{locale?}', [LanguageController::class, 'language_list'])->name('language-list');
+        Route::get('/admin/language-data/{locale?}', [LanguageController::class, 'language_data'])->name('language-data');
     });
 }
 

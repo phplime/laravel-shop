@@ -20,8 +20,12 @@ class SetLocale
     {
         $urlStyle = config('localization.url_style', 'query');
 
-        if ($urlStyle === 'suffix') {
-            // Get locale from URL suffix (e.g., /login/en)
+        // For db/single styles, get locale from session or config only
+        if (in_array($urlStyle, ['db', 'single'])) {
+            $lang = session('locale', config('localization.fallback_locale', 'en'));
+        }
+        // For suffix style, get locale from URL suffix (e.g., /login/en)
+        elseif ($urlStyle === 'suffix') {
             $segments = $request->segments();
             $lastSegment = end($segments);
 
@@ -30,20 +34,26 @@ class SetLocale
             } else {
                 $lang = session('locale', config('localization.fallback_locale', 'en'));
             }
-        } else {
-            // Get locale from query parameter (e.g., ?lang=en)
+        }
+        // For query style, get locale from query parameter (e.g., ?lang=en)
+        else {
             $lang = $request->query('lang')
                 ?? session('locale')
                 ?? config('localization.fallback_locale', 'en');
         }
 
+        // Validate locale
         if (!in_array($lang, $this->supportedLocales)) {
             $lang = config('localization.fallback_locale', 'en');
         }
 
         App::setLocale($lang);
         session(['locale' => $lang]);
-        URL::defaults(['lang' => $lang]);
+
+        // Only set URL defaults for query/suffix styles
+        if (!in_array($urlStyle, ['db', 'single'])) {
+            URL::defaults(['lang' => $lang]);
+        }
 
         return $next($request);
     }

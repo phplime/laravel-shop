@@ -13,9 +13,13 @@ class UrlServiceProvider extends ServiceProvider
             $routes = $app['router']->getRoutes();
             $app->instance('routes', $routes);
 
-            return new class($routes, $app->rebinding('request', function ($app, $request) {
-                $app['url']->setRequest($request);
-            }), $app['config']['app.asset_url']) extends BaseUrlGenerator {
+            return new class(
+                $routes,
+                $app->rebinding('request', function ($app, $request) {
+                    $app['url']->setRequest($request);
+                }),
+                $app['config']['app.asset_url']
+            ) extends BaseUrlGenerator {
 
                 public function route($name, $parameters = [], $absolute = true)
                 {
@@ -23,17 +27,19 @@ class UrlServiceProvider extends ServiceProvider
                     $currentLocale = app()->getLocale();
                     $defaultLocale = config('app.locale', 'en');
 
-                    // Skip adding locale if it's the default locale and url_style is 'db' or 'single'
-                    if (in_array($urlStyle, ['db', 'single']) && $currentLocale === $defaultLocale) {
+                    // ✅ For db/single, skip adding any locale
+                    if (in_array($urlStyle, ['db', 'single'])) {
                         return parent::route($name, $parameters, $absolute);
                     }
 
+                    // ✅ For suffix style: append locale as last segment
                     if ($urlStyle === 'suffix') {
                         if (!isset($parameters['locale']) && is_array($parameters)) {
                             $parameters['locale'] = $currentLocale;
                         }
-                    } else {
-                        // For query style
+                    }
+                    // ✅ For query style: add ?lang=en
+                    elseif ($urlStyle === 'query') {
                         if (!isset($parameters['lang'])) {
                             $parameters['lang'] = $currentLocale;
                         }
@@ -41,7 +47,7 @@ class UrlServiceProvider extends ServiceProvider
 
                     $url = parent::route($name, $parameters, $absolute);
 
-                    // For suffix: if locale is in query string, move it to path
+                    // Ensure suffix URL is clean
                     if ($urlStyle === 'suffix' && strpos($url, '?locale=') !== false) {
                         $url = str_replace('?locale=' . $currentLocale, '/' . $currentLocale, $url);
                     }
@@ -55,20 +61,23 @@ class UrlServiceProvider extends ServiceProvider
                     $currentLocale = app()->getLocale();
                     $defaultLocale = config('app.locale', 'en');
 
-                    // Skip adding locale if it's the default locale and url_style is 'db' or 'single'
-                    if (in_array($urlStyle, ['db', 'single']) && $currentLocale === $defaultLocale) {
+                    // ✅ For db/single, return clean URLs
+                    if (in_array($urlStyle, ['db', 'single'])) {
                         return parent::to($path, $extra, $secure);
                     }
 
                     if ($urlStyle === 'suffix') {
                         $path = rtrim($path, '/') . '/' . $currentLocale;
-                        return parent::to($path, [], $secure);
-                    } else {
-                        $url = parent::to($path, [], $secure);
-                        $separator = parse_url($url, PHP_URL_QUERY) ? '&' : '?';
-                        $url .= $separator . 'lang=' . $currentLocale;
-                        return $url;
+                        return parent::to($path, $extra, $secure);
                     }
+
+                    if ($urlStyle === 'query') {
+                        $url = parent::to($path, $extra, $secure);
+                        $separator = parse_url($url, PHP_URL_QUERY) ? '&' : '?';
+                        return $url . $separator . 'lang=' . $currentLocale;
+                    }
+
+                    return parent::to($path, $extra, $secure);
                 }
             };
         });
