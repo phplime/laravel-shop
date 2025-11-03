@@ -1,6 +1,7 @@
-<x-admin-layout>
+@extends('backend.admin.layouts.app')
+
+@section('content')
     <div class="row">
-        {{ $page_title }}
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
@@ -73,13 +74,11 @@
         <label><?= !empty(lang('direction')) ? lang('direction') : 'Direction' ?></label>
         <div class="">
             <select name="direction" id="direction" class="form-control">
-                <option value="ltr"
-                    <?= isset($data['direction']) && $data['direction'] == 'ltr' ? 'selected' : '' ?>>
+                <option value="ltr" <?= isset($data['direction']) && $data['direction'] == 'ltr' ? 'selected' : '' ?>>
                     <?= !empty(lang('ltr')) ? lang('ltr') : 'LTR' ?>
                     (<?= !empty(lang('left_to_right')) ? lang('left_to_right') : 'Left to right' ?>)
                 </option>
-                <option value="rtl"
-                    <?= isset($data['direction']) && $data['direction'] == 'rtl' ? 'selected' : '' ?>>
+                <option value="rtl" <?= isset($data['direction']) && $data['direction'] == 'rtl' ? 'selected' : '' ?>>
                     <?= !empty(lang('rtl')) ? lang('rtl') : 'RTL' ?>
                     (<?= !empty(lang('right_to_left')) ? lang('right_to_left') : 'Right to left' ?>)
                 </option>
@@ -87,5 +86,4 @@
         </div>
     </div>
     <?= __footer() ?>
-
-</x-admin-layout>
+@endsection

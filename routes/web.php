@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\FrontendController;
+use App\Http\Controllers\admin\LanguageController;
 use App\Http\Controllers\Admin\DashboardController;
 
 
@@ -45,7 +46,7 @@ function registerLocalizedRoutes()
 
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/admin/dashboard/{locale?}', [DashboardController::class, 'index'])->name('dashboard.index');
-        Route::get('/admin/language-list/{locale?}', [DashboardController::class, 'language_list'])->name('language-list');
+        Route::get('/admin/language-list/{locale?}', [LanguageController::class, 'language_list'])->name('language-list');
     });
 }
 

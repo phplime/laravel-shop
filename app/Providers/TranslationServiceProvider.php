@@ -33,6 +33,8 @@ class TranslationServiceProvider extends ServiceProvider
                 ->toArray();
         });
 
+
+
         // Replace Laravel's default translator with our dynamic loader
         App::singleton('translator', function ($app) use ($translations, $locale) {
             $loader = new ArrayLoader();

@@ -156,9 +156,10 @@
 
                         <li class="nav-item ">
                             <a href="{{ url('admin/language-list') }}"
-                                class="nav-link <?= isset($page_title) && $page_title == 'Language List' ? 'active' : '' ?>">
+                                class="nav-link {{ isset($page_title) && $page_title == 'Language List' ? 'active' : '' }} {{ $page_title }}">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
                                 @lang('language_list')
+                                {{ __('language_list') }}
                             </a>
                         </li>
 

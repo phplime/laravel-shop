@@ -22,7 +22,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-
         Blade::directive('js', function ($expression) {
             return "<?php
             \$__files = is_array($expression) ? $expression : [$expression];

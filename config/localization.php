@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'url_style' => 'suffix', // 'query' or 'suffix or db/single'
+    'url_style' => 'db', // 'query' or 'suffix or db/single'
 
     'supported_locales' => ['en', 'bn', 'es', 'fr'],
 

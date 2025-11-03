@@ -69,14 +69,7 @@ if (!function_exists('user')) {
 if (!function_exists('lang')) {
     function lang($key)
     {
-        return $key;
-    }
-}
-
-if (!function_exists('__')) {
-    function __($key)
-    {
-        return $key;
+        return ($key);
     }
 }
 
@@ -116,60 +109,58 @@ if (!function_exists('__submitBtn')) {
 
 
 if (!function_exists('submitBtn')) {
-	function submitBtn()
-	{
-		return '<button type="submit" class="btn btn-primary">Submit <i class="icofont-hand-drag1"></i></button>';
-	}
+    function submitBtn()
+    {
+        return '<button type="submit" class="btn btn-primary">Submit <i class="icofont-hand-drag1"></i></button>';
+    }
 }
 
 
 if (!function_exists('hidden')) {
-	function hidden($name, $value)
-	{
-		return "<input type='hidden' name='{$name}' value='{$value}' />";
-	}
+    function hidden($name, $value)
+    {
+        return "<input type='hidden' name='{$name}' value='{$value}' />";
+    }
 }
 
 
 
 if (!function_exists('__addBtn')) {
-	function __addbtn($url, $text = '', $modal = [])
-	{
-		if ($text == '') {
-			$text = lang('add_new');
-		} else {
-			$text = $text;
-		}
+    function __addbtn($url, $text = '', $modal = [])
+    {
+        if ($text == '') {
+            $text = lang('add_new');
+        } else {
+            $text = $text;
+        }
 
-		if (!empty($modal) && isset($modal['is_modal']) && $modal['is_modal'] == 1) {
-			return "<a href='javascript:;' data-toggle='modal' data-target='#{$modal['target']}' class='btn btn-secondary text-right btn-sm addBtn'> <i class='fa fa-plus'></i> {$text}</a>";
-		} elseif (!empty($modal) && isset($modal['is_sidebar']) && $modal['is_sidebar'] == 1) {
-			return "<a href='javascript:;'  class='btn btn-secondary text-right btn-sm addBtn {$modal['class']}Sidebar' onclick='sidebar(`{$modal['class']}Sidebar`)'> <i class='fa fa-plus'></i> {$text}</a>";
-		} else {
-			return "<a href='{$url}' class='btn btn-secondary text-right btn-sm addBtn'> <i class='fa fa-plus'></i> {$text}</a>";
-		}
-	}
+        if (!empty($modal) && isset($modal['is_modal']) && $modal['is_modal'] == 1) {
+            return "<a href='javascript:;' data-toggle='modal' data-target='#{$modal['target']}' class='btn btn-secondary text-right btn-sm addBtn'> <i class='fa fa-plus'></i> {$text}</a>";
+        } elseif (!empty($modal) && isset($modal['is_sidebar']) && $modal['is_sidebar'] == 1) {
+            return "<a href='javascript:;'  class='btn btn-secondary text-right btn-sm addBtn {$modal['class']}Sidebar' onclick='sidebar(`{$modal['class']}Sidebar`)'> <i class='fa fa-plus'></i> {$text}</a>";
+        } else {
+            return "<a href='{$url}' class='btn btn-secondary text-right btn-sm addBtn'> <i class='fa fa-plus'></i> {$text}</a>";
+        }
+    }
 }
 
 
 if (!function_exists('__status')) {
-	function __status($id, $status, $table)
-	{
-		// $id = html_escape($id);
-		// $status = html_escape($status);
-		// $table = html_escape($table);
+    function __status($id, $status, $table)
+    {
+        // $id = html_escape($id);
+        // $status = html_escape($status);
+        // $table = html_escape($table);
 
-		$badge_class = $status == 1 ? 'badge-success' : 'badge-danger';
-		$icon_class = $status == 1 ? 'fa-check' : 'fa-ban';
-		$status_text = $status == 1 ? (!empty(lang('activated')) ? lang('activated') : "activated") : (!empty(lang('inactive')) ? lang('inactive') : "inactive");
+        $badge_class = $status == 1 ? 'badge-success' : 'badge-danger';
+        $icon_class = $status == 1 ? 'fa-check' : 'fa-ban';
+        $status_text = $status == 1 ? (!empty(lang('activated')) ? lang('activated') : "activated") : (!empty(lang('inactive')) ? lang('inactive') : "inactive");
 
-		$prams = "{$id},{$status},'{$table}'";
+        $prams = "{$id},{$status},'{$table}'";
 
-		$link = '<a href="javascript:;" data-status="' . $status . '" onclick="changeStatus(event,this,' . $prams . ')"  class="badge ' . $badge_class . ' changeStatus">';
-		$link .= '<i class="fa ' . $icon_class . '"></i> &nbsp;' . $status_text . '</a>';
+        $link = '<a href="javascript:;" data-status="' . $status . '" onclick="changeStatus(event,this,' . $prams . ')"  class="badge ' . $badge_class . ' changeStatus">';
+        $link .= '<i class="fa ' . $icon_class . '"></i> &nbsp;' . $status_text . '</a>';
 
-		return $link;
-	}
+        return $link;
+    }
 }
-
-

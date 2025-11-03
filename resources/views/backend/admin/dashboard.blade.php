@@ -1,5 +1,6 @@
-<x-admin-layout>
+@extends('backend.admin.layouts.app')
 
+@section('content')
     <div class="row mt-2rm">
         <div class="col-md-3">
             <div class="info-box vendorbox card">
@@ -47,5 +48,4 @@
             </div>
         </div>
     </div>
-
-</x-admin-layout>
+@endsection
