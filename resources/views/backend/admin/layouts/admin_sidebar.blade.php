@@ -14,14 +14,16 @@
                 <!-- Add icons to the links using the .nav-icon class
           with font-awesome or any other icon font library -->
                 <li class="nav-item ">
-                    <a href="{{ url('admin/dashboard') }}" class="nav-link <?= isset($page_title) && $page_title == 'Dashboard' ? 'active' : ''; ?>">
+                    <a href="{{ url('admin/dashboard') }}"
+                        class="nav-link <?= isset($page_title) && $page_title == 'Dashboard' ? 'active' : '' ?>">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p> dashboard</p>
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a href="{{ url('admin/user_list') }}" class="nav-link <?= isset($page_title) && $page_title == "User List" ? "active" : "" ?>">
+                    <a href="{{ url('admin/user_list') }}"
+                        class="nav-link <?= isset($page_title) && $page_title == 'User List' ? 'active' : '' ?>">
                         <i class="nav-icon fas fa-user-circle"></i>
                         <p>
                             Subscribers
@@ -29,7 +31,7 @@
                     </a>
                 </li>
 
-                <li class="nav-item <?= isset($page) && $page == "Packages" ? 'menu-is-opening menu-open' : ''; ?>">
+                <li class="nav-item <?= isset($page) && $page == 'Packages' ? 'menu-is-opening menu-open' : '' ?>">
                     <a href="#" class="nav-link ">
                         <i class="nav-icon fas fa-cloud-meatball"></i>
                         <p>
@@ -41,7 +43,8 @@
                     <ul class="nav nav-treeview">
 
                         <li class="nav-item">
-                            <a href="{{ url('/admin/package') }}" class="nav-link <?= isset($page_title) && $page_title == "Packages" ? 'active' : ''; ?>">
+                            <a href="{{ url('/admin/package') }}"
+                                class="nav-link <?= isset($page_title) && $page_title == 'Packages' ? 'active' : '' ?>">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
                                 <p>
                                     Plan / Packages
@@ -50,7 +53,8 @@
                         </li>
 
                         <li class="nav-item ">
-                            <a href="{{ url('admin/feature') }}" class="nav-link <?= isset($page_title) && $page_title == "Features" ? 'active' : ''; ?>">
+                            <a href="{{ url('admin/feature') }}"
+                                class="nav-link <?= isset($page_title) && $page_title == 'Features' ? 'active' : '' ?>">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
                                 <p>
                                     Features
@@ -62,7 +66,7 @@
                 </li>
 
 
-                <li class="nav-item <?= isset($page) && $page == "Home" ? 'menu-is-opening menu-open' : ''; ?>">
+                <li class="nav-item <?= isset($page) && $page == 'Home' ? 'menu-is-opening menu-open' : '' ?>">
                     <a href="#" class="nav-link ">
                         <i class="nav-icon fas fa-home"></i>
                         <p>
@@ -74,16 +78,18 @@
                     <ul class="nav nav-treeview">
 
                         <li class="nav-item">
-                            <a href="" class="nav-link <?= isset($page_title) && $page_title == "How it works" ? 'active' : ''; ?>">
+                            <a href=""
+                                class="nav-link <?= isset($page_title) && $page_title == 'How it works' ? 'active' : '' ?>">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
                                 <p>
-                                   How it works
+                                    How it works
                                 </p>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a href="" class="nav-link <?= isset($page_title) && $page_title == "Services" ? 'active' : ''; ?>">
+                            <a href=""
+                                class="nav-link <?= isset($page_title) && $page_title == 'Services' ? 'active' : '' ?>">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
                                 <p>
                                     Services
@@ -96,7 +102,7 @@
 
 
 
-                <li class="nav-item <?= isset($page) && $page == "Settings" ? 'menu-is-opening menu-open' : ''; ?>">
+                <li class="nav-item <?= isset($page) && $page == 'Settings' ? 'menu-is-opening menu-open' : '' ?>">
                     <a href="#" class="nav-link ">
                         <i class="nav-icon fas fa-cogs"></i>
                         <p>
@@ -108,14 +114,16 @@
                     <ul class="nav nav-treeview">
 
                         <li class="nav-item ">
-                            <a href="" class="nav-link <?= isset($page_title) && $page_title == "General Settings" ? 'active' : ''; ?>">
+                            <a href=""
+                                class="nav-link <?= isset($page_title) && $page_title == 'General Settings' ? 'active' : '' ?>">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
                                 <p> Site settings </p>
                             </a>
                         </li>
 
                         <li class="nav-item ">
-                            <a href="" class="nav-link <?= isset($page_title) && $page_title == "Security Settings" ? 'active' : ''; ?>">
+                            <a href=""
+                                class="nav-link <?= isset($page_title) && $page_title == 'Security Settings' ? 'active' : '' ?>">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
                                 <p> security settings </p>
                             </a>
@@ -127,7 +135,7 @@
 
 
                 <li class="nav-item ">
-                    <a href="" class="nav-link <?= isset($page) && $page == "Module" ? 'active' : ''; ?>">
+                    <a href="" class="nav-link <?= isset($page) && $page == 'Module' ? 'active' : '' ?>">
                         <i class="nav-icon fas fa-wind"></i>
                         <p>
                             Module list
@@ -135,11 +143,11 @@
                     </a>
                 </li>
 
-                <li class="nav-item <?= isset($page) && $page == "Language List" ? 'menu-is-opening menu-open' : ''; ?>">
+                <li class="nav-item {{ isset($page) && $page == 'Language' ? 'menu-is-opening menu-open' : '' }}">
                     <a href="#" class="nav-link ">
                         <i class="nav-icon fas fa-language"></i>
                         <p>
-                            Language
+                            {{ __('langauge') }}
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
@@ -147,17 +155,19 @@
                     <ul class="nav nav-treeview">
 
                         <li class="nav-item ">
-                            <a href="{{ url('admin/language') }}" class="nav-link <?= isset($page_title) && $page_title == "Language List" ? 'active' : ''; ?>">
+                            <a href="{{ url('admin/language-list') }}"
+                                class="nav-link <?= isset($page_title) && $page_title == 'Language List' ? 'active' : '' ?>">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
-                                Language
+                                @lang('language_list')
                             </a>
                         </li>
 
 
                         <li class="nav-item ">
-                            <a href="{{ url('admin/language_data') }}" class="nav-link <?= isset($page_title) && $page_title == "Dashboard Language" ? 'active' : ''; ?>">
+                            <a href="{{ url('admin/language-data') }}"
+                                class="nav-link <?= isset($page_title) && $page_title == 'Dashboard Language' ? 'active' : '' ?>">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
-                                Language Data
+                                @lang('language_data')
                             </a>
                         </li>
 
@@ -167,7 +177,8 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="" class="nav-link <?= isset($page_title) && $page_title == "Payments" ? 'active' : ''; ?>">
+                    <a href=""
+                        class="nav-link <?= isset($page_title) && $page_title == 'Payments' ? 'active' : '' ?>">
                         <i class="nav-icon fab fa-google-wallet"></i>
                         <p>
                             Payments
@@ -175,14 +186,15 @@
                     </a>
                 </li>
 
-                    <li class="nav-item">
-                        <a href="" class="nav-link <?= isset($page_title) && $page_title == "App Info" ? 'active' : ''; ?>">
-                            <i class="nav-icon icofont-info-circle"></i>
-                            <p>
-                                App Info
-                            </p>
-                        </a>
-                    </li>
+                <li class="nav-item">
+                    <a href=""
+                        class="nav-link <?= isset($page_title) && $page_title == 'App Info' ? 'active' : '' ?>">
+                        <i class="nav-icon icofont-info-circle"></i>
+                        <p>
+                            App Info
+                        </p>
+                    </a>
+                </li>
 
 
 

@@ -17,7 +17,7 @@ Route::get('/assets/plugins/commoncss.php', function () {
     exit();
 });
 
-Route::get('/', [FrontendController::class, 'index']);
+
 
 
 
@@ -35,41 +35,49 @@ Route::get('/', [FrontendController::class, 'index']);
 //     Route::get('/checkout/{slug}', [ProfileController::class, 'checkout'])->name('checkout.index');
 // });
 
+function registerLocalizedRoutes()
+{
+    Route::get('/{locale?}', [FrontendController::class, 'index'])->name('home');
+    Route::get('/login/{locale?}', [AuthController::class, 'index'])->name('login');
+    Route::get('/registration/{locale?}', [AuthController::class, 'registration'])->name('register');
+    Route::get('/admin/{locale?}', [AuthController::class, 'admin'])->name('admin');
+    Route::post('/weblogin/{locale?}', [AuthController::class, 'weblogin'])->name('weblogin');
 
-$urlStyle = config('localization.url_style', 'query');
-
-if ($urlStyle === 'suffix') {
-    Route::pattern('locale', implode('|', config('localization.supported_locales')));
-
-    Route::get('/{locale}', [FrontendController::class, 'index'])->name('home');
-    Route::get('/login/{locale}', [AuthController::class, 'index'])->name('login');
-    Route::get('/registration/{locale}', [AuthController::class, 'registration'])->name('register');
-    Route::get('/admin/{locale}', [AuthController::class, 'admin'])->name('admin');
-
-    Route::get('/', function () {
-        return redirect('/' . config('localization.fallback_locale', 'en'));
+    Route::middleware(['auth:sanctum'])->group(function () {
+        Route::get('/admin/dashboard/{locale?}', [DashboardController::class, 'index'])->name('dashboard.index');
+        Route::get('/admin/language-list/{locale?}', [DashboardController::class, 'language_list'])->name('language-list');
     });
-} else {
-    // Query style routes: /login?lang=en
-    Route::get('/', [FrontendController::class, 'index'])->name('home');
-    Route::get('/login', [AuthController::class, 'index'])->name('login');
-    Route::get('/registration', [AuthController::class, 'registration'])->name('register');
-    Route::get('/admin', [AuthController::class, 'index'])->name('admin');
 }
 
+$urlStyle = config('localization.url_style', 'query'); // suffix | query
+
+switch ($urlStyle) {
+    case 'suffix':
+        Route::pattern('locale', implode('|', config('localization.supported_locales')));
+
+        registerLocalizedRoutes();
+
+        // Redirect root to default locale
+        Route::get('/', function () {
+            return redirect('/' . config('localization.fallback_locale', 'en'));
+        });
+        break;
+
+    case 'query':
+    default:
+        registerLocalizedRoutes();
+        break;
+}
 
 
 //Backend
 
-Route::get('/login', [AuthController::class, 'index'])->name('login');
-Route::get('/admin', [AuthController::class, 'index'])->name('login');
-
-Route::post('weblogin', [AuthController::class, 'weblogin'])->name('weblogin');
+// Route::get('/login', [AuthController::class, 'index'])->name('login');
+// Route::get('/admin', [AuthController::class, 'index'])->name('login');
 
 
-Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
-});
+
+
 
 
 

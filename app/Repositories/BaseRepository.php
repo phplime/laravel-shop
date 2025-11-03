@@ -14,7 +14,8 @@ class BaseRepository
         'countries',
         'categories',
         'items',
-        'orders',
+        'language_list',
+        'language_data',
         // Add your 10+ tables here
     ];
 

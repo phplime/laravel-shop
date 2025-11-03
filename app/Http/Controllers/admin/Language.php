@@ -11,4 +11,15 @@ class Language extends Controller
     {
         return view('backend.language.home');
     }
+
+
+    public function language_list()
+    {
+        $data = [];
+        $data['page_title'] = 'Language List';
+        $data['page'] = 'Language';
+
+        // $data['country_list'] = all('country_list');
+        return view('backend.language.language_list', $data);
+    }
 }

@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Middleware\SetLocale;
+use App\Providers\UrlServiceProvider;
 use Illuminate\Foundation\Application;
+use App\Providers\TranslationServiceProvider;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
@@ -16,7 +18,6 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
             'guest' => \Illuminate\Auth\Middleware\RedirectIfAuthenticated::class,
-            'setlocale' => \App\Http\Middleware\SetLocale::class,
             'setlocale' => SetLocale::class,
 
         ]);
@@ -25,8 +26,8 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withProviders([
-        App\Providers\UrlServiceProvider::class, // Add this
-        App\Providers\TranslationServiceProvider::class,
+        UrlServiceProvider::class, // Add this
+        TranslationServiceProvider::class,
 
     ])
     ->withExceptions(function (Exceptions $exceptions): void {
