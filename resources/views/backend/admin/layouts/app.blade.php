@@ -12,15 +12,21 @@
 </head>
 
 <body class="sidebar-mini layout-fixed layout-navbar-fixed theme-light">
-    <div class="wrapper">
-        @include('backend.admin.layouts.admin_menu')
-        @include('backend.admin.layouts.admin_sidebar')
+    <div id="mainContent">
+        <div class="wrapper">
+            @include('backend.admin.layouts.admin_menu')
+            @include('backend.admin.layouts.admin_sidebar')
 
-        @yield('content')
+            @yield('content')
 
+<<<<<<< Updated upstream
         @include('backend.admin.partials.footer')
+=======
+            @include('backend.partials.footer')
+>>>>>>> Stashed changes
 
-        @stack('scripts')
+            @stack('scripts')
+        </div>
     </div>
 </body>
 

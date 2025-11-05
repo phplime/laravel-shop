@@ -22,6 +22,10 @@ class DashboardController extends Controller
     {
         $data = [];
         $data['page_title'] = 'Dashboard';
+<<<<<<< Updated upstream
+=======
+        $data['page'] = 'Dashboard';
+>>>>>>> Stashed changes
         return view('backend.admin.dashboard', $data);
     }
 

@@ -29,6 +29,7 @@
 <script src="{{ asset('assets/backend/plugins/niceselect/jquery.nice-select.min.js') }}"></script>
 <!-- sweetalert -->
 <script src="{{ asset('assets/backend/plugins/sweetalert/sweetalert.min.js') }}"></script>
+<script src="{{ asset('assets/plugins/notify/notify.main.js') }}"></script>
 <!-- main js -->
 <script src="{{ asset('global/admin.main.js') }}"></script>
 

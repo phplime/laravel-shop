@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 
@@ -166,6 +167,7 @@ if (!function_exists('__status')) {
 }
 
 
+<<<<<<< Updated upstream
 if (!function_exists('__getStatus')) {
 	function __getStatus($status, $is_active = false)
 	{
@@ -287,4 +289,41 @@ if (!function_exists('__deleteBtn')) {
 
 		return "<a href='{$url}' class='btn btn-danger btn-sm action_btn' data-msg='{$msg}'> <i class='fa fa-trash'></i>  {$text}</a>";
 	}
+=======
+
+if (!function_exists('__mainContent')) {
+    function __mainContent(string $viewPath, array $data = [])
+    {
+        /** @var \Illuminate\Http\Request $request */
+        $request = request();
+
+        // If it's an AJAX request, return only the partial view
+        if ($request->ajax() || $request->get('isAjax') == 1) {
+            return response()->view($viewPath, $data);
+        }
+
+        return view($viewPath, $data);
+    }
+}
+
+
+if (!function_exists('localizedRoute')) {
+    function localizedRoute($uri, $action, $name = null)
+    {
+        $urlStyle = config('localization.url_style', 'query'); // suffix | query | db
+
+        if ($urlStyle === 'suffix') {
+            // e.g. /login/{locale?}
+            $uri = "{$uri}/{locale?}";
+        }
+
+        $route = Route::match(['get', 'post'], $uri, $action);
+
+        if ($name) {
+            $route->name($name);
+        }
+
+        return $route;
+    }
+>>>>>>> Stashed changes
 }

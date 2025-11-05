@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Translation\DatabaseLoader;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Translation\Translator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

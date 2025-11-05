@@ -3,11 +3,11 @@
 use App\Http\Middleware\SetLocale;
 use App\Providers\UrlServiceProvider;
 use Illuminate\Foundation\Application;
-use App\Providers\TranslationServiceProvider;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
 return Application::configure(basePath: dirname(__DIR__))
+
     ->withRouting(
         web: __DIR__ . '/../routes/web.php',
         api: __DIR__ . '/../routes/api.php',
@@ -20,14 +20,15 @@ return Application::configure(basePath: dirname(__DIR__))
             'guest' => \Illuminate\Auth\Middleware\RedirectIfAuthenticated::class,
             'setlocale' => SetLocale::class,
 
+
         ]);
-        $middleware->web(append: [
+        $middleware->prepend(\App\Http\Middleware\ForceDatabaseTranslator::class);
+        $middleware->append([
             SetLocale::class,
         ]);
     })
     ->withProviders([
         UrlServiceProvider::class, // Add this
-        TranslationServiceProvider::class,
 
     ])
     ->withExceptions(function (Exceptions $exceptions): void {

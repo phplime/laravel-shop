@@ -6,13 +6,16 @@
             <div class="col-md-8">
                 <div class="hide_lang_details mb-1rm">
                     <label class="fz-1rm"><input type="checkbox" value="1" class="details_check">
-                        <?= lang('show_details') ?></label>
+                        {{ __('language_list') }}</label>
+
                 </div>
             </div>
+
             <div class="col-md-12 col-lg-10 mb-2rm">
                 <div class="card">
                     <div class="card-body">
-                        <form action="{{ url('add/language_data') }}" method="post">
+                        <form action="{{ url('admin/add_language_data') }}" method="post"
+                            onsubmit="formSubmit(event,this)">
                             @csrf
                             <div class="row">
                                 <div class="col-md-4">
@@ -121,18 +124,21 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <td>1</td>
-                                                    <td>add_new</td>
-                                                    <td class="hide_details">
-                                                        <input type="text" name="details[]" class="form-control"
-                                                            value="Add New">
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" name="en[]" class="form-control"
-                                                            value="Add New">
-                                                    </td>
-                                                </tr>
+                                                @foreach ($language_data as $key => $langdata)
+                                                    <tr>
+                                                        <td>{{ $key + 1 }}</td>
+                                                        <td>{{ $langdata->key }}</td>
+                                                        <td class="hide_details">
+                                                            <input type="text" name="details[]" class="form-control"
+                                                                value="{{ $langdata->value }}">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" name="en[]" class="form-control"
+                                                                value="{{ $langdata->value }}">
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+
                                                 <input type="hidden" name="keyword[]" value="">
                                             </tbody>
                                         </table>
