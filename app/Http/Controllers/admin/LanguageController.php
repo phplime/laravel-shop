@@ -27,7 +27,7 @@ class LanguageController extends Controller
         $data['page'] = 'Language';
 
         // $data['country_list'] = all('country_list');
-
+        return __mainContent('backend.language.language_list', $data);
     }
 
 

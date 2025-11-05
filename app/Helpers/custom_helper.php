@@ -311,19 +311,14 @@ if (!function_exists('__mainContent')) {
 if (!function_exists('localizedRoute')) {
     function localizedRoute($uri, $action, $name = null)
     {
-        $urlStyle = config('localization.url_style', 'query'); // suffix | query | db
+        $urlStyle = config('localization.url_style', 'query');
 
         if ($urlStyle === 'suffix') {
-            // e.g. /login/{locale?}
-            $uri = "{$uri}/{locale?}";
+            // Ensure locale placeholder is correctly inserted
+            $uri = ltrim($uri, '/');
+            Route::match(['get', 'post'], "/{locale}/{$uri}", $action)->name($name);
+        } else {
+            Route::match(['get', 'post'], $uri, $action)->name($name);
         }
-
-        $route = Route::match(['get', 'post'], $uri, $action);
-
-        if ($name) {
-            $route->name($name);
-        }
-
-        return $route;
     }
 }

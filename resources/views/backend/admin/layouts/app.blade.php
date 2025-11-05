@@ -19,11 +19,8 @@
 
             @yield('content')
 
-<<<<<<< Updated upstream
-        @include('backend.admin.partials.footer')
-=======
-            @include('backend.partials.footer')
->>>>>>> Stashed changes
+
+            @include('backend.admin.partials.footer')
 
             @stack('scripts')
         </div>

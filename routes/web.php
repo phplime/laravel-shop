@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\admin\LanguageController;
 use App\Http\Controllers\Admin\DashboardController;
+use Illuminate\Support\Facades\App;
 
 
 Route::get('/assets/plugins/commoncss.php', function () {
@@ -35,41 +36,37 @@ Route::get('/assets/plugins/commoncss.php', function () {
 //     Route::get('/view-order/{order_id}/{slug}', [ProfileController::class, 'view_order'])->name('view_order.index');
 //     Route::get('/checkout/{slug}', [ProfileController::class, 'checkout'])->name('checkout.index');
 // });
+if (!function_exists('registerLocalizedRoutes')) {
+    function registerLocalizedRoutes()
+    {
+        localizedRoute('/', [FrontendController::class, 'index'], 'home');
+        localizedRoute('/login', [AuthController::class, 'index'], 'login');
+        localizedRoute('/registration', [AuthController::class, 'registration'], 'register');
+        localizedRoute('/weblogin', [AuthController::class, 'weblogin'], 'weblogin');
 
-function registerLocalizedRoutes()
-{
-    Route::get('/{locale?}', [FrontendController::class, 'index'])->name('home');
-    Route::get('/login/{locale?}', [AuthController::class, 'index'])->name('login');
-    Route::get('/registration/{locale?}', [AuthController::class, 'registration'])->name('register');
-    Route::post('/weblogin/{locale?}', [AuthController::class, 'weblogin'])->name('weblogin');
+        Route::middleware(['auth:sanctum'])->group(function () {
+            localizedRoute('/admin/dashboard', [DashboardController::class, 'index'], 'dashboard.index');
+            localizedRoute('/admin/language-list', [LanguageController::class, 'language_list'], 'language-list');
+            localizedRoute('/admin/language-data', [LanguageController::class, 'language_data'], 'language-data');
 
-    Route::middleware(['auth:sanctum'])->group(function () {
-        Route::get('/admin/dashboard/{locale?}', [DashboardController::class, 'index'])->name('dashboard.index');
-        Route::get('/admin/language-list/{locale?}', [LanguageController::class, 'language_list'])->name('language-list');
-        Route::get('/admin/language-data/{locale?}', [LanguageController::class, 'language_data'])->name('language-data');
-    });
-}
-
-$urlStyle = config('localization.url_style', 'query'); // suffix | query
-
-switch ($urlStyle) {
-    case 'suffix':
-        Route::pattern('locale', implode('|', config('localization.supported_locales')));
-
-        registerLocalizedRoutes();
-
-        // Redirect root to default locale
-        Route::get('/', function () {
-            return redirect('/' . config('localization.fallback_locale', 'en'));
+            localizedRoute('/admin/add_language_data', [LanguageController::class, 'add_language_data'], 'add_language_data');
         });
-        break;
-
-    case 'query':
-    default:
-        registerLocalizedRoutes();
-        break;
+    }
 }
 
+$urlStyle = config('localization.url_style', 'query');
+
+if ($urlStyle === 'suffix') {
+    Route::pattern('locale', implode('|', config('localization.supported_locales')));
+
+    registerLocalizedRoutes();
+
+    Route::get('/', function () {
+        return redirect('/' . config('localization.fallback_locale', 'en'));
+    });
+} else {
+    registerLocalizedRoutes();
+}
 
 //Backend
 
