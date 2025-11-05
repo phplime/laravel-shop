@@ -1,5 +1,6 @@
-<x-frontend-layout>
-    @include('frontend.landing_page.home_menu')
+@extends('frontend.partials.frontend_app')
+@section('content')
+@include('frontend.landing_page.home_menu')
     <section class="loginSection" style="background-image: url('{{ asset('assets/frontend/images/login-bg.jpg') }}')">
         <div class="container">
             <div class="row align-center justify-content-center">
@@ -49,4 +50,4 @@
             </div>
         </div>
     </section>
-</x-frontend-layout>
+@endsection

@@ -1,5 +1,7 @@
-<x-frontend-layout>
-    <section class="home-heroSection">
+@extends('frontend.partials.frontend_app')
+
+@section('content')
+       <section class="home-heroSection">
         <div class="home_heroContainer">
             <div class="hero_leftContent" data-aos="zoom-in" data-aos-delay="1000">
                 <h1 class="">Welcome to our communities!!</h1>
@@ -133,4 +135,4 @@
         </div>
     </section><!-- Shop Service Area ./ -->
     @include('frontend.landing_page.pricing')
-</x-frontend-layout>
+@endsection

@@ -164,3 +164,127 @@ if (!function_exists('__status')) {
         return $link;
     }
 }
+
+
+if (!function_exists('__getStatus')) {
+	function __getStatus($status, $is_active = false)
+	{
+		$status_configs = [
+			'pending' => [
+				'class' => 'status-label-danger',
+				'icon' => 'fa-spinner'
+			],
+			'accept' => [
+				'class' => 'status-label-info',
+				'icon' => 'fa-check'
+			],
+			'processing' => [
+				'class' => 'status-label-primary',
+				'icon' => 'fa-cogs'
+			],
+			'complete' => [
+				'class' => 'status-label-success',
+				'icon' => 'fa-check-circle'
+			],
+			'cancel' => [
+				'class' => 'status-label-danger',
+				'icon' => 'fa-times-circle'
+			],
+			'return' => [
+				'class' => 'status-label-secondary',
+				'icon' => 'fa-undo'
+			],
+			'delivered' => [
+				'class' => 'status-label-success',
+				'icon' => 'fa-truck'
+			],
+			'out_for_delivery' => [
+				'class' => 'status-label-info',
+				'icon' => 'fa-shipping-fast'
+			],
+			'paid' => [
+				'class' => 'status-label-success',
+				'icon' => 'fa-dollar-sign'
+			],
+			'unpaid' => [
+				'class' => 'status-label-danger',
+				'icon' => 'fa-exclamation-circle'
+			]
+		];
+
+		$config = $status_configs[$status] ?? $status_configs['pending'];
+		$active_class = $is_active ? ' status-label-active' : '';
+
+		return '<label class="badge ' . $config['class'] . $active_class . '"> <i class="fa ' . $config['icon'] . '"></i> ' . __($status) . ' </label>';
+	}
+}
+
+
+
+if (!function_exists('__adminMenu')) {
+	function __adminMenu($data)
+	{
+		$menu_html = '';
+		$menu_html .= '<div class="__adminMenuWrapper">';
+		$menu_html .=   '<div class="__adminMenu">';
+		$menu_html .=  '<ul>';
+		foreach ($data as $menu_item) :
+			$icon = !empty($menu_item['icon']) ? '<i class="' . $menu_item['icon'] . '"></i>' : '';
+			$activeClass = !empty($menu_item['page_title']) &&  !empty($menu_item['_title']) && trim(strtolower($menu_item['page_title']))   == trim(strtolower($menu_item['_title'])) ? 'active' : '';
+			$menu_html .= '<li class=' . $activeClass . '><a href="' . url($menu_item['url']) . '"> ' . $icon . ' ' . $menu_item['title'] . ' </a></li>';
+		endforeach;
+		$menu_html .= '</ul>';
+		$menu_html .=  '</div>';
+		$menu_html .= '</div>';
+
+		echo $menu_html;
+	}
+}
+
+if (!function_exists('__required')) {
+	function __required($type = '')
+	{
+		if ($type == '') {
+			return "<span class='error'> * </span>";
+		} else {
+			return 'required';
+		}
+	}
+}
+
+
+
+if (!function_exists('__editBtn')) {
+	function __editBtn($url, $withText = false, $modal = [])
+	{
+		if ($withText == true) {
+			$text = lang('edit');
+		} else {
+			$text = '';
+		}
+
+		if (!empty($modal) && isset($modal['is_modal']) && $modal['is_modal'] == 1) {
+			return " <a href='javascript:;' data-toggle='modal' data-target='{$modal['target']}' class='btn btn-primary text-right btn-sm'> <i class='fa fa-edit'></i> {$text}</a>";
+		} elseif (!empty($modal) && isset($modal['is_sidebar']) && $modal['is_sidebar'] == 1) {
+			return " <a href='javascript:;' class='btn btn-primary text-right btn-sm {$modal['class']}Sidebar' onclick='sidebar(`{$modal['class']}Sidebar`)'> <i class='fa fa-edit'></i> {$text}</a>";
+		} else {
+			return "<a href='{$url}' class='btn btn-primary text-right btn-sm'> <i class='fa fa-edit'></i> {$text}</a>";
+		}
+	}
+}
+
+
+if (!function_exists('__deleteBtn')) {
+	function __deleteBtn($id, $table, $withText = false)
+	{
+		$url = url("delete-item/{$id}/{$table}");
+		if ($withText == true) {
+			$text = lang('delete');
+		} else {
+			$text = '';
+		}
+		$msg = lang("are_you_sure");
+
+		return "<a href='{$url}' class='btn btn-danger btn-sm action_btn' data-msg='{$msg}'> <i class='fa fa-trash'></i>  {$text}</a>";
+	}
+}

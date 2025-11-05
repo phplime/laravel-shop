@@ -27,7 +27,7 @@ class LanguageController extends Controller
     public function language_data()
     {
         $data = [];
-        $data['page_title'] = 'Language List';
+        $data['page_title'] = 'Language Data';
         $data['page'] = 'Language';
 
         // $data['country_list'] = all('country_list');

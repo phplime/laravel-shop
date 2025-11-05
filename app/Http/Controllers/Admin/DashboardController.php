@@ -22,7 +22,7 @@ class DashboardController extends Controller
     {
         $data = [];
         $data['page_title'] = 'Dashboard';
-        return view('backend.admin.dashboard');
+        return view('backend.admin.dashboard', $data);
     }
 
 
@@ -47,22 +47,22 @@ class DashboardController extends Controller
     }
 
 
-    public function language_list()
-    {
-        $data = [];
-        $data['page_title'] = 'Languages';
+    // public function language_list()
+    // {
+    //     $data = [];
+    //     $data['page_title'] = 'Languages';
 
 
-        // $data['country_list'] = all('country_list');
-        return view('backend.language.language_list', $data);
-    }
+    //     // $data['country_list'] = all('country_list');
+    //     return view('backend.language.language_list', $data);
+    // }
 
 
-    public function language_data()
-    {
-        $page_title = 'Language Data';
-        return view('backend.language.language_data', compact('page_title'));
-    }
+    // public function language_data()
+    // {
+    //     $page_title = 'Language Data';
+    //     return view('backend.language.language_data', compact('page_title'));
+    // }
 
 
     public function add_language_data(Request $request)

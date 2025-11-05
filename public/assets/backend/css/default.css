@@ -725,7 +725,7 @@ custom-radio
 }
 
 .custom-radio input[type=radio]:checked {
-  background-color: var(--themeColor) !important;
+  background-color: var(--theme-color) !important;
   transition: 0.25s ease;
 }
 
@@ -788,7 +788,7 @@ custom-radio-2
 }
 
 .custom-radio-2 input[type=radio]:checked {
-  background-color: var(--themeColor) !important;
+  background-color: var(--theme-color) !important;
   transition: 0.25s ease;
 }
 

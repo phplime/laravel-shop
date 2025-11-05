@@ -5,23 +5,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="icon" type="image/png" href="{{ asset('frontend/images/title-logo.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('assets/frontend/images/title-logo.png') }}">
     <title>Shop | {{ $page_title ?? '' }}</title>
 
-    @include('backend.admin.partials.header')
+    @include('backend.vendor.partials.header')
 </head>
 
 <body class="sidebar-mini layout-fixed layout-navbar-fixed theme-light">
     <div class="wrapper">
-        @include('backend.admin.layouts.admin_menu')
-        @include('backend.admin.layouts.admin_sidebar')
+        @include('backend.vendor.layouts.vendor_menu')
+        @include('backend.vendor.layouts.vendor_sidebar')
 
         @yield('content')
 
-        @include('backend.admin.partials.footer')
+        @include('backend.vendor.partials.footer')
 
         @stack('scripts')
     </div>
 </body>
-
 </html>
