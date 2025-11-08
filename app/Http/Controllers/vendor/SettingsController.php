@@ -93,7 +93,7 @@ class SettingsController extends Controller
         $data = [];
         $data['page_title'] = 'Cod Config';
         $data['page'] = 'order config';
-        return view('backend.vendor_settings.order_types.dinein', $data);
+        return view('backend.vendor_settings.order_types.pickup', $data);
     }
 
 

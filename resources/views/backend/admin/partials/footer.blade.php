@@ -31,6 +31,7 @@
 <script src="{{ asset('assets/backend/plugins/sweetalert/sweetalert.min.js') }}"></script>
 <script src="{{ asset('assets/plugins/notify/notify.main.js') }}"></script>
 <!-- main js -->
+<script src="{{ asset('global/ajaxJs.js') }}"></script>
 <script src="{{ asset('global/admin.main.js') }}"></script>
 
 <div class="defaultSidebar theme-1">

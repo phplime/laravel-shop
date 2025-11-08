@@ -1971,4 +1971,8 @@ select:focus-visible {
     color: rgba(0, 192, 239, 1) !important;
 }
 
-
+label.active {
+    background: var(--theme-color) !important;
+    border-color: var(--theme-color) !important;
+    color: #fff!important;
+}
