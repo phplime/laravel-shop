@@ -7,7 +7,6 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\Admin\LanguageController;
 use App\Http\Controllers\Admin\DashboardController;
-<<<<<<< Updated upstream
 use App\Http\Controllers\Vendor\DashboardController as VendorDashboardController;
 use App\Http\Controllers\Vendor\OrderController;
 use App\Http\Controllers\Vendor\PagesController;
@@ -17,11 +16,6 @@ use App\Http\Controllers\Vendor\SettingsController;
 use App\Http\Controllers\Vendor\StaffController;
 use Illuminate\Support\Facades\App;
 
-=======
-use App\Http\Controllers\vendor\OrderController;
-use App\Http\Controllers\vendor\SettingsController;
-use App\Http\Controllers\vendor\VendorController;
->>>>>>> Stashed changes
 
 Route::get('/assets/plugins/commoncss.php', function () {
     // Make sure to set CSS header
@@ -63,34 +57,7 @@ if (!function_exists('registerLocalizedRoutes')) {
             localizedRoute('/admin/language-data', [LanguageController::class, 'language_data'], 'language-data');
             localizedRoute('/admin/add_language_data', [LanguageController::class, 'add_language_data'], 'add_language_data');
 
-<<<<<<< Updated upstream
             // Vendor Area Start
-=======
-    Route::middleware(['auth:sanctum'])->group(function () {
-        Route::get('/admin/dashboard/{locale?}', [DashboardController::class, 'index'])->name('dashboard.index');
-        Route::get('/admin/language-list/{locale?}', [LanguageController::class, 'language_list'])->name('language-list');
-        Route::get('/admin/language-data/{locale?}', [LanguageController::class, 'language_data'])->name('language-data');
-
-        // Vendor Area Start
-
-        Route::get('/vendor/dashboard/{locale?}', [VendorController::class, 'index'])->name('vendor_dashboard.index');
-        Route::get('/vendor/order-list/{locale?}', [OrderController::class, 'order_list'])->name('order_list.index');
-        Route::get('/vendor/all-orders-list/{locale?}', [OrderController::class, 'all_order_list'])->name('all_order_list.index');
-        Route::get('/vendor/order-details/{order_id}/{locale?}', [OrderController::class, 'order_details'])->name('order_details.index');
-
-        Route::get('/vendor/settings/{locale?}', [SettingsController::class, 'index'])->name('settings.index');
-        Route::get('/vendor/settings/general/{locale?}', [SettingsController::class, 'general'])->name('settings_general.index');
-        Route::get('/vendor/settings/email-settings/{locale?}', [SettingsController::class, 'email_settings'])->name('email_settings.index');
-        Route::get('/vendor/settings/apperence/{locale?}', [SettingsController::class, 'apperence'])->name('apperence.index');
-        Route::get('/vendor/settings/available-days/{locale?}', [SettingsController::class, 'available_days'])->name('available_days.index');
-        Route::get('/vendor/settings/payment-settings/{locale?}', [SettingsController::class, 'payment_settings'])->name('payment_settings.index');
-        Route::get('/vendor/settings/slider/{locale?}', [SettingsController::class, 'slider'])->name('slider.index');
-        Route::get('/vendor/settings/qrcode/{locale?}', [SettingsController::class, 'qrcode'])->name('qrcode.index');
-        Route::get('/vendor/settings/order_types/{locale?}', [SettingsController::class, 'order_types'])->name('order_types.index');
-        Route::get('/vendor/settings/order_type_settings/cod/{locale?}', [SettingsController::class, 'order_type_settings'])->name('order_type_settings.index');
-    });
-}
->>>>>>> Stashed changes
 
             localizedRoute('/vendor/dashboard', [VendorDashboardController::class, 'index'], 'vendor_dashboard.index');
             localizedRoute('/vendor/whatsapp-order', [VendorDashboardController::class, 'whatsapp_order'], 'whatsapp_order.index');
