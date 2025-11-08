@@ -226,9 +226,8 @@
                                 <h4 class="card-title"><?= __('background_options') ?></h4>
                             </div>
                             <div class="card-body">
-                                <div class=">
-                                <label for=" backgroundColor"
-                                    class="form-label"><?= __('background_color') ?></label>
+                                <div class="form-group">
+                                    <label><?= __('background_color') ?></label>
                                     <input type="color" class="form-control form-control-color" id="backgroundColor"
                                         name="backgroundColor" value="#fff">
                                 </div>

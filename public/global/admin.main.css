@@ -750,8 +750,8 @@ progress#progressBar {
 
 .variantArea ul li a {
     padding: 1px 8px;
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
+    background: #dcdcdc;
+    color: var(--color);
     font-size: 0.9rem;
     border-radius: 0.2rem;
     display: flex;
@@ -1005,40 +1005,40 @@ li.total,
 
 .ci-outline {
     background: transparent;
-    border-color: var(--dcolor) !important;
-    color: var(--dcolor) !important;
+    border-color: var(--theme-color) !important;
+    color: var(--theme-color) !important;
     transition: all 0.3s ease-in-out;
 }
 
 .ci-outline:hover {
-    background-color: var(--dcolor);
-    border-color: var(--dcolor);
+    background-color: var(--theme-color);
+    border-color: var(--theme-color);
     color: #fff !important;
 }
 
 .ci-outline-active {
     background-color: var(--soft-bg);
-    border-color: var(--dcolor);
+    border-color: var(--theme-color);
     color: #fff !important;
 }
 
 .ci-outline-large {
     background: transparent;
-    border-color: var(--dcolor);
-    color: var(--dcolor) !important;
+    border-color: var(--theme-color);
+    color: var(--theme-color) !important;
     transition: all 0.3s ease-in-out;
     padding: 0.6rem 2rem;
 }
 
 .ci-outline-large:hover {
-    background-color: var(--dcolor);
-    border-color: var(--dcolor);
+    background-color: var(--theme-color);
+    border-color: var(--theme-color);
     color: #fff !important;
 }
 
 .ci-outline-large-active {
     background-color: var(--soft-bg);
-    border-color: var(--dcolor);
+    border-color: var(--theme-color);
     color: #fff !important;
 }
 
@@ -1596,6 +1596,9 @@ a.selectedBtn,
 
 .productCategoryList ul {
     gap: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--theme-color);
+    padding: 5px 0;
 }
 
 .productCategoryList ul li a {
@@ -1605,7 +1608,7 @@ a.selectedBtn,
 }
 
 .productCategoryList ul li.active a {
-    background-color: var(--dcolor);
+    background-color: var(--theme-color);
     color: #fff;
 }
 
@@ -1635,18 +1638,22 @@ ul.menuUl li {
     width: max-content;
 }
 
+.productCategoryList {
+    margin-bottom: 20px;
+}
+
 ul.menuUl li a {
     display: flex;
     width: max-content;
     text-wrap: inherit;
     flex-direction: row;
     align-items: center;
-    padding: 5px 15px;
+    padding: 8px 16px;
 }
 
 ul.menuUl li.active a,
 ul.menuUl li a.active {
-    background-color: var(--dcolor);
+    background-color: var(--theme-color);
     color: #fff;
 }
 
@@ -2128,4 +2135,9 @@ button[type="submit"].btn-primary,
     border-color: var(--theme-color) !important;
     color: #fff !important;
     opacity: 1;
+}
+
+.phone_with_input > input {
+    width: 100% !important;
+    height: 29px !important;
 }

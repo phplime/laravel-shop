@@ -675,9 +675,9 @@ label {
 }
 
 .custom-checkbox input[type=checkbox]:checked {
-  background-color: var(--dcolor) !important;
+  background-color: var(--theme-color) !important;
 
-  border-color: var(--dcolor) !important;
+  border-color: var(--theme-color) !important;
 
 }
 
@@ -1451,7 +1451,7 @@ input.form-control {
 }
 
 .ci-input-group.input-group-prepand>input {
-  border-right: 1px solid var(--border-color);
+  border-right: 1px solid #ced4da;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
@@ -1463,7 +1463,7 @@ input.form-control {
   text-align: center;
   vertical-align: middle;
   background-color: transparent;
-  border: 1px solid var(--border-color);
+  border: 1px solid #ced4da;
   padding: .375rem .75rem;
   font-size: 1rem;
   line-height: 1.8;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\vendor;
+namespace App\Http\Controllers\Vendor;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -94,6 +94,34 @@ class SettingsController extends Controller
         $data['page_title'] = 'Cod Config';
         $data['page'] = 'order config';
         return view('backend.vendor_settings.order_types.dinein', $data);
+    }
+
+
+
+    public function order_config($type = '')
+    {
+        $data = [];
+        $data['page_title'] = 'Order Configuration';
+        $data['page'] = 'order config';
+        return view('backend.vendor_settings.order_configuration', $data);
+    }
+
+
+
+    public function item_config($type = '')
+    {
+        $data = [];
+        $data['page_title'] = 'Item Configuration';
+        $data['page'] = 'order config';
+        return view('backend.vendor_settings.item_configuration', $data);
+    }
+
+    public function tax_config($type = '')
+    {
+        $data = [];
+        $data['page_title'] = 'Tax Configuration';
+        $data['page'] = 'order config';
+        return view('backend.vendor_settings.tax_configuration', $data);
     }
 
 

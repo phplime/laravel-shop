@@ -55,7 +55,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <a href="{{ url('vendor/settings/order_type_settings/cod') }}" class="btn btn-secondary"><i class="fa fa-cogs"></i></a>
+                                        <a href="{{ url('vendor/settings/order-type-settings/cod') }}" class="btn btn-secondary"><i class="fa fa-cogs"></i></a>
                                     </td>
                                 </tr>
                                 <tr>

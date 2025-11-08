@@ -70,7 +70,7 @@ if (!function_exists('user')) {
 if (!function_exists('lang')) {
     function lang($key)
     {
-        return ($key);
+        return __($key);
     }
 }
 
@@ -321,4 +321,21 @@ if (!function_exists('localizedRoute')) {
             Route::match(['get', 'post'], $uri, $action)->name($name);
         }
     }
+}
+
+
+if (!function_exists('__vegType')) {
+	function __vegType($row, $is_text = false, $type = 'round')
+	{
+		$html = '';
+		if (isset($row->veg_type) && !empty($row->veg_type)) {
+			if ($is_text == true) :
+				$html .= '<span class="vegType ' . $type . ' ' . $row->veg_type . '"> <span></span>' . __($row->veg_type == 'nonveg' ? 'non_vegetarian' : 'vegetarian') . "</span>";
+			else :
+				$html .= '<span data-title="' . __($row->veg_type == 'nonveg' ? 'non_vegetarian' : 'vegetarian') . '" data-toggle="tooltip" class="vegType ' . $type . ' ' . $row->veg_type . '"><span></span></span>';
+			endif;
+		}
+
+		return $html;
+	}
 }

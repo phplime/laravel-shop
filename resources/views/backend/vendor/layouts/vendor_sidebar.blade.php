@@ -104,7 +104,7 @@
 
 
                 <li class="nav-item ">
-                    <a href="{{ url('vendor/settings/order_types') }}"
+                    <a href="{{ url('vendor/settings/order-types') }}"
                         class="nav-link <?= isset($page) && $page == 'order config' ? 'active' : '' ?>">
                         <i class="nav-icon fas fa-cogs"></i>
                         <p> <?= __('order_configuration') ?></p>
@@ -113,7 +113,7 @@
 
                 <li class="nav-drawer-header"><?= __('items') ?></li>
 
-                <li class="nav-item <?= isset($page) && $page == 'Products' ? 'menu-open' : '' ?>">
+                <li class="nav-item <?= isset($page) && $page == 'products' ? 'menu-open' : '' ?>">
                     <a href="#" class="nav-link">
                         <i class=" nav-icon fab fa-product-hunt"></i>
                         <p>
@@ -124,14 +124,13 @@
 
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href=""
-                                class="nav-link <?= isset($page_title) && $page_title == 'Products' ? 'active' : '' ?>">
+                            <a href="{{ url('vendor/products') }}" class="nav-link <?= isset($page_title) && $page_title == 'Products' || $page_title == 'Create Product' || $page_title == 'Addons' ? 'active' : '' ?>">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
                                 <p> <?= __('item_products') ?> </p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href=""
+                            <a href="{{ url('vendor/products/categories') }}"
                                 class="nav-link <?= isset($page_title) && $page_title == 'Categories' ? 'active' : '' ?>">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
                                 <p> <?= __('categories') ?></p>
@@ -139,7 +138,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a href=""
+                            <a href="{{ url('vendor/products/subcategories') }}"
                                 class="nav-link <?= isset($page_title) && $page_title == 'Sub Categories' ? 'active' : '' ?>">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
                                 <p> <?= __('subcategories') ?></p>
@@ -147,7 +146,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a href=""
+                            <a href="{{ url('vendor/products/allergens') }}"
                                 class="nav-link <?= isset($page_title) && $page_title == 'Allergens' ? 'active' : '' ?>">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
                                 <p> <?= __('allergens') ?></p>
@@ -155,7 +154,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a href=""
+                            <a href="{{ url('vendor/products/addons-library') }}"
                                 class="nav-link <?= isset($page_title) && $page_title == 'Addon Library' ? 'active' : '' ?>">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
                                 <p> <?= __('addon_library') ?></p>
@@ -167,7 +166,7 @@
 
                 <li class="nav-drawer-header"><?= __('communications') ?></li>
 
-                <li class="nav-item <?= isset($page) && $page == 'Whatsapp' ? 'menu-open' : '' ?>">
+                <li class="nav-item <?= isset($page) && $page == 'whatsapp' ? 'menu-open' : '' ?>">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fab fa-whatsapp"></i>
                         <p>
@@ -177,8 +176,8 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href=""
-                                class="nav-link <?= isset($page_title) && $page_title == 'Whatsapp Order' ? 'active' : '' ?>">
+                            <a href="{{ url('vendor/whatsapp-order') }}"
+                                class="nav-link <?= isset($page_title) && $page_title == 'WhatsApp Order' ? 'active' : '' ?>">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
                                 <p> <?= __('whatsapp_order') ?> </p>
                             </a>
@@ -189,8 +188,8 @@
                 <li class="nav-drawer-header"><?= __('users') ?></li>
 
                 <li class="nav-item ">
-                    <a href=""
-                        class="nav-link <?= isset($page) && $page == 'Staff' ? 'active' : '' ?>">
+                    <a href="{{ url('vendor/customer-list') }}"
+                        class="nav-link <?= isset($page_title) && $page_title == 'Customers' ? 'active' : '' ?>">
                         <i class="nav-icon icofont-users-social"></i>
                         <p> <?= __('customers') ?></p>
                     </a>
@@ -209,14 +208,14 @@
 
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="" class="nav-link <?= isset($page_title) && $page_title == 'Item Statistics' ? 'active' : '' ?>">
+                            <a href="{{ url('vendor/reports/item-reports') }}" class="nav-link <?= isset($page_title) && $page_title == 'Item Statistics' ? 'active' : '' ?>">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
                                 <p><?= __('item') ?> <?= __('statistics') ?> </p>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a href="" class="nav-link <?= isset($page_title) && $page_title == 'Order Reports' ? 'active' : '' ?>">
+                            <a href="{{ url('vendor/reports/order-reports') }}" class="nav-link <?= isset($page_title) && $page_title == 'Order Reports' ? 'active' : '' ?>">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
                                 <p><?= __('order') ?> <?= __('reports') ?> </p>
                             </a>
@@ -235,7 +234,7 @@
 
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href=""
+                            <a href="{{ url('vendor/cookies') }}"
                                 class="nav-link <?= isset($page_title) && $page_title == 'Cookies' ? 'active' : '' ?>">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
                                 <p> <?= __('cookies_and_privacy') ?> </p>
@@ -243,7 +242,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a href=""
+                            <a href="{{ url('vendor/terms') }}"
                                 class="nav-link <?= isset($page_title) && $page_title == 'Terms' ? 'active' : '' ?>">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
                                 <p> <?= __('terms_and_condition') ?> </p>
@@ -259,7 +258,7 @@
                     </a>
                 </li>
                 <li class="nav-item ">
-                    <a href="" class="nav-link <?= isset($page) && $page == 'Subscriptions' ? 'active' : '' ?>">
+                    <a href="{{ url('vendor/subscriptions') }}" class="nav-link <?= isset($page) && $page == 'Subscriptions' ? 'active' : '' ?>">
                         <i class="nav-icon far fa-gem"></i>
                         <p> <?= __('subscriptions') ?></p>
                     </a>
