@@ -29,7 +29,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withProviders([
-        UrlServiceProvider::class, // Add this
+        UrlServiceProvider::class, //
 
     ])
     ->withExceptions(function (Exceptions $exceptions): void {

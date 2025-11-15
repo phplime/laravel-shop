@@ -17,7 +17,7 @@
                     <a href="{{ url('admin/dashboard') }}"
                         class="nav-link <?= isset($page_title) && $page_title == 'Dashboard' ? 'active' : '' ?>">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
-                        <p> dashboard</p>
+                        <p> {{ __('dashboard') }}</p>
                     </a>
                 </li>
 
@@ -26,7 +26,7 @@
                         class="nav-link <?= isset($page_title) && $page_title == 'User List' ? 'active' : '' ?>">
                         <i class="nav-icon fas fa-user-circle"></i>
                         <p>
-                            Subscribers
+                            {{ __('subscribers') }}
                         </p>
                     </a>
                 </li>
@@ -35,7 +35,7 @@
                     <a href="#" class="nav-link ">
                         <i class="nav-icon fas fa-cloud-meatball"></i>
                         <p>
-                            plan packages
+                            {{ __('plan_packages') }}
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
@@ -43,21 +43,21 @@
                     <ul class="nav nav-treeview">
 
                         <li class="nav-item">
-                            <a href="{{ url('/admin/package') }}"
+                            <a href="{{ url('/admin/package_list') }}"
                                 class="nav-link <?= isset($page_title) && $page_title == 'Packages' ? 'active' : '' ?>">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
                                 <p>
-                                    Plan / Packages
+                                    {{ __('plan_packages') }}
                                 </p>
                             </a>
                         </li>
 
                         <li class="nav-item ">
-                            <a href="{{ url('admin/feature') }}"
-                                class="nav-link <?= isset($page_title) && $page_title == 'Features' ? 'active' : '' ?>">
+                            <a href="{{ url('admin/feature-list') }}"
+                                class="nav-link <?= isset($page_title) && $page_title == 'Feature List' ? 'active' : '' ?>">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
                                 <p>
-                                    Features
+                                    {{ __('features') }}
                                 </p>
                             </a>
                         </li>
@@ -70,7 +70,7 @@
                     <a href="#" class="nav-link ">
                         <i class="nav-icon fas fa-home"></i>
                         <p>
-                            Home
+                            {{ __('home') }}
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
@@ -82,7 +82,7 @@
                                 class="nav-link <?= isset($page_title) && $page_title == 'How it works' ? 'active' : '' ?>">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
                                 <p>
-                                    How it works
+                                    {{ __('how_it_works') }}
                                 </p>
                             </a>
                         </li>
@@ -92,7 +92,7 @@
                                 class="nav-link <?= isset($page_title) && $page_title == 'Services' ? 'active' : '' ?>">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
                                 <p>
-                                    Services
+                                    {{ __('services') }}
                                 </p>
                             </a>
                         </li>
@@ -106,7 +106,7 @@
                     <a href="#" class="nav-link ">
                         <i class="nav-icon fas fa-cogs"></i>
                         <p>
-                            Settings
+                            {{ __('settings') }}
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
@@ -114,10 +114,10 @@
                     <ul class="nav nav-treeview">
 
                         <li class="nav-item ">
-                            <a href=""
-                                class="nav-link <?= isset($page_title) && $page_title == 'General Settings' ? 'active' : '' ?>">
+                            <a href="{{ url('admin/settings') }}"
+                                class="nav-link <?= isset($page_title) && $page_title == 'Site Settings' ? 'active' : '' ?>">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
-                                <p> Site settings </p>
+                                <p> {{ __('site_settings') }} </p>
                             </a>
                         </li>
 
@@ -135,10 +135,11 @@
 
 
                 <li class="nav-item ">
-                    <a href="" class="nav-link <?= isset($page) && $page == 'Module' ? 'active' : '' ?>">
+                    <a href="{{ url('admin/module') }}"
+                        class="nav-link <?= isset($page) && $page == 'Module' ? 'active' : '' ?>">
                         <i class="nav-icon fas fa-wind"></i>
                         <p>
-                            Module list
+                            {{ __('module_list') }}
                         </p>
                     </a>
                 </li>

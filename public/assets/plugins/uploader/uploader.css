@@ -1,0 +1,292 @@
+/*----------------------------------------------
+                Canvas
+----------------------------------------------*/
+.offcanvas {
+    --offcanvasHeight: 74vh;
+    background: #f9fafb;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: -1000%;
+    z-index: 125898245;
+    transition: all .5s ease-in-out;
+    min-height: var(--offcanvasHeight);
+}
+
+.canvas-body {
+    position: relative;
+    overflow-y: auto;
+    height: 100%;
+    padding-bottom: 1rem;
+}
+
+.offcanvas.active {
+    bottom: 0;
+    top: 10px;
+}
+
+.media-info p {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+}
+
+.offcanvas::before {
+    /* position: absolute; */
+    content: "";
+    inset: 0;
+    background: rgba(0, 0, 0, .3);
+    height: 100%;
+    width: 100%;
+}
+
+.canvas-header {
+    padding: 1rem;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #ddd;
+}
+
+.canvasTop {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.4rem;
+    padding: 1rem;
+}
+
+.canvasleftTop {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.canvasrightTop {
+    width: 100%;
+}
+
+.media-wrap {
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    justify-items: center;
+}
+
+.media-wrap .media-item {
+    position: relative;
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    border: 2px solid rgba(0, 0, 0, 0);
+    border-radius: 0.3125rem;
+    background-color: #fff;
+    cursor: pointer;
+    -webkit-box-shadow: 0 1px 2px rgba(33, 43, 54, 0.15);
+    box-shadow: 0 1px 2px rgba(33, 43, 54, 0.15);
+}
+
+.media-wrap .media-item .media-img {
+    height: 130px;
+    width: 100%;
+    padding: 8px 8px 0 8px;
+    position: relative;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.media-wrap .media-item .media-img img {
+    height: 100%;
+    width: 100%;
+    object-fit: scale-down;
+}
+
+.media-info {
+    padding: .54rem .8rem;
+}
+
+h3.title {
+    font-size: 1.2rem;
+    padding-bottom: .9rem;
+}
+
+.uppy-Dashboard-inner {
+    height: auto !important;
+    width: auto !important;
+    border: none !important;
+    font-family: "Inter", sans-serif;
+    background-color: #fff;
+}
+
+.uppy-Dashboard-innerWrap {
+    border-radius: 5px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    height: 100%;
+    opacity: 0;
+    overflow: hidden;
+    position: relative;
+}
+
+.uppy-Dashboard-AddFiles {
+    min-height: 175px;
+}
+
+[data-uppy-drag-drop-supported="true"] .uppy-Dashboard-AddFiles {
+    margin: 0 !important;
+    border: 2px dashed var(--theme-color) !important;
+}
+
+.canvasBody {
+    background: #eee;
+    margin: 1rem;
+    /* padding: 1rem; */
+}
+
+.bodyHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .5rem 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.rightFilters {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.canvasImages {
+    background: #f8f8f8;
+    padding: .8rem;
+    padding-bottom: 2rem;
+    border: 1px solid #ddd;
+}
+
+.rightFilters button {
+    width: 124px;
+    margin-left: 6px;
+}
+
+.canvasFooter {
+    padding: 1rem;
+    padding-bottom: 3.5rem;
+}
+
+.media-wrap .media-item.active-image:before {
+    content: "";
+    z-index: 1;
+    position: absolute;
+    display: block;
+    width: 50px;
+    height: 32px;
+    top: -10px;
+    left: -20px;
+    -webkit-transform: rotate(45deg);
+    transform: rotate(133deg);
+    background-color: var(--theme-color);
+}
+
+.media-wrap .media-item.active-image:after {
+    content: "✓";
+    color: #fff;
+    position: absolute;
+    top: -2px;
+    right: auto;
+    font-size: 0.875rem;
+    font-weight: 600;
+    z-index: 2;
+    left: 5px;
+}
+
+.media-wrap .media-item.active-image {
+    overflow: hidden;
+    border: 2px solid var(--theme-color);
+}
+
+.offcanvas.active.show a.selectedBtn {
+    position: fixed;
+    left: 20%;
+    top: 80%;
+    transform: translate(-30%, -50%);
+    background: var(--theme-color);
+    padding: .8rem 3.5rem;
+    color: #fff;
+    border-radius: 5px;
+    font-size: 16px;
+    visibility: none;
+    opacity: 0;
+}
+
+.offcanvas.active.show a.selectedBtn.active {
+    visibility: visible;
+    opacity: 1;
+}
+
+.image-drop {
+    position: relative;
+    padding: 2rem 1rem;
+    -webkit-transition: border-color 0.15s ease-in-out,
+        -webkit-box-shadow 0.15s ease-in-out;
+    transition: border-color 0.15s ease-in-out,
+        -webkit-box-shadow 0.15s ease-in-out;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
+        -webkit-box-shadow 0.15s ease-in-out;
+    text-align: center;
+    border: 2px dashed #ddd;
+}
+
+.fw-semibold {
+    font-weight: 600 !important;
+}
+
+.media-wrap .media-item {
+    position: relative;
+    overflow: hidden;
+}
+
+span.removeImage {
+    position: absolute;
+    right: -50px;
+    left: auto;
+    bottom: 3px;
+    color: red;
+    z-index: 999;
+    display: block;
+    transition: all .3s ease-in-out;
+}
+
+.media-item:hover span.removeImage {
+    right: 7px;
+}
+
+.rightFilters input {
+    flex: 1;
+}

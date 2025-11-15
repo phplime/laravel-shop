@@ -16,6 +16,12 @@ class BaseRepository
         'items',
         'language_list',
         'language_data',
+        'country_list',
+        'feature_list',
+        'package_list',
+        'module_feature_list',
+        'order_type_list',
+        'module_list',
         // Add your 10+ tables here
     ];
 
@@ -38,25 +44,43 @@ class BaseRepository
      * @return LengthAwarePaginator
      */
     public function paginate(
-        int $perPage = 15,
         string $table,
+        int $perPage = 15,
         array $filters = [],
         array $columns = ['*'],
-        string $orderBy = 'id',
-        string $direction = 'asc'
+        array|string|null $orderBy = ['id' => 'asc']
     ): LengthAwarePaginator {
         $this->validateTable($table);
 
         $query = DB::table($table)->select($columns);
 
+        // 🔹 Apply filters safely
         foreach ($filters as $column => $value) {
-            if ($value !== null && $value !== '') {
+            if (!is_null($value) && $value !== '') {
                 $query->where($column, $value);
             }
         }
 
-        return $query->orderBy($orderBy, $direction)->paginate($perPage);
+        // 🔹 Handle ordering
+        if ($orderBy) {
+            if (is_string($orderBy)) {
+                // Example: 'id'
+                $query->orderBy($orderBy, 'asc');
+            } elseif (is_array($orderBy)) {
+                // Example: ['id' => 'desc', 'name' => 'asc']
+                foreach ($orderBy as $column => $direction) {
+                    $query->orderBy($column, strtolower($direction) === 'desc' ? 'desc' : 'asc');
+                }
+            }
+        } else {
+            // Fallback if orderBy is null
+            $query->orderBy('id', 'asc');
+        }
+
+        // 🔹 Return paginated result
+        return $query->paginate($perPage);
     }
+
 
 
     public function get_all_by_id(
@@ -104,7 +128,8 @@ class BaseRepository
     public function update(int $id, array $data, string $table): bool
     {
         $this->validateTable($table);
-        return DB::table($table)->where('id', $id)->update($data) > 0;
+        $update =  DB::table($table)->where('id', $id)->update($data) > 0;
+        return $update > 0 ? 1 : $id;
     }
 
     /**
@@ -119,14 +144,87 @@ class BaseRepository
     /**
      * Get all records (use cautiously!).
      */
-    public function all(string $table, array $columns = ['*'])
-    {
-        $this->validateTable($table);
-        return DB::table($table)->select($columns)->get();
+    public function all(
+        string $table,
+        array|string|null $orderBy = null,
+        array $columns = ['*'],
+        int|bool $lazy = true, // Default to lazy loading
+        array $filters = []     // e.g., ['en' => 'search', 'keyword' => 'search']
+    ) {
+        $query = DB::table($table)->select($columns);
+
+        // Apply dynamic filters
+        if (!empty($filters)) {
+            $query->where(function ($q) use ($filters) {
+                foreach ($filters as $column => $value) {
+                    if (!empty($value)) {
+                        $q->orWhere($column, 'like', "%{$value}%");
+                    }
+                }
+            });
+        }
+
+        // Apply order by
+        if ($orderBy) {
+            if (is_string($orderBy)) {
+                $query->orderBy($orderBy, 'asc');
+            } elseif (is_array($orderBy)) {
+                foreach ($orderBy as $column => $direction) {
+                    $query->orderBy($column, strtolower($direction) === 'desc' ? 'desc' : 'asc');
+                }
+            }
+        } else {
+            $query->orderBy('id', 'asc');
+        }
+
+        // Lazy loading / chunking
+        if ($lazy === true) {
+            return $query->lazy(); // default 1000 chunk size
+        } elseif (is_int($lazy) && $lazy > 0) {
+            return $query->lazy($lazy); // custom chunk size
+        } elseif ($lazy === false) {
+            return $query->get(); // fetch all
+        }
+
+        return $query->get();
     }
+
+
 
     public function getPaginatedData(int $perPage = 15, $table): LengthAwarePaginator
     {
         return DB::table($table)->paginate($perPage);
+    }
+
+
+
+    /**
+     * Delete by condition(s)
+     */
+    public function deleteBy(string $table, array|string $column, $value = null)
+    {
+        $query = DB::table($table);
+        if (is_array($column)) {
+            // multiple conditions
+            $query->where($column);
+        } else {
+            $query->where($column, $value);
+        }
+
+        return $query->delete();
+    }
+
+    /**
+     * Insert multiple records
+     */
+    public function insertAll(array $data, string $table)
+    {
+        if (empty($data)) return false;
+
+        try {
+            return DB::table($table)->insert($data);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 }

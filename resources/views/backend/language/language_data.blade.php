@@ -64,7 +64,7 @@
                                     <?= isset($_GET['limit']) && $_GET['limit'] == 500 ? 'selected' : '' ?>>500</option>
                             </select>
                             <div class="searchArea text-right">
-                                <form action="<?= url('admin/dashboard_languages') ?>" method="get" class="">
+                                <form action="<?= url('admin/language-data') ?>" method="get" class="">
                                     <div class="input-group">
                                         <input type="text" name="q" class="form-control h-i"
                                             placeholder="<?= lang('search') ?>">
@@ -80,75 +80,77 @@
 
                         <nav>
                             <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                                <a class="active nav-item nav-link" data-toggle="tab" href="#en"
-                                    role="tab">English</a>
-                                <a class=" nav-item nav-link" data-toggle="tab" href="#ar" role="tab">عربي</a>
-                                <a class=" nav-item nav-link" data-toggle="tab" href="#es" role="tab">Español</a>
+                                @foreach ($language_list as $key => $lang)
+                                    <a class="{{ $key == 0 ? 'active' : '' }} nav-item nav-link" data-toggle="tab"
+                                        href="#{{ $lang->slug }}" role="tab">{{ $lang->language_name }}</a>
+                                @endforeach
                             </div>
                         </nav>
 
 
 
                         <div class="tab-content">
-                            <div id="en" class="tab-pane fade in active show">
-                                <div class="row flex justify-content-end">
-                                    <div class="text-right col-md-12">
+                            @foreach ($language_list as $key => $row)
+                                <div id="{{ $row->slug }}" class="tab-pane fade in {{ $key == 0 ? 'active show' : '' }}">
+                                    <div class="row flex justify-content-end">
+                                        <div class="text-right col-md-12">
 
-                                        <div class="exportDataArea mt-1rm  mb-1rm">
-                                            <a href="#lnModal_en" data-toggle="modal" class="btn btn-success btn-sm"><i
-                                                    class="icofont-upload"></i>
-                                                <?= lang('import') ?> </a>
-                                            <a href="" class="btn btn-secondary btn-sm"> <i
-                                                    class="icofont-download"></i>
-                                                <?= lang('export') ?></a>
+                                            <div class="exportDataArea mt-1rm  mb-1rm">
+                                                <a href="#lnModal_en" data-toggle="modal" class="btn btn-success btn-sm"><i
+                                                        class="icofont-upload"></i>
+                                                    <?= lang('import') ?> </a>
+                                                <a href="" class="btn btn-secondary btn-sm"> <i
+                                                        class="icofont-download"></i>
+                                                    <?= lang('export') ?></a>
 
+                                            </div>
                                         </div>
+
                                     </div>
+                                    <form action="{{ url('admin/add_all_language_data/' . $row->slug) }}" method="post">
+                                        @csrf
 
-                                </div>
-                                <form action="" method="post">
-                                    @csrf
-
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th width="5%">#</th>
-                                                    <th width="20%">
-                                                        <?= !empty(lang('keyword')) ? lang('keyword') : 'Keyword' ?></th>
-                                                    <th class="hide_details " width="30%">
-                                                        <?= !empty(lang('details')) ? lang('details') : 'Details' ?></th>
-                                                    <th width="45%">
-                                                        <?= !empty(lang('value')) ? lang('value') : 'value' ?></th>
-
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($language_data as $key => $langdata)
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-striped">
+                                                <thead>
                                                     <tr>
-                                                        <td>{{ $key + 1 }}</td>
-                                                        <td>{{ $langdata->key }}</td>
-                                                        <td class="hide_details">
-                                                            <input type="text" name="details[]" class="form-control"
-                                                                value="{{ $langdata->value }}">
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" name="en[]" class="form-control"
-                                                                value="{{ $langdata->value }}">
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
+                                                        <th width="5%">#</th>
+                                                        <th width="20%">
+                                                            <?= !empty(lang('keyword')) ? lang('keyword') : 'Keyword' ?>
+                                                        </th>
 
-                                                <input type="hidden" name="keyword[]" value="">
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div class="form-group text-right">
-                                        <button type="submit"
-                                            class="btn btn-info btn-block"><?= !empty(lang('save_change')) ? lang('save_change') : 'save change' ?></button>
-                                    </div>
-                                </form>
-                            </div>
+                                                        <th width="45%">
+                                                            <?= !empty(lang('value')) ? lang('value') : 'value' ?></th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($language_data as $key => $langdata)
+                                                        <tr>
+                                                            <td>{{ $key + 1 }}</td>
+                                                            <td>{{ $langdata->keyword ?? '' }}</td>
+
+                                                            <td>
+                                                                <input type="text" name="{{ $row->slug }}[]"
+                                                                    class="form-control"
+                                                                    value="{{ $langdata->{$row->slug} ?? '' }}">
+                                                            </td>
+                                                        </tr>
+                                                        <input type="hidden" name="keyword[]"
+                                                            value="{{ $langdata->keyword ?? '' }}">
+                                                    @endforeach
+
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="form-group text-right">
+                                            <button type="submit"
+                                                class="btn btn-info btn-block"><?= !empty(lang('save_change')) ? lang('save_change') : 'save change' ?></button>
+                                        </div>
+                                    </form>
+                                </div>
+                            @endforeach
                             <!--  -->
                         </div>
                     </div><!-- /.box-body -->

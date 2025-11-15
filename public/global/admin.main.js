@@ -1,11 +1,5 @@
 (function ($) {
     "use strict";
-
-    var csrf_token = jQuery('meta[name="csrf-token"]').attr("content");
-    var base_url = jQuery('meta[name="base_url"]').attr("content");
-    let item_deactive = "item_deactive";
-    let item_active = "item_activated";
-
     /*----------------------------------------------
     Nice select
   ----------------------------------------------*/

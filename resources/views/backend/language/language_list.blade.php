@@ -23,24 +23,23 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td data-label="#">1</td>
-                                    <td data-label="{{ lang('name') }}">english</td>
-                                    <td data-label="{{ lang('slug') }}">en</td>
-                                    <td data-label="{{ lang('direction') }}">hello</td>
-                                    <td data-label="{{ lang('status') }}">
-                                        <?= __status(1, 1, 'language_list') ?>
-                                    </td>
-                                    <td data-label="{{ lang('action') }}">
-                                        <div class="btnGroup">
-                                            <a href="" class="btn btn-primary text-right btn-sm"> <i
-                                                    class="fa fa-edit"></i> Edit</a>
-                                            <a href="" class="btn btn-danger btn-sm action_btn"
-                                                data-msg="Are you sure?">
-                                                <i class="fa fa-trash"></i> Delete</a>
-                                        </div>
-                                    </td>
-                                </tr>
+                                @foreach ($language_list as $key => $row)
+                                    <tr>
+                                        <td data-label="#">{{ $key + 1 }}</td>
+                                        <td data-label="{{ lang('name') }}">{{ $row->language_name }}</td>
+                                        <td data-label="{{ lang('slug') }}">{{ $row->slug }}</td>
+                                        <td data-label="{{ lang('direction') }}">{{ $row->direction }}</td>
+                                        <td data-label="{{ lang('status') }}">
+                                            <?= __status($row->id, $row->status, 'language_list') ?>
+                                        </td>
+                                        <td data-label="{{ __('action') }}">
+                                            <div class="btnGroup">
+                                                <?= __editBtn('', true, ['is_sidebar' => 1, 'class' => 'edit_language_' . $row->id]) ?>
+                                                <?= __deleteBtn($row->id, 'language_list', true) ?>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -49,11 +48,13 @@
         </div>
     </div>
 
-    <?= __header(__('add_new_language'), 'admin/language/add_languages', 'language') ?>
+    <?= __header(__('add_new_language'), url('admin/add_new_language'), 'language') ?>
     <div class="form-group mb-0">
         <select class="sidebarSelect form-control" name="country_id" onchange="updateFlag(this)">
-            <option value="1" data-src="">Afghanistan</option>
-            <option value="2" data-src="">Afghanistan</option>
+            @foreach ($country_list as $country)
+                <option value="{{ $country->id }}" data-src="">{{ $country->name }}</option>
+            @endforeach
+
         </select>
 
     </div>
@@ -65,20 +66,19 @@
     <div class="form-group">
         <label>
             <?= !empty(lang('slug')) ? lang('slug') : 'Language Slug' ?>
-            <i class="fa fa-info-circle" title="Language name (slug) must be in english alphabet and can't change"></i>
+            <i class="fa fa-info-circle" title="@lang('slug_info')"></i>
         </label>
-        <input type="text" name="slug" class="form-control" placeholder="Language Slug"
-            <?= isset($data['slug']) && !empty($data['slug']) ? 'readonly' : '' ?> value="">
+        <input type="text" name="slug" class="form-control" placeholder="Language Slug" value="">
     </div>
     <div class="form-group">
         <label><?= !empty(lang('direction')) ? lang('direction') : 'Direction' ?></label>
         <div class="">
             <select name="direction" id="direction" class="form-control">
-                <option value="ltr" <?= isset($data['direction']) && $data['direction'] == 'ltr' ? 'selected' : '' ?>>
+                <option value="ltr">
                     <?= !empty(lang('ltr')) ? lang('ltr') : 'LTR' ?>
                     (<?= !empty(lang('left_to_right')) ? lang('left_to_right') : 'Left to right' ?>)
                 </option>
-                <option value="rtl" <?= isset($data['direction']) && $data['direction'] == 'rtl' ? 'selected' : '' ?>>
+                <option value="rtl">
                     <?= !empty(lang('rtl')) ? lang('rtl') : 'RTL' ?>
                     (<?= !empty(lang('right_to_left')) ? lang('right_to_left') : 'Right to left' ?>)
                 </option>
@@ -86,4 +86,50 @@
         </div>
     </div>
     <?= __footer() ?>
+
+
+    @foreach ($language_list as $key => $lang)
+        <?= __header(__('edit'), url('admin/add_new_language'), 'edit_language_' . $lang->id) ?>
+        <div class="form-group mb-0">
+            <select class="sidebarSelect form-control" name="country_id" onchange="updateFlag(this)">
+                @foreach ($country_list as $country)
+                    <option value="{{ $country->id }}" data-src=""
+                        {{ isset($lang->id) && $lang->id == $country->id ? 'selected' : '' }}>{{ $country->name }}
+                    </option>
+                @endforeach
+
+            </select>
+
+        </div>
+        <div class="form-group">
+            <label><?= lang('language_name') ?> <span class="error">*</span></label>
+            <input type="text" name="language_name" class="form-control" placeholder="<?= lang('name') ?>"
+                value="{{ !empty($lang->language_name) ? $lang->language_name : '' }}">
+        </div>
+
+        <div class="form-group">
+            <label>
+                <?= !empty(lang('slug')) ? lang('slug') : 'Language Slug' ?>
+                <i class="fa fa-info-circle" title="@lang('slug_info')"></i>
+            </label>
+            <input type="text" name="slug" class="form-control" placeholder="Language Slug"
+                value="{{ !empty($lang->slug) ? $lang->slug : '' }}">
+        </div>
+        <div class="form-group">
+            <label><?= !empty(lang('direction')) ? lang('direction') : 'Direction' ?></label>
+            <div class="">
+                <select name="direction" id="direction" class="form-control">
+                    <option value="ltr" {{ isset($lang->direction) && $lang->direction == 'ltr' ? 'selected' : '' }}>
+                        @lang('ltr')
+                        (@lang('left_to_right'))
+                    </option>
+                    <option value="rtl" {{ isset($lang->direction) && $lang->direction == 'rtl' ? 'selected' : '' }}>
+                        @lang('rtr')
+                        (@lang('right_to_left'))
+                    </option>
+                </select>
+            </div>
+        </div>
+        <?= __footer(['hidden:id' => $lang->id ?? 0]) ?>
+    @endforeach
 @endsection

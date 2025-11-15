@@ -16,7 +16,7 @@ if (!function_exists('__request')) {
      *
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    function __request($status = 0, string $msg = '', string $url = '', array $extra = [])
+    function __request($status = 0, string|array $msg = '', string $url = '', array $extra = [])
     {
         /** @var Request $request */
         $request = request();
@@ -90,14 +90,31 @@ if (!function_exists('__header')) {
 
 
 if (!function_exists('__footer')) {
-    function __footer($isBack = false, $url = null)
+    function __footer($param = [])
     {
         $data = [];
-        $data['isBack'] = $isBack;
-        $data['url'] = $url;
-        return view('backend.sidebar.sidebar_footer', compact('data'));
+        $data['param'] = $param;
+        return view('backend.sidebar.sidebar_footer', $data);
     }
 }
+
+
+
+if (!function_exists('__startForm')) {
+    function __startForm($url = '', $method = '')
+    {
+        $data =  '<form action="' . $url . '" method="' . (!empty($method) ? $method : 'get') . '" enctype="multipart/form-data" onsubmit="formSubmit(event,this)" class="formSubmit">';
+        return $data;
+    }
+}
+
+if (!function_exists('__endForm')) {
+    function __endForm()
+    {
+        return '</form>';
+    }
+}
+
 
 
 if (!function_exists('__submitBtn')) {
@@ -149,9 +166,6 @@ if (!function_exists('__addBtn')) {
 if (!function_exists('__status')) {
     function __status($id, $status, $table)
     {
-        // $id = html_escape($id);
-        // $status = html_escape($status);
-        // $table = html_escape($table);
 
         $badge_class = $status == 1 ? 'badge-success' : 'badge-danger';
         $icon_class = $status == 1 ? 'fa-check' : 'fa-ban';
@@ -166,7 +180,19 @@ if (!function_exists('__status')) {
     }
 }
 
-
+if (!function_exists('duration_type')) {
+    function duration_type()
+    {
+        return [
+            'trial' => 'Trial',
+            'monthly' => 'Monthly',
+            'yearly' => 'Yearly',
+            'lifetime' => 'Lifetime',
+            'free' => 'Free',
+            'days' => 'Days',
+        ];
+    }
+}
 
 if (!function_exists('__getStatus')) {
     function __getStatus($status, $is_active = false)
@@ -324,18 +350,11 @@ if (!function_exists('localizedRoute')) {
 }
 
 
-if (!function_exists('__vegType')) {
-	function __vegType($row, $is_text = false, $type = 'round')
-	{
-		$html = '';
-		if (isset($row->veg_type) && !empty($row->veg_type)) {
-			if ($is_text == true) :
-				$html .= '<span class="vegType ' . $type . ' ' . $row->veg_type . '"> <span></span>' . __($row->veg_type == 'nonveg' ? 'non_vegetarian' : 'vegetarian') . "</span>";
-			else :
-				$html .= '<span data-title="' . __($row->veg_type == 'nonveg' ? 'non_vegetarian' : 'vegetarian') . '" data-toggle="tooltip" class="vegType ' . $type . ' ' . $row->veg_type . '"><span></span></span>';
-			endif;
-		}
 
-		return $html;
-	}
+if (!function_exists('media_files')) {
+    function media_files($name = 'image', $type = 'single', $value = '')
+    {
+
+        return view('media_layouts/upload_file', ['name' => $name, 'type' => $type, 'value' => $value, 'isHide' => true]);
+    }
 }

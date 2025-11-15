@@ -1,21 +1,17 @@
 <?php
 
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\FrontendController;
-use App\Http\Controllers\Admin\LanguageController;
+use App\Http\Controllers\MediaFileController;
+use App\Http\Controllers\Admin\ModuleController;
+use App\Http\Controllers\admin\PackageController;
+use App\Http\Controllers\admin\LanguageController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Vendor\DashboardController as VendorDashboardController;
-use App\Http\Controllers\Vendor\OrderController;
-use App\Http\Controllers\Vendor\PagesController;
-use App\Http\Controllers\Vendor\ProductsController;
-use App\Http\Controllers\Vendor\ReportController;
 use App\Http\Controllers\Vendor\SettingsController;
-use App\Http\Controllers\Vendor\StaffController;
-use Illuminate\Support\Facades\App;
-
 
 Route::get('/assets/plugins/commoncss.php', function () {
     // Make sure to set CSS header
@@ -51,52 +47,51 @@ if (!function_exists('registerLocalizedRoutes')) {
         localizedRoute('/registration', [AuthController::class, 'registration'], 'register');
         localizedRoute('/weblogin', [AuthController::class, 'weblogin'], 'weblogin');
 
+
+
         Route::middleware(['auth:sanctum'])->group(function () {
             localizedRoute('/admin/dashboard', [DashboardController::class, 'index'], 'dashboard.index');
             localizedRoute('/admin/language-list', [LanguageController::class, 'language_list'], 'language-list');
             localizedRoute('/admin/language-data', [LanguageController::class, 'language_data'], 'language-data');
+
+
+            //post
             localizedRoute('/admin/add_language_data', [LanguageController::class, 'add_language_data'], 'add_language_data');
+            localizedRoute('/admin/add_new_language', [LanguageController::class, 'add_new_language'], 'add_new_language');
+            localizedRoute('/admin/add_all_language_data/{slug}', [LanguageController::class, 'add_all_language_data'], 'add_all_language_data');
 
-            // Vendor Area Start
 
-            localizedRoute('/vendor/dashboard', [VendorDashboardController::class, 'index'], 'vendor_dashboard.index');
-            localizedRoute('/vendor/whatsapp-order', [VendorDashboardController::class, 'whatsapp_order'], 'whatsapp_order.index');
-            localizedRoute('/vendor/subscriptions', [VendorDashboardController::class, 'subscriptions'], 'subscriptions.index');
-            localizedRoute('/vendor/subscription-list', [VendorDashboardController::class, 'subscription_list'], 'subscription_list.index');
+            //package
+            localizedRoute('/admin/package_list', [PackageController::class, 'index'], 'package_list');
+            localizedRoute('/admin/feature-list', [PackageController::class, 'feature_list'], 'feature_list');
+            localizedRoute('/admin/add_new_feature', [PackageController::class, 'add_new_feature'], 'add_new_feature');
 
-            localizedRoute('/vendor/order-list', [OrderController::class, 'order_list'], 'order_list.index');
-            localizedRoute('/vendor/all-orders-list', [OrderController::class, 'all_order_list'], 'all_order_list.index');
-            localizedRoute('/vendor/order-details/{order_id}', [OrderController::class, 'order_details'], 'order_details.index');
 
-            localizedRoute('/vendor/settings', [SettingsController::class, 'index'], 'settings.index');
-            localizedRoute('/vendor/settings/general', [SettingsController::class, 'general'], 'settings_general.index');
-            localizedRoute('/vendor/settings/email-settings', [SettingsController::class, 'email_settings'], 'email_settings.index');
-            localizedRoute('/vendor/settings/apperence', [SettingsController::class, 'apperence'], 'apperence.index');
-            localizedRoute('/vendor/settings/available-days', [SettingsController::class, 'available_days'], 'available_days.index');
-            localizedRoute('/vendor/settings/payment-settings', [SettingsController::class, 'payment_settings'], 'payment_settings.index');
-            localizedRoute('/vendor/settings/slider', [SettingsController::class, 'slider'], 'slider.index');
-            localizedRoute('/vendor/settings/qrcode', [SettingsController::class, 'qrcode'], 'qrcode.index');
-            localizedRoute('/vendor/settings/order-types', [SettingsController::class, 'order_types'], 'order_types.index');
-            localizedRoute('/vendor/settings/order-type-settings/cod', [SettingsController::class, 'order_type_settings'], 'order_type_settings.index');
-            localizedRoute('/vendor/settings/order-configuration', [SettingsController::class, 'order_config'], 'order_config.index');
-            localizedRoute('/vendor/settings/item-configuration', [SettingsController::class, 'item_config'], 'item_config.index');
-            localizedRoute('/vendor/settings/tax-configuration', [SettingsController::class, 'tax_config'], 'tax_config.index');
+            localizedRoute('/admin/create-package', [PackageController::class, 'create_package'], 'create-package');
 
-            localizedRoute('/vendor/products', [ProductsController::class, 'index'], 'products.index');
-            localizedRoute('/vendor/products/create-product', [ProductsController::class, 'create_product'], 'create_product.index');
-            localizedRoute('/vendor/products/addons/{id}', [ProductsController::class, 'addons'], 'addon.index');
-            localizedRoute('/vendor/products/categories', [ProductsController::class, 'category_list'], 'categories.index');
-            localizedRoute('/vendor/products/subcategories', [ProductsController::class, 'subcategory_list'], 'subcategories.index');
-            localizedRoute('/vendor/products/allergens', [ProductsController::class, 'allergen_list'], 'allergens.index');
-            localizedRoute('/vendor/products/addons-library', [ProductsController::class, 'addons_library'], 'addons_library.index');
+            localizedRoute('/admin/edit-package/{slug}', [PackageController::class, 'edit_package'], 'edit-package');
 
-            localizedRoute('/vendor/customer-list', [StaffController::class, 'customer_list'], 'customer_list.index');
 
-            localizedRoute('/vendor/reports/item-reports', [ReportController::class, 'item_reports'], 'item_reports.index');
-            localizedRoute('/vendor/reports/order-reports', [ReportController::class, 'order_reports'], 'order_reports.index');
+            localizedRoute('/admin/savePackage', [PackageController::class, 'savePackage'], 'savePackage');
 
-            localizedRoute('/vendor/cookies', [PagesController::class, 'cookies'], 'cookies.index');
-            localizedRoute('/vendor/terms', [PagesController::class, 'terms'], 'terms.index');
+
+
+            localizedRoute('/admin/module', [ModuleController::class, 'index'], 'module');
+            localizedRoute('/admin/module/add_order_types', [ModuleController::class, 'add_order_types'], 'add_order_types');
+
+            localizedRoute('/admin/module/add_module_features', [ModuleController::class, 'add_module_features'], 'add_module_features');
+
+            localizedRoute('/admin/module/add_new_module', [ModuleController::class, 'add_new_module'], 'add_new_module');
+
+
+            localizedRoute('/media/show', [MediaFileController::class, 'index'], 'show');
+            localizedRoute('/media/save', [MediaFileController::class, 'upload'], 'save');
+            localizedRoute('/media/delete', [MediaFileController::class, 'delete'], 'delete');
+            localizedRoute('/media/select', [MediaFileController::class, 'select'], 'select');
+
+
+
+            localizedRoute('/admin/settings', [SettingsController::class, 'index'], 'settings');
         });
     }
 }
@@ -114,6 +109,8 @@ if ($urlStyle === 'suffix') {
 } else {
     registerLocalizedRoutes();
 }
+
+//Backend
 
 // Route::get('/login', [AuthController::class, 'index'])->name('login');
 // Route::get('/admin', [AuthController::class, 'index'])->name('login');

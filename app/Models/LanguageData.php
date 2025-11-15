@@ -15,11 +15,7 @@ class LanguageData extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = [
-        'locale',
-        'key',
-        'value',
-    ];
+    protected $guarded = [];
 
     /**
      * Automatically clear cache for the locale
@@ -44,41 +40,41 @@ class LanguageData extends Model
      * @param  bool  $fallback
      * @return string|null
      */
-    public static function getValue(string $key, ?string $locale = null, bool $fallback = true): ?string
-    {
-        $locale = $locale ?? app()->getLocale();
+    // public static function getValue(string $key, ?string $locale = null, bool $fallback = true): ?string
+    // {
+    //     $locale = $locale ?? app()->getLocale();
 
-        $translations = Cache::rememberForever("lang_{$locale}", function () use ($locale) {
-            return self::where('locale', $locale)->pluck('value', 'key')->toArray();
-        });
+    //     $translations = Cache::rememberForever("lang_{$locale}", function () use ($locale) {
+    //         return self::where('locale', $locale)->pluck('value', 'key')->toArray();
+    //     });
 
-        // Return translation or fallback to default locale if enabled
-        if (isset($translations[$key])) {
-            return $translations[$key];
-        }
+    //     // Return translation or fallback to default locale if enabled
+    //     if (isset($translations[$key])) {
+    //         return $translations[$key];
+    //     }
 
-        if ($fallback && $locale !== config('app.locale')) {
-            $fallbackTranslations = Cache::rememberForever("lang_" . config('app.locale'), function () {
-                return self::where('locale', config('app.locale'))->pluck('value', 'key')->toArray();
-            });
+    //     if ($fallback && $locale !== config('app.locale')) {
+    //         $fallbackTranslations = Cache::rememberForever("lang_" . config('app.locale'), function () {
+    //             return self::where('locale', config('app.locale'))->pluck('value', 'key')->toArray();
+    //         });
 
-            return $fallbackTranslations[$key] ?? null;
-        }
+    //         return $fallbackTranslations[$key] ?? null;
+    //     }
 
-        return null;
-    }
+    //     return null;
+    // }
 
     /**
      * Bulk refresh all cached translations (for admin panel or console command).
      */
-    public static function refreshAllCaches(): void
-    {
-        $locales = self::distinct()->pluck('locale');
-        foreach ($locales as $locale) {
-            Cache::forget("lang_{$locale}");
-            Cache::rememberForever("lang_{$locale}", function () use ($locale) {
-                return self::where('locale', $locale)->pluck('value', 'key')->toArray();
-            });
-        }
-    }
+    // public static function refreshAllCaches(): void
+    // {
+    //     $locales = self::distinct()->pluck('locale');
+    //     foreach ($locales as $locale) {
+    //         Cache::forget("lang_{$locale}");
+    //         Cache::rememberForever("lang_{$locale}", function () use ($locale) {
+    //             return self::where('locale', $locale)->pluck('value', 'key')->toArray();
+    //         });
+    //     }
+    // }
 }

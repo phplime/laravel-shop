@@ -5,16 +5,19 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Services\AuthService;
 use App\Http\Controllers\Controller;
+use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
     protected $authService;
+    protected $baseRepo;
 
-    public function __construct(AuthService $authService)
+    public function __construct(AuthService $authService, BaseRepository $baseRepo)
     {
         $this->authService = $authService;
+        $this->baseRepo = $baseRepo;
     }
 
     public function index()
@@ -114,5 +117,47 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
         return response()->json(['message' => 'Logged out']);
+    }
+
+    public function changeStatus(Request $request)
+    {
+        // Validate request
+        $validated = $request->validate([
+            'id' => 'required|integer',
+            'table' => 'required|string',
+            'status' => 'required|in:0,1',
+        ]);
+
+        $dataStatus = (int) $validated['status'];
+
+        try {
+            $update = $this->baseRepo->update(
+                $validated['id'],
+                ['status' => $dataStatus],
+                $validated['table']
+            );
+
+            if ($update) {
+                return response()->json([
+                    'st' => 1,
+                    'value' => $dataStatus,
+                    'msg' => 'Status updated successfully',
+                ]);
+            } else {
+                return response()->json([
+                    'st' => 0,
+                    'value' => $dataStatus,
+                    'msg' => 'Failed to update status. Record not found or no changes made.',
+                ]);
+            }
+        } catch (\Exception $e) {
+            // Catch unexpected errors and show proper error info
+            return response()->json([
+                'st' => 0,
+                'value' => $dataStatus,
+                'msg' => 'Something went wrong while updating status.',
+                'error' => $e->getMessage(), // ⚠️ For debugging; remove in production
+            ], 500);
+        }
     }
 }

@@ -47,17 +47,14 @@
                  Ajax Message // inline-message
     ----------------------------------------------*/
     window.ajax_msg = function (msg, st) {
-        // setTimeout(function(){ $('form').removeClass('submit_form'); jQuery(".ajax_submit").fadeOut()}, 1000);
-
-        //setTimeout(function(){ $(".errorMsg").fadeIn().html(`${msg}`);}, 1000);
-
-
         var alertType, heading, icon = '';
-        if (st == 1) {
+
+        // Detect alert type
+        if (st == 1 || st == 'success') {
             alertType = 'success';
             heading = 'Success';
             icon = '<i class="icofont-wink-smile"></i>';
-        } else if (st == 0) {
+        } else if (st == 0 || st == 'error') {
             icon = '<i class="icofont-sad"></i>';
             alertType = 'danger';
             heading = 'Sorry';
@@ -71,25 +68,34 @@
             icon = '<i class="icofont-exclamation-tringle"></i>';
         }
 
+        // 🧠 Format message nicely
+        if (Array.isArray(msg)) {
+            // If backend sends an array of errors
+            msg = msg.map(m => `<div>${m}</div>`).join('');
+        } else if (typeof msg === 'string') {
+            // If backend sends comma-separated or newline-separated string
+            msg = msg.replaceAll(',', '<br>').replaceAll('\n', '<br>');
+        }
+
         setTimeout(() => {
             $(".errorMsg").fadeIn().html(`
-			<div class="custom_alert alert alert-${alertType} alert-dismissible fade show" role="alert">
-				  <strong> ${icon} &nbsp; ${heading}</strong>
-				  <div class="msgBody">
-				  <div>${msg}</div>
-				  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-				    <span aria-hidden="true">&times;</span>
-				  </button></div>
-				</div>
-			`);
+            <div class="custom_alert alert alert-${alertType} alert-dismissible fade show" role="alert">
+                <strong>${icon} &nbsp; ${heading}</strong>
+                <div class="msgBody">${msg}</div>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        `);
             scrollToActiveElement('.errorMsg');
         }, 100);
 
-
+        // Auto-hide after some time
         setTimeout(() => {
             $('.errorMsg').fadeOut();
-        }, 5000);
-    }
+        }, 10000); // 10 seconds
+    };
+
 
     function getType(type) {
         if (type == 'success' || type == 1) {
@@ -196,6 +202,7 @@
 
                 response = response.data;
 
+
                 if (response.st == 1 || response.success == true) {
                     MSG(response.st, response.msg);
                     setTimeout(() => {
@@ -254,8 +261,23 @@
             .catch(function (error) {
                 console.error('Error:', error);
                 updateProgress(0); // Reset progress on error
-                const errorMessage = error.response ? error.response.data : 'An error occurred.';
+
+                let errorMessage = 'An unexpected error occurred.';
+                if (error.response) {
+                    if (error.response.data?.message) {
+                        // Laravel Exception message
+                        errorMessage = error.response.data.message;
+                    } else if (typeof error.response.data === 'string') {
+                        // HTML or raw error string
+                        errorMessage = error.response.data;
+                    }
+                }
+
+                // Display error visibly
                 ajax_msg(errorMessage, 0);
+                $('.errorMsg').html(`<div class="alert alert-danger">${errorMessage}</div>`);
+
+                scrollToActiveElement('.errorMsg');
 
                 setTimeout(() => {
                     submitBtn(formBtn, false);
@@ -392,6 +414,7 @@
         axios.get(url)
             .then(function (response) {
                 setTimeout(() => {
+                    console.log(response.data);
                     $('#mainContent').html(response.data);
                 }, 2000);
             })
@@ -498,7 +521,7 @@
 
         var currentStatus = $(setData).data('status');
         var newStatus = 1 - currentStatus;
-        var endpointUrl = addLangToUrl(`${base_url}admin/auth/change_status`);
+        var endpointUrl = addLangToUrl(`${base_url}api/change-status`);
 
 
         var postData = {
