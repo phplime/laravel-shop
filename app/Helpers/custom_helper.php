@@ -1,9 +1,15 @@
 <?php
 
+use App\Repositories\BaseRepository;
+use App\Services\SettingsService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Session;
+
+
 
 if (!function_exists('__request')) {
     /**
@@ -354,7 +360,139 @@ if (!function_exists('localizedRoute')) {
 if (!function_exists('media_files')) {
     function media_files($name = 'image', $type = 'single', $value = '')
     {
+        $selectedImages = collect();
 
-        return view('media_layouts/upload_file', ['name' => $name, 'type' => $type, 'value' => $value, 'isHide' => true]);
+        if (!empty($value)) {
+            $ids = array_filter(array_map('trim', explode(',', $value)), 'is_numeric');
+            if (!empty($ids)) {
+                $selectedImages = \App\Models\MediaFile::whereIn('id', $ids)
+                    ->orderBy('id', 'desc')
+                    ->get();
+            }
+        }
+
+        return view('media_layouts/upload_file', [
+            'name' => $name,
+            'type' => $type,
+            'value' => $value,
+            'isHide' => true,
+            'selectedImages' => $selectedImages,
+        ]);
+    }
+}
+
+
+if (!function_exists('__check')) {
+
+    function __check($data, $raw = false)
+    {
+        $service = app(SettingsService::class);
+
+        if (is_array($data)) {
+            return $service->saveMany($data, $raw);
+        }
+
+        return $service->exists($data);
+    }
+}
+
+if (!function_exists('__settings')) {
+    function __settings($key = null)
+    {
+        $service = app(SettingsService::class);
+        $all = $service->all();
+
+        if ($key === null) {
+            return (object) $all;
+        }
+
+        return $all[$key] ?? '';
+    }
+}
+
+
+if (!function_exists('__config')) {
+    function __config($key)
+    {
+        if (Schema::hasTable('settings')) :
+            return \App\Models\Settings::where('key', $key)->value('value');
+        else :
+            return [];
+        endif;
+    }
+}
+
+if (!function_exists('country')) {
+
+    function country($id)
+    {
+        if (empty($id)) {
+            return null;
+        }
+        $repo = app(BaseRepository::class);
+        $data = $repo->find($id, 'country_list');
+        if (!empty($data)) {
+            return (object) [
+                'name' => $data->name,
+                'code' => strtolower($data->iso2),
+                'currency_code' => strtoupper($data->currency_code),
+                'dial_code' => $data->dial_code,
+                'currency_icon' => $data->currency_symbol,
+                'flag' => '<i class="fi fi-' . strtolower($data->iso2) . '"></i>',
+
+            ];
+        } else {
+            return (object) [
+                'name' => 'United States',
+                'code' => 'us',
+                'currency_code' => 'USD',
+                'dial_code' => '1',
+                'currency_icon' => '$',
+                'flag' => "<i class='fi fi-us'></i>",
+
+            ];
+        }
+    }
+}
+
+
+if (!function_exists('__isNew')) {
+    function __isNew($version)
+    {
+        $current_version = __settings('version');
+        if ($current_version == $version) {
+            return '<span class="ab-position custom_badge danger-light-active">' . __("new") . '</span>';
+        }
+    }
+}
+
+
+
+if (!function_exists('__adminMenu')) {
+    function __adminMenu($data)
+    {
+        $menuHtml = '';
+        $menuHtml .= '<div class="__adminMenuWrapper">';
+        $menuHtml .= '<div class="__adminMenu">';
+        $menuHtml .= '<ul>';
+
+        foreach ($data as $menuItem) {
+            $icon = !empty($menuItem['icon']) ? '<i class="' . $menuItem['icon'] . '"></i>' : '';
+            $activeClass = !empty($menuItem['page_title']) &&
+                !empty($menuItem['_title']) &&
+                trim(strtolower($menuItem['page_title'])) == trim(strtolower($menuItem['_title']))
+                ? 'active'
+                : '';
+
+            $menuHtml .= '<li class="' . $activeClass . '">';
+            $menuHtml .= '<a href="' . url($menuItem['url']) . '"> ' . $icon . ' ' . $menuItem['title'] . ' </a>';
+            $menuHtml .= '</li>';
+        }
+
+        $menuHtml .= '</ul>';
+        $menuHtml .= '</div>';
+        $menuHtml .= '</div>';
+
+        echo $menuHtml;
     }
 }

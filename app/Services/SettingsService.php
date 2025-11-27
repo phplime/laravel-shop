@@ -2,67 +2,65 @@
 
 namespace App\Services;
 
-use App\Models\Setting;
+use App\Models\Settings;    
+use Illuminate\Support\Facades\Cache;
 
-class SettingService
+class SettingsService
 {
+    protected $cacheKey = 'admin_settings';
+
+    /**
+     * Get all settings (cached)
+     */
+    public function all(): array
+    {
+        return Cache::rememberForever($this->cacheKey, function () {
+            return Settings::pluck('value', 'key')->toArray();
+        });
+    }
+
+    /**
+     * Get single setting
+     */
+    public function get(string $key, $default = '')
+    {
+        $settings = $this->all();
+        return $settings[$key] ?? $default;
+    }
+
+    /**
+     * Insert or update many settings (CI: __check)
+     */
+    public function saveMany(array $data): bool
+    {
+        foreach ($data as $key => $value) {
+            Settings::updateOrCreate(
+                ['key' => $key],
+                ['value' => $value]
+            );
+        }
+
+        // CI behavior: After saving → Rebuild cache
+        $this->rebuildCache();
+
+        return true;
+    }
+
     /**
      * Check if a setting key exists
      */
     public function exists(string $key): bool
     {
-        return Setting::where('key', $key)->exists();
+        $settings = $this->all();
+        return array_key_exists($key, $settings);
     }
 
-
     /**
-     * Get setting value by key
+     * Rebuild cache manually (CI: __updateCache)
      */
-    public function get(string $key, $default = '')
+    public function rebuildCache(): void
     {
-        return Setting::where('key', $key)->value('value') ?? $default;
-    }
-
-
-    /**
-     * Update existing key
-     */
-    public function update(string $key, array $data)
-    {
-        return Setting::where('key', $key)->update($data);
-    }
-
-
-    /**
-     * Insert new key
-     */
-    public function insert(array $data)
-    {
-        return Setting::create($data);
-    }
-
-
-    /**
-     * Main function like __check() from CI
-     * Inserts or updates multiple settings
-     */
-    public function saveMany(array $data, $useRaw = false)
-    {
-        foreach ($data as $key => $value) {
-
-            $exists = $this->exists($key);
-
-            $payload = ['key' => $key, 'value' => $value];
-
-            if ($exists) {
-                // update
-                Setting::where('key', $key)->update($payload);
-            } else {
-                // insert
-                Setting::create($payload);
-            }
-        }
-
-        return true;
+        $settings = Settings::pluck('value', 'key')->toArray();
+        Cache::forever($this->cacheKey, $settings);
     }
 }

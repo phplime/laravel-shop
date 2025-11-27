@@ -11,7 +11,7 @@ use App\Http\Controllers\Admin\ModuleController;
 use App\Http\Controllers\admin\PackageController;
 use App\Http\Controllers\admin\LanguageController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Vendor\SettingsController;
+use App\Http\Controllers\Admin\SettingsController;
 
 Route::get('/assets/plugins/commoncss.php', function () {
     // Make sure to set CSS header
@@ -92,6 +92,10 @@ if (!function_exists('registerLocalizedRoutes')) {
 
 
             localizedRoute('/admin/settings', [SettingsController::class, 'index'], 'settings');
+
+            localizedRoute('/admin/settings/preferences', [SettingsController::class, 'preferences'], 'preferences');
+
+            localizedRoute('/admin/settings/add_settings', [SettingsController::class, 'add_settings'], 'add_settings');
         });
     }
 }

@@ -109,6 +109,7 @@ class BaseRepository
      */
     public function find(int $id, string $table, array $columns = ['*'])
     {
+    
         $this->validateTable($table);
         return DB::table($table)->select($columns)->find($id);
     }
