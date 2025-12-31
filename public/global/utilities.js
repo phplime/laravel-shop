@@ -5,7 +5,7 @@
         if (getType(type) == 'success') {
             new Notify({
                 status: 'success',
-                title: 'success',
+                title: 'Success',
                 text: `${msg}`,
                 effect: 'slide',
                 speed: 300,
@@ -22,7 +22,7 @@
         } else if (getType(type) == 'error') {
             new Notify({
                 status: 'error',
-                title: 'error',
+                title: 'Error',
                 text: `${msg}`,
                 effect: 'slide',
                 speed: 300,

@@ -22,45 +22,66 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach ($slider_list as $key => $row)
                             <tr>
-                                <td>1</td>
+                                <td>{{ $key+1 }}</td>
                                 <td>
-                                    <img src="{{ asset('assets/backend/images/default-612x612.jpg') }}" alt="allergen_image"
+                                    <img src="<?= __image($row->thumb, 'thumb') ?>" alt="allergen_image"
                                         class="avatar round">
                                 </td>
                                 <td>
-                                    slider
+                                    {{ $row->title }}
                                 </td>
-                                <td> <?= __status(1, 1, 'vendor_slider_list') ?></td>
+                                <td> <?= __status($row->id, $row->status, 'vendor_slider_list') ?></td>
                                 <td class="">
                                     <div class="btnGroup">
-                                        <?= __editBtn('', true, ['is_sidebar' => 1, 'class' => 'edit_slider_1']) ?>
-                                        <?= __deleteBtn(1, 'vendor_slider_list', true) ?>
+                                        <?= __editBtn('', true, ['is_sidebar' => 1, 'class' => 'edit_slider_'.$row->id]) ?>
+                                        <?= __deleteBtn($row->id, 'vendor_slider_list', true) ?>
                                     </div>
                                 </td>
                             </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
-
             </div>
         </div>
     </div>
 
 
-    <?= __header(__('add_new'), 'vendor/settings/add_slider', 'add_slider') ?>
+    <!-- Add Slider Area -->
+    <?= __header(__('add_new'), url('vendor/settings/add_slider'), 'add_slider') ?>
+        <div class="form-group">
+            <label><?= __('title') ?></label>
+            <input type="text" name="title" class="form-control" value="">
+        </div>
+        <div class="form-group">
+            <label><?= __('image') ?></label>
+            <div class="mb-4">
+                <?= media_files('image', 'single', ''); ?>
+            </div>
+        </div>
+        <?= hidden('id', 0) ?>
+    <?= __footer() ?>
 
-    <div class="form-group">
-        <label><?= __('title') ?></label>
-        <input type="text" name="title" class="form-control" value="">
-    </div>
-    <div class="form-group">
-        <label><?= __('image') ?></label>
-        <div class="mb-4">
-            {{-- < media_files('image', 'single', ''); ?> --}}
+
+    <!-- Edit Slider Area -->
+    @foreach ($slider_list as $row)
+    <?= __header(__('edit'), url('vendor/settings/add_slider'), 'edit_slider_' . $row->id); ?>
+
+        <div class="form-group">
+            <label><?= __('title'); ?></label>
+            <input type="text" name="title" class="form-control" value="<?= __isset($row, 'title') ?>">
         </div>
 
-    </div>
-    <?= hidden('id', 0) ?>
-    <?= __footer() ?>
+        <div class="form-group">
+            <label><?= __('image'); ?></label>
+            <div class="mb-4">
+                <?= media_files('image', 'single', __isset($row, 'thumb')); ?>
+            </div>
+        </div>
+        <?= hidden('id', __isset($row, 'id')); ?>
+    <?= __footer(); ?>
+    @endforeach
+
 @endsection

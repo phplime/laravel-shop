@@ -25,32 +25,32 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @foreach ($addon_list as $key => $row)
 
-                                    <tr id="hide_1">
-                                        <td>1</td>
-                                        <td>
-                                            <img src="{{ asset('assets/backend/images/default-612x612.jpg') }}"
-                                                alt="allergen_image" class="avatar round">
-                                        </td>
-                                        <td>
-                                            <div class="langItem">
-                                                <span data-title="English" data-toggle="tooltip" data-original-title=""
-                                                    title=""><i class="fi fi-us"></i></span>
-                                                <span class="title-text">Butter</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            $23
-                                        </td>
-                                        <td>4</td>
-                                        <td> <?= __status(1, 1, 'vendor_addon_library') ?></td>
-                                        <td class="">
-                                            <div class="btnGroup">
-                                                <?= __editBtn('', true, ['is_sidebar' => 1, 'class' => 'edit_1']) ?>
-                                                <?= __deleteBtn(1, 'vendor_addon_library', true) ?>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                        <?php $langData = __langData($row->id, 'addon_id', 'vendor_addon_library_ln') ?>
+
+                                        <tr id="hide_1">
+                                            <td>{{ $key+1 }}</td>
+                                            <td>
+                                                <img src="<?= __image($row->images, 'thumb') ?>"
+                                                    alt="allergen_image" class="avatar round">
+                                            </td>
+                                            <td>
+                                                <?= __names($langData, 'addon_name', true) ?>
+                                            </td>
+                                            <td>
+                                                $ {{ $row->price }}
+                                            </td>
+                                            <td>{{ $row->max_select_qty }}</td>
+                                            <td> <?= __status($row->id, $row->status, 'vendor_addon_library') ?></td>
+                                            <td class="">
+                                                <div class="btnGroup">
+                                                    <?= __editBtn('', true, ['is_sidebar' => 1, 'class' => 'edit_'.$row->id]) ?>
+                                                    <?= __deleteBtn($row->id, 'vendor_addon_library', true) ?>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -60,79 +60,97 @@
         </div>
     </div>
 
+    <!-- Add Sidebar Area -->
+    <?= __header(__('add_new'), url('vendor/products/add-addons'), 'add') ?>
 
-    <?= __header(__('add_new'), url('vendor/products/add_addons'), 'add') ?>
+        @foreach (shop_language() as $lang)
+        <div class="form-group">
+            <label><?= __('addon_name') ?> <?= country($lang->country_id)->flag ?> <?= __required() ?></label>
+            <input type="text" name="addon_name[<?= $lang->slug ?>]" class="form-control" value="">
+        </div>
+        @endforeach
 
-
-    <div class="form-group">
-        <label><?= __('addon_name') ?> <i class="fi fi-us"></i></label>
-        <input type="text" name="addon_name[en]" class="form-control" value="">
-    </div>
-
-    <div class="form-group ">
-        <label><?= __('price') ?></label>
-        <div class="ci-input-group input-group-prepand">
-            <input type="text" name="price" class="form-control number" placeholder="<?= __('current_price') ?>"
-                value="">
-            <div class="input-group">
-                <span>
-                    $
-                </span>
+        <div class="form-group ">
+            <label><?= __('price') ?></label>
+            <div class="ci-input-group input-group-prepand">
+                <input type="text" name="price" class="form-control number" placeholder="<?= __('current_price') ?>"
+                    value="">
+                <div class="input-group">
+                    <span>
+                        $
+                    </span>
+                </div>
             </div>
         </div>
-    </div>
 
-
-    <div class="form-group">
-        <label><?= __('max_quantity') ?></label>
-        <input type="number" name="max_select_qty" class="form-control only_number" value="0">
-    </div>
-
-    <div class="form-group">
-        <label><?= __('image') ?></label>
-        <div class="mb-4">
-            {{-- <?= media_files('image', 'single', '') ?> --}}
+        <div class="form-group">
+            <label><?= __('max_quantity') ?></label>
+            <input type="number" name="max_select_qty" class="form-control only_number" value="0">
         </div>
 
-    </div>
-    <?= hidden('id', 0) ?>
+        <div class="form-group">
+            <label><?= __('image') ?></label>
+            <div class="mb-4">
+                <?= media_files('image', 'single', '') ?>
+            </div>
+
+        </div>
+        <?= hidden('id', 0) ?>
     <?= __footer() ?>
 
 
 
+    <!-- Edit Sidebar Area -->
+    @foreach ($addon_list as $row)
 
-    <?= __header(__('edit'), url('vendor/products/add_addons'), 'edit_1') ?>
+        <?php $lang_names = __langData($row->id, 'addon_id', 'vendor_addon_library_ln') ?>
 
-    <div class="form-group">
-        <label><?= __('addon_name') ?> <i class="fi fi-us"></i></label>
-        <input type="text" name="addon_name[en]" class="form-control" value="">
-    </div>
+        <?= __header(__('edit'), url('vendor/products/add-addons'), 'edit_'.$row->id) ?>
 
-    <div class="form-group ">
-        <label><?= __('price') ?></label>
-        <div class="ci-input-group input-group-prepand">
-            <input type="text" name="price" class="form-control number" placeholder="<?= __('current_price') ?>"
-                value="5">
-            <div class="input-group">
-                <span>
-                    $
-                </span>
+            @foreach (shop_language() as $lang)
+
+            <?php
+                $addon_names = [];
+                if(!empty($lang_names)){
+                    foreach ($lang_names as $value) {
+                        $addon_names[$value->language] = $value->addon_name;
+                    }
+                }
+            ?>
+
+            <div class="form-group">
+                <label><?= __('addon_name') ?> <?= country($lang->country_id)->flag ?> <?= __required() ?></label>
+                <input type="text" name="addon_name[<?= $lang->slug ?>]" class="form-control" value="{{ $addon_names[$lang->slug] }}">
             </div>
-        </div>
-    </div>
+            @endforeach
 
-    <div class="form-group">
-        <label><?= __('max_quantity') ?></label>
-        <input type="number" name="max_select_qty" class="form-control only_number" value="4">
-    </div>
+            <div class="form-group ">
+                <label><?= __('price') ?></label>
+                <div class="ci-input-group input-group-prepand">
+                    <input type="text" name="price" class="form-control number" placeholder="<?= __('current_price') ?>"
+                        value="{{ $row->price }}">
+                    <div class="input-group">
+                        <span>
+                            $
+                        </span>
+                    </div>
+                </div>
+            </div>
 
-    <div class="form-group">
-        <label><?= __('image') ?></label>
-        <div class="mb-4">
-            {{-- <?= media_files('image', 'single', __isset($erow, 'thumb')) ?> --}}
-        </div>
+            <div class="form-group">
+                <label><?= __('max_quantity') ?></label>
+                <input type="number" name="max_select_qty" class="form-control only_number" value="{{ $row->max_select_qty }}">
+            </div>
 
-    </div>
-    <?= hidden('id', 0) ?>
-    <?= __footer() ?>
+            <div class="form-group">
+                <label><?= __('image') ?></label>
+                <div class="mb-4">
+                    <?= media_files('image', 'single', __isset($row, 'thumb')) ?>
+                </div>
+
+            </div>
+            <?= hidden('id', __isset($row, 'id')) ?>
+        <?= __footer() ?>
+    @endforeach
+
 @endsection

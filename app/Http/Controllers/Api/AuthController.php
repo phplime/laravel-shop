@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -88,7 +89,11 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return __request(1, "Login successfull", url("admin/dashboard"));
+        if(Auth::user()->user_role == 'admin'){
+            return __request(1, "Login Successful", url("admin/dashboard"));
+        }else{
+            return __request(1, "Login Successful", url("vendor/dashboard"));
+        }
     }
 
 

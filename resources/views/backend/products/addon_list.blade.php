@@ -26,14 +26,15 @@
         }
     </style>
     <div class="row">
-        <div class="col-md-8 col-lg-7 ">
+        <div class="col-md-8 col-lg-8 ">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title"> <?= !empty(lang('extras')) ? lang('extras') : 'Extras' ?> /
-                        <?= lang('addons') ?></h4>
+                    <h4 class="card-title"> <?= __('extras') ?> /
+                        <?= __('addons') ?></h4>
                     <a href="#addOnModal" data-toggle="modal" class="btn btn-secondary btn-sm"><i class="fa fa-plus"></i>
                         <?= lang('add_new') ?></a>
                 </div>
+                <?php if($get_addons->isNotEmpty()):?>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class='table table-striped table-bordered  data_tables'>
@@ -47,78 +48,105 @@
                                 </tr>
                             </thead>
                             <tbody id="sortable" class="sortable sorting">
-                                <tr id='1'>
-                                    <td class="handle">1</td>
-                                    <td class="handle">pizza</td>
-                                    <td>
-                                        <label class="custom-radio-2"><input type="radio" checked>
-                                            <?= lang('single_select') ?></label>
-                                        {{-- <label class="custom-checkbox"><input type="checkbox" checked> <?= lang('multiple_select') ?></label> --}}
-                                        <div class="mt-5">
-                                            <span class="error">*</span> (<?= __('required') ?>)
-                                            {{-- (<?= __('optional') ?>) --}}
+                                @foreach ($get_addons as $key => $extra)
+                                    <tr id='1'>
+                                        <td class="handle">{{ $key+1 }}</td>
+                                        <td class="handle"><?= __names($extra->names, 'title', true) ?></td>
+                                        <td>
+                                            <?php if ($extra->is_single_select == 1) : ?>
+                                                <label class="custom-radio-2">
+                                                    <input type="radio" checked> <?= lang('single_select') ?>
+                                                </label>
+                                            <?php else: ?>
+                                                <label class="custom-checkbox">
+                                                    <input type="checkbox" checked> <?= lang('multiple_select') ?>
+                                                </label>
+                                            <?php endif; ?>
+                                            <div class="mt-5">
+                                                <?php if($extra->is_required == 1):?>
+                                                    <span class="error">*</span> (<?= __('required') ?>)
+                                                <?php else: ?>
+                                                    (<?= __('optional') ?>)
+                                                <?php endif; ?>
+                                            </div>
 
                                             <div class="mt-5">
-                                                <small>
-                                                    <?= __('select_minimum') ?> 4 <?= __('options') ?>
-                                                    & <?= __('max') ?> 5 <?= __('options') ?>
-                                                </small>
+                                                <?php if ($extra->select_limit > 0) : ?>
+                                                    <small>
+                                                        <?= __('select_minimum') ?> <?= $extra->select_limit == 0 ? 1 : $extra->select_limit; ?> <?= __('options'); ?>
+
+                                                        <?php if ($extra->select_max_limit != 0) : ?>
+                                                            & <?= __('max') ?> <?= $extra->select_max_limit != 0 ? "<b>" . $extra->select_max_limit . "</b>"  : ''; ?> <?= __('options'); ?>
+                                                        <?php endif; ?>
+                                                    </small>
+                                                <?php endif; ?>
                                             </div>
 
                                             <div class="hidden">
-                                                <small>
-                                                    <?= __('max_qty') ?> 4 <?= __('items') ?>
-                                                </small>
+                                                <?php if ($extra->max_qty >= 1) : ?>
+                                                    <small>
+                                                        <?= __('max_qty') ?> <?= $extra->max_qty == 0 ? 1 : $extra->max_qty; ?> <?= __('items'); ?>
+                                                    </small>
+                                                <?php endif; ?>
                                             </div>
-                                    </td>
-                                    <td>
-                                        <table class="table table-striped table-bordered">
-                                            <tr>
-                                                <th>#</th>
-                                                <th><?= lang('name') ?></th>
-                                                <th><?= lang('price') ?></th>
-                                                <th><?= lang('max_qty') ?></th>
-                                                <th><?= lang('action') ?></th>
-                                            </tr>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>pizza</td>
-                                                <td>$45</td>
-                                                <td>4</td>
-                                                <td class="text-center">
-                                                    <a href="javascript:;" onclick="editAssignExtra(`5`,`$34`,`4`)"
-                                                        class="btn btn-info btn-sm"> <i class="fa fa-edit"></i>
-                                                        <?= __('edit') ?></a>
-                                                    <?= __deleteBtn(1, 'item_extra_list', true) ?>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <div class="btnGroup">
-                                            <a href="javascript:;" onclick="addExtraModal(`1`,`pizza`)"
-                                                class="btn btn-secondary btn-sm d-none"><i class="fa fa-plus"></i>
-                                                <?= __('add_new') ?> </a>
+                                        </td>
+                                        <td>
+                                            <?php if(isset($extra->extra_list) && $extra->extra_list->isNotEmpty()):?>
+                                                <table class="table table-striped table-bordered m-0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th><?= lang('name') ?></th>
+                                                            <th><?= lang('price') ?></th>
+                                                            <th><?= lang('max_qty') ?></th>
+                                                            <th><?= lang('action') ?></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach ($extra->extra_list as $key1 => $ext)
+                                                        <tr>
+                                                            <td>{{ $key1+1 }}</td>
+                                                            <td><?= __names($ext->extranames, 'addon_name', true) ?></td>
+                                                            <td>{{ __aExtra($ext, 'price') }}</td>
+                                                            <td><?= __aExtra($ext, 'max_qty') == 0 ? '&#8734' : __aExtra($ext, 'max_qty'); ?> </td>
+                                                            <td class="text-center">
+                                                                <a href="javascript:;" onclick="editAssignExtra(`<?= $ext->item_extra_id ?>`,`<?= $ext->price ?>`,`<?= $ext->max_select_qty ?>`)"
+                                                                    class="btn btn-info btn-sm"> <i class="fa fa-edit"></i>
+                                                                    <?= __('edit') ?></a>
+                                                                <?= __deleteBtn($ext->item_extra_id , 'item_extra_list', true) ?>
+                                                            </td>
+                                                        </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
+                                            <div class="btnGroup">
+                                                <a href="javascript:;" onclick="addExtraModal(`<?= $extra->id ?>`,`<?= __names($extra->names, 'title') ?>`)"
+                                                    class="btn btn-secondary btn-sm d-none"><i class="fa fa-plus"></i>
+                                                    <?= __('add_new') ?> </a>
 
-                                            <a href="javascript:;" onclick="extraListModal(`1`,`pizza`)"
-                                                class="btn btn-secondary btn-sm"><i class="fa fa-plus"></i>
-                                                <?= __('add') ?> </a>
-                                        </div>
-                                        <div class="mt-10 btnGroup">
-                                            <a href="#editExtraTitleModal_1" data-toggle="modal"
-                                                class="btn btn-info btn-sm"><i class="fa fa-edit"></i></a>
-
-                                            <a href="<?= url('admin/menu/delete_addons/1') ?>"
-                                                class="btn btn-danger btn-sm action_btn"
-                                                data-msg="<?= __('want_to_delete') ?>"><i class="fa fa-trash"></i></a>
-                                        </div>
-                                    </td>
-                                </tr>
+                                                <a href="javascript:;" onclick="extraListModal(`<?= $extra->id ?>`,`<?= __names($extra->names, 'title') ?>`)"
+                                                    class="btn btn-secondary btn-sm"><i class="fa fa-plus"></i>
+                                                    <?= __('add') ?> </a>
+                                            </div>
+                                            <div class="mt-10 btnGroup">
+                                                <a href="#editExtraTitleModal_<?= $extra->id ?>" data-toggle="modal"
+                                                    class="btn btn-info btn-sm">
+                                                    <i class="fa fa-edit"></i>
+                                                </a>
+                                                <?= __deleteBtn($extra->id, 'vendor_extra_title_list', true) ?>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                         <a href="javascript:;" data-id="extra_title_list" id="tables"></a>
                     </div>
                 </div>
+                <?php endif; ?>
             </div>
 
         </div> <!-- create_menu_thumb -->
@@ -129,310 +157,329 @@
             </div>
         </div>
 
+    </div>
 
-        <!----------------------------------------------
-                 Add new Extra title
-                ---------------------------------------------->
-        <div id="addOnModal" class="modal fade customModal" role="dialog">
-            <div class="modal-dialog">
-                <form action="<?= url('vendor/products/add_new_extras') ?>" method="post" enctype="multipart/form-data"
-                    onsubmit="formSubmit(event,this)">
-                    <!-- csrf token -->
-                    @csrf
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title"><?= lang('add_new_extra_title') ?></h4>
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="extrasBody">
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label><?= __('title') ?> EN</label>
-                                        <input type="text" name="title[en]" class="form-control" value="">
+
+    <!----------------------------------------------
+                Add new Extra title
+            ---------------------------------------------->
+    <div id="addOnModal" class="modal fade customModal" role="dialog">
+        <div class="modal-dialog">
+            <form action="<?= url('vendor/products/add_new_extras') ?>" method="post" enctype="multipart/form-data"
+                onsubmit="formSubmit(event,this)">
+                <!-- csrf token -->
+                @csrf
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title"><?= lang('add_new_extra_title') ?></h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="extrasBody">
+
+                            <div class="row">
+                                @foreach (shop_language() as $lang)
+                                <div class="form-group col-md-6">
+                                    <label><?= __('title') ?> <?= country($lang->country_id)->flag ?></label>
+                                    <input type="text" name="title[<?= $lang->slug ?>]" class="form-control" value="">
+                                </div>
+                                @endforeach
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    <label for=""><?= __('type') ?></label>
+                                    <div class="">
+                                        <label class="custom-radio">
+                                            <input type="radio" name="is_single_select" value="1" checked>
+                                            <?= __('single_select') ?>
+                                        </label>
+                                        <label class="custom-radio">
+                                            <input type="radio" name="is_single_select"
+                                                value="0"><?= __('multiple_select') ?>
+                                        </label>
                                     </div>
                                 </div>
-                                <div class="row">
+                            </div>
 
-                                    <div class="form-group col-md-12">
-                                        <label for=""><?= lang('type') ?></label>
-                                        <div class="">
-                                            <label class="custom-radio">
-                                                <input type="radio" name="is_single_select" value="1" checked>
-                                                <?= lang('single_select') ?>
-                                            </label>
-
-                                            <label class="custom-radio">
-                                                <input type="radio" name="is_single_select"
-                                                    value="0"><?= lang('multiple_select') ?>
-                                            </label>
-                                        </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label for=""><?= lang('required') ?></label>
+                                    <div class="">
+                                        <label class="custom-checkbox">
+                                            <input type="checkbox" name="is_required" value="1"
+                                                onchange="showLimit(this)"><?= lang('is_required') ?>
+                                        </label>
                                     </div>
-
                                 </div>
 
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label for=""><?= lang('required') ?></label>
+                                <div class="form-group col-md-6 hidden">
+                                    <label for=""><?= lang('max_qty') ?></label>
+                                    <div class="">
+                                        <input type="number" name="max_qty" class="form-control" value="0"
+                                            min="0" placeholder="<?= __('max_qty') ?>">
+                                    </div>
+                                </div>
+                            </div><!-- row -->
+                            <div class="dis_none limit_div" id="">
+                                <div class="row ">
+                                    <div class="form-group col-md-6 ">
+                                        <label for=""><?= lang('select_minimum') ?></label>
                                         <div class="">
-                                            <label class="custom-checkbox">
-                                                <input type="checkbox" name="is_required" value="1"
-                                                    onchange="showLimit(this)"><?= lang('is_required') ?>
-                                            </label>
+                                            <input type="number" name="select_limit" value="1"
+                                                class="form-control number" min="1">
                                         </div>
                                     </div>
-
-                                    <div class="form-group col-md-6 hidden">
-                                        <label for=""><?= lang('max_qty') ?></label>
+                                    <div class="form-group col-md-6 ">
+                                        <label for=""><?= lang('select_max_limit') ?></label>
                                         <div class="">
-                                            <input type="number" name="max_qty" class="form-control" value="0"
-                                                min="0" placeholder="<?= __('max_qty') ?>">
+                                            <input type="number" name="select_max_limit" value="1"
+                                                class="form-control number" min="0">
                                         </div>
                                     </div>
                                 </div><!-- row -->
-                                <div class="dis_none limit_div" id="">
-                                    <div class="row ">
-                                        <div class="form-group col-md-6 ">
-                                            <label for=""><?= lang('select_minimum') ?></label>
-                                            <div class="">
-                                                <input type="number" name="select_limit" value="1"
-                                                    class="form-control number" min="1">
-                                            </div>
-                                        </div>
-                                        <div class="form-group col-md-6 ">
-                                            <label for=""><?= lang('select_max_limit') ?></label>
-                                            <div class="">
-                                                <input type="number" name="select_max_limit" value="1"
-                                                    class="form-control number" min="0">
-                                            </div>
-                                        </div>
-                                    </div><!-- row -->
-                                </div>
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <input type="hidden" name="item_id" value="0">
-                            <button type="submit" class="btn btn-secondary"><?= lang('save') ?></button>
                         </div>
                     </div>
-                </form>
-            </div>
+                    <div class="modal-footer">
+                        <input type="hidden" name="item_id" value="<?= $item_id ?>">
+                        <button type="submit" class="btn btn-secondary"><?= lang('save') ?></button>
+                    </div>
+                </div>
+            </form>
         </div>
+    </div>
 
 
 
+    <!----------------------------------------------
+                Edit Extra title
+                ---------------------------------------------->
+    @foreach ($get_addons as $extra)
+    <div id="editExtraTitleModal_<?= $extra->id ?>" class="modal fade customModal" role="dialog">
+        <div class="modal-dialog">
+            <form action="<?= url('vendor/products/add_new_extras') ?>" method="post" enctype="multipart/form-data"
+                onsubmit="formSubmit(event,this)">
+                <!-- csrf token -->
+                @csrf
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title"><?= lang('edit') ?></h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="extrasBody">
 
-        <!----------------------------------------------
-                  Edit Extra title
-                 ---------------------------------------------->
-        <div id="editExtraTitleModal_1" class="modal fade customModal" role="dialog">
-            <div class="modal-dialog">
-                <form action="<?= url('vendor/products/add_new_extras') ?>" method="post" enctype="multipart/form-data"
-                    onsubmit="formSubmit(event,this)">
-                    <!-- csrf token -->
-                    @csrf
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title"><?= lang('edit') ?></h4>
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="extrasBody">
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label><?= __('title') ?></label>
-                                        <input type="text" name="title[en]" class="form-control" value="en">
+                            <div class="row">
+                                @foreach (shop_language() as $lang)
+
+                                <?php
+                                    $title = [];
+                                    foreach ($extra->names as $key => $value) {
+                                        $title[$value->language] = $value->title;
+                                    }
+                                ?>
+
+                                <div class="form-group col-md-6">
+                                    <label><?= __('title') ?> <?= country($lang->country_id)->flag ?></label>
+                                    <input type="text" name="title[<?= $lang->slug ?>]" class="form-control" value="<?= $title[$lang->slug] ?>">
+                                </div>
+
+                                @endforeach
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    <label for=""><?= lang('type') ?></label>
+                                    <div class="">
+                                        <label class="custom-radio">
+                                            <input type="radio" name="is_single_select" value="1" <?= ($extra->is_single_select == 1) ? 'checked':'' ?> >
+                                            <?= lang('single_select') ?>
+                                        </label>
+                                        <label class="custom-radio">
+                                            <input type="radio" name="is_single_select" value="0" <?= ($extra->is_single_select == 0) ? 'checked':'' ?>>
+                                            <?= lang('multiple_select') ?>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label for=""><?= lang('required') ?></label>
+                                    <div class="">
+                                        <label class="custom-checkbox">
+                                            <input type="checkbox" name="is_required" value="1"
+                                                onchange="showLimit(this)"  <?= ($extra->is_required == 1) ? 'checked':'' ?>>
+                                            <?= lang('is_required') ?>
+                                        </label>
                                     </div>
                                 </div>
 
-                                <div class="row">
-                                    <div class="form-group col-md-12">
-                                        <label for=""><?= lang('type') ?></label>
-                                        <div class="">
-                                            <label class="custom-radio">
-                                                <input type="radio" name="is_single_select" value="1" checked>
-                                                <?= lang('single_select') ?>
-                                            </label>
-                                            <label class="custom-radio">
-                                                <input type="radio" name="is_single_select" value="0">
-                                                <?= lang('multiple_select') ?>
-                                            </label>
-                                        </div>
+                                <div class="form-group col-md-6 hidden">
+                                    <label for=""><?= lang('max_qty') ?></label>
+                                    <div class="">
+                                        <input type="number" name="max_qty" class="form-control" value="<?= $extra->max_qty ?>"
+                                            min="0" placeholder="<?= __('max_qty') ?>">
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label for=""><?= lang('required') ?></label>
+                            <div class=" limit_div <?= ($extra->is_single_select == 1) ? 'hidden':'' ?>">
+                                <div class="row" id="">
+                                    <div class="form-group col-md-6 ">
+                                        <label for=""><?= lang('select_minimum') ?></label>
                                         <div class="">
-                                            <label class="custom-checkbox">
-                                                <input type="checkbox" name="is_required" value="1"
-                                                    onchange="showLimit(this)">
-                                                <?= lang('is_required') ?>
-                                            </label>
+                                            <input type="number" name="select_limit" value="<?= $extra->select_limit ?>"
+                                                class="form-control only_number" min="1">
                                         </div>
                                     </div>
-
-                                    <div class="form-group col-md-6 hidden">
-                                        <label for=""><?= lang('max_qty') ?></label>
+                                    <div class="form-group col-md-6 ">
+                                        <label for=""><?= lang('select_max_limit') ?></label>
                                         <div class="">
-                                            <input type="number" name="max_qty" class="form-control" value="1"
-                                                min="0" placeholder="<?= __('max_qty') ?>">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class=" limit_div">
-                                    <div class="row" id="">
-                                        <div class="form-group col-md-6 ">
-                                            <label for=""><?= lang('select_minimum') ?></label>
-                                            <div class="">
-                                                <input type="number" name="select_limit" value="1"
-                                                    class="form-control only_number" min="1">
-                                            </div>
-                                        </div>
-                                        <div class="form-group col-md-6 ">
-                                            <label for=""><?= lang('select_max_limit') ?></label>
-                                            <div class="">
-                                                <input type="number" name="select_max_limit" value="0"
-                                                    class="form-control number" min="0">
-                                            </div>
+                                            <input type="number" name="select_max_limit" value="<?= $extra->select_max_limit ?>"
+                                                class="form-control number" min="0">
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <input type="hidden" name="item_id" value="0">
-                            <input type="hidden" name="extra_title_id" value="0">
-                            <button type="submit" class="btn btn-secondary"><i class="fa fa-save"></i>
-                                <?= lang('save') ?></button>
                         </div>
                     </div>
-                </form>
-            </div>
+                    <div class="modal-footer">
+                        <input type="hidden" name="item_id" value="<?= $item_id ?>">
+                        <input type="hidden" name="extra_title_id" value="<?= $extra->id ?>">
+                        <button type="submit" class="btn btn-secondary"><i class="fa fa-save"></i>
+                            <?= lang('save') ?></button>
+                    </div>
+                </div>
+            </form>
         </div>
+    </div>
+    @endforeach
 
-        <!----------------------------------------------
-                  Start edit extra and price
-                 --------------------------------------------->
 
-        <div id="addExtraModal" class="modal fade customModal" role="dialog">
-            <div class="modal-dialog">
-                <form action="<?= url('vendor/products/add_extras') ?>" method="post" enctype="multipart/form-data"
-                    onsubmit="formSubmit(event,this)">
-                    <!-- csrf token -->
-                    @csrf
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title modalTitle"><?= lang('add_new_extras') ?></h4>
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="extrasBody">
-                                <div class="form-group">
-                                    <label for=""><?= lang('name') ?></label>
-                                    <input type="text" name="ex_name" class="form-control"
-                                        placeholder="<?= __('addons_name') ?> " required>
-                                </div>
+    <!----------------------------------------------
+                edit extra and price
+                --------------------------------------------->
 
-                                <div class="form-group">
-                                    <label for=""><?= lang('price') ?></label>
-                                    <input step=".01" type="number" name="ex_price" class="form-control price"
-                                        required placeholder="0.0">
-                                </div>
+    <div id="addExtraModal" class="modal fade customModal" role="dialog">
+        <div class="modal-dialog">
+            <form action="<?= url('vendor/products/add_extras') ?>" method="post" enctype="multipart/form-data"
+                onsubmit="formSubmit(event,this)">
+                <!-- csrf token -->
+                @csrf
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title modalTitle"><?= lang('add_new_extras') ?></h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="extrasBody">
+                            <div class="form-group">
+                                <label for=""><?= lang('name') ?></label>
+                                <input type="text" name="ex_name" class="form-control"
+                                    placeholder="<?= __('addons_name') ?> " required>
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <input type="hidden" name="ex_id" value="0">
-                            <input type="hidden" name="extra_title_id" value="0">
-                            <input type="hidden" name="item_id" value="0">
-                            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>
-                                <?= lang('save') ?></button>
+
+                            <div class="form-group">
+                                <label for=""><?= lang('price') ?></label>
+                                <input step=".01" type="number" name="ex_price" class="form-control price"
+                                    required placeholder="0.0">
+                            </div>
                         </div>
                     </div>
-                </form>
-            </div>
+                    <div class="modal-footer">
+                        <input type="hidden" name="ex_id" value="0">
+                        <input type="hidden" name="extra_title_id" value="0">
+                        <input type="hidden" name="item_id" value="0">
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>
+                            <?= lang('save') ?></button>
+                    </div>
+                </div>
+            </form>
         </div>
+    </div>
 
 
-        <!----------------------------------------------
-                  start	Extra from library
-                 ---------------------------------------------->
-        <div id="extraListModal" class="modal fade customModal" role="dialog">
-            <div class="modal-dialog">
-                <form action="<?= url('vendor/products/add_library_extras') ?>" method="post"
-                    enctype="multipart/form-data" onsubmit="formSubmit(event,this)">
-                    <!-- csrf token -->
-                    @csrf
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <div class="">
-                                <h4 class="modal-title modalTitle"><?= lang('add_new_extras') ?>
-                                    <a href="<?= url('admin/menu/extras') ?>" class="btn btn-secondary">
-                                        <i class="fa fa-plus"></i> <?= lang('add_new') ?>
-                                    </a>
-                                </h4>
-                                <a href="javascript:;" class="btn btn-info text-right btn-sm addBtn addSidebar"
-                                    onclick="sidebar(`addSidebar`)">
-                                    <i class="fa fa-plus"></i> <?= __('add_new') ?>
-                                </a>
-                            </div>
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+    <!----------------------------------------------
+                Extra from library
+                ---------------------------------------------->
+    <div id="extraListModal" class="modal fade customModal" role="dialog">
+        <div class="modal-dialog">
+            <form action="<?= url('vendor/products/add_library_extras') ?>" method="post"
+                enctype="multipart/form-data" onsubmit="formSubmit(event,this)">
+                <!-- csrf token -->
+                @csrf
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="4">
+                            <h4 class="modal-title modalTitle">sds</h4>
+                            <a href="javascript:;" class="btn btn-info text-right btn-sm addBtn addSidebar"
+                                onclick="sidebar(`addSidebar`)">
+                                <i class="fa fa-plus"></i> <?= __('add_new') ?>
+                            </a>
                         </div>
-                        <div class="modal-body">
-                            <div class="table-responsive">
-                                <table class="table table-striped w_100p" id="myTable">
-                                    <thead>
-                                        <tr>
-                                            <td><?= __('title') ?></td>
-                                            <td><?= __('max_quantity') ?></td>
-                                            <td><?= __('price') ?></td>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped w_100p" id="myTable">
+                                <thead>
+                                    <tr>
+                                        <td><?= __('title') ?></td>
+                                        <td><?= __('max_quantity') ?></td>
+                                        <td><?= __('price') ?></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($extras_libraries as $key => $extra)
                                         <tr>
                                             <td>
-                                                <label class="custom-checkbox item-center flex gap-5">1<span><input
-                                                            type="checkbox" name="extra_id[1]" value="1">
-                                                        pizza</span>
+                                                <label class="custom-checkbox item-center flex gap-5">
+                                                    {{ $key+1 }}
+                                                    <span>
+                                                        <input type="checkbox" name="addon_id[<?= $extra->id ?>]" value="<?= $extra->id ?>">
+                                                        <?= __names($extra->ln_data, 'addon_name') ?>
+                                                    </span>
                                                 </label>
                                             </td>
-                                            <td>3</td>
-                                            <td>$32</td>
-                                            <input type="hidden" name="max_select_qty[1]" value="0">
+                                            <td><?= $extra->max_select_qty == 0 ? '&#8734;' : $extra->max_select_qty ?? 0; ?></td>
+                                            <td>$ {{ $extra->price }}</td>
+                                            <input type="hidden" name="max_select_qty[<?= $extra->id ?>]" value="{{ $extra->max_select_qty }}">
                                         </tr>
-                                    </tbody>
-
-                                </table>
-
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <input type="hidden" name="item_id" value="<?= $id ?? 0 ?>">
-                            <input type="hidden" name="extra_title_id" value="0">
-                            <?= __submitBtn() ?>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                </form>
-            </div>
+                    <div class="modal-footer">
+                        <input type="hidden" name="item_id" value="<?= $item_id ?? 0 ?>">
+                        <input type="hidden" name="extra_title_id" value="0">
+                        <?= __submitBtn() ?>
+                    </div>
+                </div>
+            </form>
         </div>
+    </div>
+
+
         <!----------------------------------------------
-                  End	Extra from library
+                  Add Item Addons Area
                 ---------------------------------------------->
 
+    <?= __header(__('add_new'), url('vendor/products/add_item_addons'), 'add') ?>
 
-        <?= __header(__('add_new'), url('vendor/products/add_item_addons'), 'add') ?>
 
-
+        @foreach (shop_language() as $lang)
         <div class="form-group">
-            <label><?= __('addon_name') ?> en</label>
-            <input type="text" name="addon_name[en]" class="form-control" value="">
+            <label><?= __('addon_name') ?> <?= country($lang->country_id)->flag ?> <?= __required() ?></label>
+            <input type="text" name="addon_name[<?= $lang->slug ?>]" class="form-control" value="">
         </div>
+        @endforeach
 
         <div class="form-group ">
             <label><?= __('price') ?></label>
@@ -456,21 +503,22 @@
         <div class="form-group">
             <label><?= __('image') ?></label>
             <div class="mb-4">
-                {{-- <?= media_files('image', 'single', '') ?> --}}
+                <?= media_files('image', 'single', '') ?>
             </div>
 
         </div>
         <input type="hidden" name="extra_title_id" class="extra_title_id" value="0">
         <?= hidden('id', 0) ?>
         <?= hidden('item_id', 0) ?>
-        <?= __footer() ?>
+    <?= __footer() ?>
 
-        <!----------------------------------------------
-                    EDIT ASSIGN EXTRAS
-                    ---------------------------------------------->
 
-        <?= __header(__('edit'), url('vendor/products/edit_assing_extra'), 'extraEdit') ?>
 
+    <!----------------------------------------------
+                EDIT ASSIGN EXTRAS
+                ---------------------------------------------->
+
+    <?= __header(__('edit'), url('vendor/products/edit_assing_extra'), 'extraEdit') ?>
         <div class="assignExtras">
             <div class="form-group ">
                 <label><?= __('price') ?></label>
@@ -483,7 +531,6 @@
                         </span>
                     </div>
                 </div>
-
             </div>
 
             <div class="form-group">
@@ -494,57 +541,57 @@
             <?= hidden('id', 0) ?>
             <?= hidden('item_id', 0) ?>
         </div>
-        <?= __footer() ?>
+    <?= __footer() ?>
 
 
 
 
 
 
-        <script>
-            function editAssignExtra(id, price, qty) {
-                sidebar('extraEditSidebar');
-                $('.assignExtras [name="price"]').val(price);
-                $('.assignExtras [name="max_select_qty"]').val(qty);
-                $('.assignExtras [name="id"]').val(id);
-            }
+    <script>
+        function editAssignExtra(id, price, qty) {
+            sidebar('extraEditSidebar');
+            $('.assignExtras [name="price"]').val(price);
+            $('.assignExtras [name="max_select_qty"]').val(qty);
+            $('.assignExtras [name="id"]').val(id);
+        }
 
-            function addExtraModal(id, name) {
-                $('#addExtraModal').modal('show');
-                $('#addExtraModal [name="extra_title_id"]').val(id);
-                $('#addExtraModal .modalTitle').text(name);
-            }
-        </script>
-        <script>
-            function extraListModal(id, name) {
-                $('#extraListModal').modal('show');
-                $('#extraListModal [name="extra_title_id"]').val(id);
-                $('#extraListModal .modalTitle').text(name);
-                $('.extra_title_id').val(id);
-            }
+        function addExtraModal(id, name) {
+            $('#addExtraModal').modal('show');
+            $('#addExtraModal [name="extra_title_id"]').val(id);
+            $('#addExtraModal .modalTitle').text(name);
+        }
+    </script>
 
-            function showLimit($this) {
-                if ($($this).is(':checked')) {
-                    let is_single_select = $('[name="is_single_select"]:checked').val();
-                    if (is_single_select == 1) {
-                        $('.limit_div').slideUp();
-                    } else {
-                        $('.limit_div').slideDown();
-                    }
-                } else {
-                    $('.limit_div').slideUp();
-                }
-            }
+    <script>
+        function extraListModal(id, name) {
+            $('#extraListModal').modal('show');
+            $('#extraListModal [name="extra_title_id"]').val(id);
+            $('#extraListModal .modalTitle').text(name);
+            $('.extra_title_id').val(id);
+        }
 
-
-            $('[name="is_single_select"]').on('change', function() {
-                if ($(this).val() == 1) {
+        function showLimit($this) {
+            if ($($this).is(':checked')) {
+                let is_single_select = $('[name="is_single_select"]:checked').val();
+                if (is_single_select == 1) {
                     $('.limit_div').slideUp();
                 } else {
                     $('.limit_div').slideDown();
                 }
-            });
-        </script>
+            } else {
+                $('.limit_div').slideUp();
+            }
+        }
 
-    </div>
+
+        $('[name="is_single_select"]').on('change', function() {
+            if ($(this).val() == 1) {
+                $('.limit_div').slideUp();
+            } else {
+                $('.limit_div').slideDown();
+            }
+        });
+    </script>
+
 @endsection

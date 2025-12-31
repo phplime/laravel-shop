@@ -1,5 +1,7 @@
 @extends('backend.vendor.layouts.app')
 @section('content')
+
+    <?php if($categories->count() < 1):?>
     <!-- Category Area -->
     <div class="row">
         <div class="col-md-8">
@@ -27,6 +29,7 @@
         </div>
     </div>
     <!-- Category Area -->
+    <?php endif; ?>
 
     <div class="row">
         <div class="col-lg-12">
@@ -45,26 +48,30 @@
                 <div class="card-body pt-10">
                     <div class="productCategoryList">
                         <ul class="menuUl flex-nowrap">
-                            <li class="active">
+                            <li class="<?= !isset($_GET['category']) && empty($_GET['category']) ? 'active':'' ?>">
                                 <a href="<?= url('vendor/products/') ?>" class="px-1rm py-13"> <i class="fa fa-list"></i>
                                     <?= __('all') ?>
                                 </a>
                             </li>
 
-                            <li class="">
-                                <a href="<?= url('vendor/products/?category=pizza') ?>">
-                                    <img src="{{ asset('assets/backend/images/default-612x612.jpg') }}" alt="category_image"
-                                        class="avatar round">
-                                    <span class="badge badge-success">5</span>
-                                    pizza
-                                </a>
-                            </li>
+                            @foreach ($categories as $category)
+                                <?php if($category->total_items > 0):?>
+                                <li class="<?= isset($_GET['category']) && $_GET['category'] == str_slug($category->category_names) ? 'active':''  ?>">
+                                    <a href="<?= url('vendor/products/?category='.str_slug($category->category_names)) ?>">
+                                        <img src="<?= __image($category->thumb, 'thumb') ?>" alt="category_image"
+                                            class="avatar round">
+                                        <span class="badge badge-success">{{ $category->total_items }}</span>
+                                        {{ $category->category_names }}
+                                    </a>
+                                </li>
+                                <?php endif; ?>
+                            @endforeach
 
                         </ul>
                     </div>
                     <div class="card-content">
                         <div class="table-responsive responsiveTable">
-                            <table class="table table-bordered table-striped  data-table">
+                            <table class="table table-bordered table-striped ">
                                 <thead>
                                     <tr>
                                         <th>#</th>
@@ -76,92 +83,42 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-
-                                    <tr id="hide_1" data-label="#">
-                                        <td data-label="#">1</td>
-                                        <td data-label="<?= __('image') ?>">
-                                            <div class="productMixImg">
-                                                <img src="{{ asset('assets/backend/images/default-612x612.jpg') }}"
-                                                    alt="product_img" class="avatar round">
-                                            </div>
-                                        </td>
-                                        <td data-label="<?= __('title') ?>">
-                                            pizza
-                                        </td>
-                                        <td data-label="<?= __('price') ?>">
-                                            $34.00
-
-                                            <!-- Variant Price -->
-                                            <div class="priceGroup variantGroup">
-                                                <div class="variantArea">
-                                                    <div class="langItem">
-                                                        <span data-title="English" data-toggle="tooltip"
-                                                            data-original-title="" title=""><i class="fi fi-us"></i>
-                                                        </span>
-                                                        <span> size</span>
-                                                    </div>
-                                                    <ul>
-                                                        <li><a href="javascript:;">x : 120.00 $</a></li>
-                                                        <li><a href="javascript:;">l : 180.00 $</a></li>
-                                                    </ul>
+                                    @foreach ($product_list as $key => $row)
+                                        <tr id="hide_<?= $row->id ?>" data-label="#">
+                                            <td data-label="#">{{ $key+1 }}</td>
+                                            <td data-label="<?= __('image') ?>">
+                                                <div class="productMixImg">
+                                                    <img src="<?= __image($row->thumb, 'thumb') ?>" alt="product_img" class="avatar round">
                                                 </div>
-                                                <div class="variantArea">
-                                                    <div class="langItem">
-                                                        <span data-title="عربي" data-toggle="tooltip" data-original-title=""
-                                                            title="">
-                                                            <i class="fi fi-sa"></i>
-                                                        </span>
-                                                        <span> مقاس</span>
-                                                    </div>
-                                                    <ul>
-                                                        <li><a href="javascript:;">م : 120.00 $</a></li>
-                                                        <li><a href="javascript:;">س : 180.00 $</a></li>
-                                                    </ul>
+                                            </td>
+                                            <td data-label="<?= __('title') ?>">
+                                                <?= __names($row->item_names, 'title', true) ?>
+                                            </td>
+                                            <td data-label="<?= __('price') ?>">
+                                                <?= __variantPrice($row, true) ?>
+                                            </td>
+                                            <td data-label="<?= __('extras') ?>">
+											    <?= __vegType($row, true); ?>
+                                                <div class="d-flex">
+												    <?= __('tax'); ?> : &nbsp;<?= __itemTax($row->id) ?>
                                                 </div>
-                                                <div class="variantArea">
-                                                    <div class="langItem">
-                                                        <span data-title="Español" data-toggle="tooltip"
-                                                            data-original-title="" title="">
-                                                            <i class="fi fi-es"></i>
-                                                        </span>
-                                                        <span> tamaño</span>
-                                                    </div>
-                                                    <ul>
-                                                        <li><a href="javascript:;">x : 120.00 $</a></li>
-                                                        <li><a href="javascript:;">l : 180.00 $</a></li>
-                                                    </ul>
+                                            </td>
+                                            <td class="text-center" data-label="<?= __('action') ?>">
+                                                <div class="btnGroup">
+                                                    <a class="btn btn-secondary btn-sm" href="" target="_blank">
+                                                        <i class="fa fa-eye"></i> <?= __('view') ?>
+                                                    </a>
+                                                    <a class="btn btn-info btn-sm" href="<?= url('/vendor/products/addons/'.$row->id) ?>">
+                                                        <i class="icofont-library"></i> <?= __('addons') ?>
+                                                    </a>
+                                                    <a class="btn btn-primary btn-sm" href="<?= url('/vendor/products/edit-product/'.$row->id) ?>">
+                                                        <i class="fa fa-edit"></i> <?= __('edit') ?>
+                                                    </a>
+                                                    <?= __deleteBtn($row->id, 'vendor_item_list', true) ?>
                                                 </div>
-                                            </div>
-                                            <!-- Variant Price -->
-                                        </td>
-                                        <td data-label="<?= __('extras') ?>">
-                                            <span class="vegType round veg">
-                                                <span></span>
-                                                Vegetarian
-                                            </span>
-                                            <div class="d-flex">
-											    {{ __('tax') }} : &nbsp;<div class="taxArea"><p class="taxName"><small>SGST 8% Included</small></p></div>
-                                            </div>
-                                        </td>
-                                        <td class="text-center" data-label="<?= __('action') ?>">
-                                            <div class="btnGroup">
-                                                <a class="btn btn-secondary btn-sm"
-                                                    href="" target="_blank"><i
-                                                        class="fa fa-eye"></i> <?= __('view') ?></a>
-                                                <a class="btn btn-info btn-sm"
-                                                    href="<?= url("/vendor/products/addons/1") ?>"><i
-                                                        class="icofont-library"></i> <?= __('addons') ?></a>
-                                                <a class="btn btn-primary btn-sm"
-                                                    href="<?= url("/vendor/products/edit_product/1") ?>"><i
-                                                        class="fa fa-edit"></i> <?= __('edit') ?></a>
-                                                <a href="<?= url("delete-item/1/vendor_item_list") ?>"
-                                                    data-id="1" data-msg="<?= __('want_to_delete') ?>"
-                                                    class="action_btn btn btn-danger btn-sm"><i class="fa fa-trash"></i>
-                                                    <?= __('delete') ?></a>
-                                            </div>
-                                        </td>
-                                    </tr>
-
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>

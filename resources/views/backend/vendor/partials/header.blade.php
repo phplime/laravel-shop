@@ -8,7 +8,7 @@
 <!-- animate.css -->
 <link rel="stylesheet" href="{{ asset('assets/backend/plugins/animate/animate.css') }}">
 <!-- Select2 -->
-<link rel="stylesheet" href="{{ asset('assets/backend/plugins/select2/select2-bootstrap4.min.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/backend/plugins/select2/select-2.main.css') }}">
 <!-- summernote -->
 <link rel="stylesheet" href="{{ asset('assets/backend/plugins/summernote/summernote-bs4.css') }}">
 <!-- Nice selector -->
@@ -31,3 +31,15 @@
 <script src="{{ asset('assets/plugins/jquery.main.js') }}"></script>
 <script src="{{ asset('assets/plugins/axios.main.js') }}"></script>
 <script src="{{ asset('global/utilities.js?t=' . time()) }}"></script>
+
+
+
+<script>
+    let base_url = `{{ url('/') }}/`;
+    let _csrf = `{{ csrf_token() }}`;
+    let appLanguage = `{{ app()->getLocale() }}`;
+    let activated = `{{ __('activated') }}`;
+    let deactivated = `{{ __('deactivated') }}`;
+    let item_activated = `{{ __('item_activated') }}`;
+    let item_deactivated = `{{ __('item_deactivated') }}`;
+</script>

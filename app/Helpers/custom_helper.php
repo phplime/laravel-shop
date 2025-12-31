@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 
 
 
@@ -370,6 +371,117 @@ if (!function_exists('localizedRoute')) {
 
 
 
+if (!function_exists('media_files')) {
+    function media_files($name = 'image', $type = 'single', $value = '')
+    {
+        $selectedImages = collect();
+
+        if (!empty($value)) {
+            $ids = array_filter(array_map('trim', explode(',', $value)), 'is_numeric');
+            if (!empty($ids)) {
+                $selectedImages = \App\Models\MediaFile::whereIn('id', $ids)
+                    ->orderBy('id', 'desc')
+                    ->get();
+            }
+        }
+
+        return view('media_layouts/upload_file', [
+            'name' => $name,
+            'type' => $type,
+            'value' => $value,
+            'isHide' => true,
+            'selectedImages' => $selectedImages,
+        ]);
+    }
+}
+
+
+if (!function_exists('__check')) {
+
+    function __check($data, $raw = false)
+    {
+        $service = app(SettingsService::class);
+
+        if (is_array($data)) {
+            return $service->saveMany($data, $raw);
+        }
+
+        return $service->exists($data);
+    }
+}
+
+
+if (!function_exists('__settings')) {
+    function __settings($key = null)
+    {
+        $service = app(SettingsService::class);
+        $all = $service->all();
+
+        if ($key === null) {
+            return (object) $all;
+        }
+
+        return $all[$key] ?? '';
+    }
+}
+
+
+if (!function_exists('__config')) {
+    function __config($key)
+    {
+        if (Schema::hasTable('settings')) :
+            return \App\Models\Settings::where('key', $key)->value('value');
+        else :
+            return [];
+        endif;
+    }
+}
+
+if (!function_exists('country')) {
+
+    function country($id)
+    {
+        if (empty($id)) {
+            return null;
+        }
+        $repo = app(BaseRepository::class);
+        $data = $repo->find($id, 'country_list');
+        if (!empty($data)) {
+            return (object) [
+                'name' => $data->name,
+                'code' => strtolower($data->iso2),
+                'currency_code' => strtoupper($data->currency_code),
+                'dial_code' => $data->dial_code,
+                'currency_icon' => $data->currency_symbol,
+                'flag' => '<i class="fi fi-' . strtolower($data->iso2) . '"></i>',
+
+            ];
+        } else {
+            return (object) [
+                'name' => 'United States',
+                'code' => 'us',
+                'currency_code' => 'USD',
+                'dial_code' => '1',
+                'currency_icon' => '$',
+                'flag' => "<i class='fi fi-us'></i>",
+
+            ];
+        }
+    }
+}
+
+
+if (!function_exists('__isNew')) {
+    function __isNew($version)
+    {
+        $current_version = __settings('version');
+        if ($current_version == $version) {
+            return '<span class="ab-position custom_badge danger-light-active">' . __("new") . '</span>';
+        }
+    }
+}
+
+
 
 
 if (!function_exists('__adminMenu')) {
@@ -400,6 +512,7 @@ if (!function_exists('__adminMenu')) {
         echo $menuHtml;
     }
 }
+
 
 if (!function_exists('isJson')) {
     function isJson($string)
@@ -561,3 +674,4 @@ if (!function_exists('is_test')) {
         return 0;
     }
 }
+

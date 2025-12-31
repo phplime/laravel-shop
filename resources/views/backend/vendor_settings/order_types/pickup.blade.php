@@ -136,7 +136,7 @@
         <input type="text" name="shipping_charge" id="shipping_charge" class="form-control number" value="4">
     </div>
     <?= hidden('id', 0) ?>
-    <?= __footer(true, 'vendor/settings/order_type_settings/pickup') ?>
+    <?= __footer() ?>
 
 
 

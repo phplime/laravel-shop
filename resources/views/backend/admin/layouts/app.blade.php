@@ -22,7 +22,6 @@
 
             @include('backend.admin.partials.footer')
 
-            @stack('scripts')
         </div>
     </div>
 </body>

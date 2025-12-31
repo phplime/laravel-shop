@@ -8,9 +8,9 @@
     /*----------------------------------------------
     select2
   ----------------------------------------------*/
-    $(".select2").select2({
-        width: "resolve",
-    });
+    // $(".select2").select2({
+    //     width: "resolve",
+    // });
 
     /*----------------------------------------------
     count to
@@ -181,24 +181,24 @@
         $(document).on("click", ".action_btn", function () {
             var link = $(this).attr("href");
             var msg = $(this).data("msg");
-            swal(
-                {
-                    title: "Are you sure?",
-                    text: msg,
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#DD6B55",
-                    confirmButtonText: "yes",
-                    cancelButtonText: "no",
-                    closeOnConfirm: false,
-                },
-                function () {
+            // alert(msg);
+            Swal.fire({
+                title: "Are you sure?",
+                text: msg,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, Delete it!",
+            }).then((result) => {
+                if (result.isConfirmed) {
                     window.location.href = link;
                 }
-            );
+            });
             return false;
         });
     });
+
 
     function pushNotify() {
         new Notify({
@@ -416,7 +416,7 @@
     $(document).on("submit", ".productVariants", function (e) {
         var url = $(this).attr("action");
         var lang = $(this).data("lang");
-        console.log(lang);
+        // console.log(lang);
         $(this).prop("disabled", true);
         $.post(
             url,
@@ -425,6 +425,9 @@
                 if (json.st == 1) {
                     $(".variantsLoad_" + lang).html(json.load_data);
                     $("#variantModal_" + lang).modal("hide");
+                } else {
+                    ajax_msg(json.msg, json.st);
+                    console.log(json);
                 }
             },
             "json"

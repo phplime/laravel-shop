@@ -116,7 +116,7 @@
                                     <div class="form-group col-md-6">
                                         <label for=""><?= lang('logo') ?> <?= __('light') ?></label>
                                         <div class="mb-4">
-                                            {{--  media_files('logo_light', 'single', _vendor('logo_light') ?? '') ?> --}}
+                                            <?= media_files('logo_light', 'single') ?>
                                         </div>
 
                                     </div>
@@ -125,7 +125,7 @@
                                     <div class="form-group col-md-6">
                                         <label for=""><?= lang('logo') ?> <?= __('dark') ?></label>
                                         <div class="mb-4">
-                                            {{--  media_files('logo_dark', 'single', _vendor('logo_dark') ?? '') ?> --}}
+                                            <?= media_files('logo_dark', 'single') ?>
                                         </div>
 
                                     </div>
@@ -133,9 +133,8 @@
                                     <div class="form-group col-md-12">
                                         <label for=""><?= lang('favicon') ?></label>
                                         <div class="mb-4">
-                                            {{--  media_files('favicon', 'single', _vendor('favicon') ?? '') ?> --}}
+                                            <?= media_files('favicon', 'single') ?>
                                         </div>
-
                                     </div>
                                 </div>
 

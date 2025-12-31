@@ -10,25 +10,43 @@
                     </div>
                     <div class="card-body">
                         <input type="hidden" name="slug" value="terms">
-                        <div class="form-group">
-                            <label><?= __('title') ?> <span class="text-danger">*</span> </label>
-                            <input type="text" name="title[en]" class="form-control" placeholder="<?= __('title') ?>"
-                                value="">
-                        </div>
-                        <div class="form-group">
+
+                        <?php $datalag = isset($data->_names) ? $data->_names : []; ?>
+
+                        @foreach (shop_language() as $lang)
+
+                            <?php
+                                $page_details = [];
+                                if (!empty($datalag)) :
+                                    foreach ($datalag as $name_obj) {
+                                        $page_details[$name_obj->language] = [
+                                            'title' => $name_obj->title,
+                                            'details' => $name_obj->details,
+                                        ];
+                                    }
+                                endif;
+                            ?>
+
+
                             <div class="form-group">
-                                <label><?= __('details') ?> <span class="text-danger">*</span></label>
-                                <textarea name="details[en]" id="details_en" class="form-control textarea">
-
-                                </textarea>
+                                <label><?= __('title') ?> <?= country($lang->country_id)->flag ?> <span class="text-danger">*</span> </label>
+                                <input type="text" name="title[<?= $lang->slug ?>]" class="form-control" placeholder="<?= __('title') ?>"
+                                    value="<?= isset($page_details[$lang->slug]['title']) ? $page_details[$lang->slug]['title'] :'' ?>">
                             </div>
-
-                        </div>
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <label><?= __('details') ?> <?= country($lang->country_id)->flag ?> <span class="text-danger">*</span></label>
+                                    <textarea name="details[<?= $lang->slug ?>]" id="details_<?= $lang->slug ?>" class="form-control textarea">
+                                        <?= isset($page_details[$lang->slug]['details']) ? $page_details[$lang->slug]['details'] :'' ?>
+                                    </textarea>
+                                </div>
+                            </div>
+                        @endforeach
 
                     </div>
                     <div class="card-footer text-right">
                         <?= hidden('is_modal', 1) ?>
-                        <?= hidden('id', 0) ?>
+                        <?= hidden('id', isset($data->id) ? $data->id : 0)  ?>
                         <?= __submitBtn() ?>
                     </div>
                 </div>

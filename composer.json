@@ -37,7 +37,8 @@
         "files": [
             "app/Helpers/custom_helper.php",
             "app/Helpers/common_helper.php",
-            "app/Helpers/module.php"
+            "app/Helpers/module.php",
+            "app/Helpers/vendor_helper.php"
         ]
     },
     "autoload-dev": {

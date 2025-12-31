@@ -95,17 +95,18 @@
                                     <th><?= __('action') ?></th>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>GST</td>
-                                        <td>6</td>
-
-                                        <td> <?= __status(1, 1, 'tax_table') ?></td>
-                                        <td class="btnGroup">
-                                            <?= __editBtn('', true, ['is_sidebar' => 1, 'class' => 'tax_list_1']) ?>
-                                            <?= __deleteBtn(1, 'tax_table', true) ?>
-                                        </td>
-                                    </tr>
+                                    @foreach ($tax_list as $key => $row)
+                                        <tr>
+                                            <td>{{ $key+1 }}</td>
+                                            <td>{{ $row->tax_name }}</td>
+                                            <td>{{ $row->tax_percentage.' %' }}</td>
+                                            <td> <?= __status($row->id, $row->status, 'vendor_tax_list') ?></td>
+                                            <td class="btnGroup">
+                                                <?= __editBtn('', true, ['is_sidebar' => 1, 'class' => 'tax_list_'.$row->id]) ?>
+                                                <?= __deleteBtn($row->id, 'vendor_tax_list', true) ?>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -115,48 +116,49 @@
         </div>
     </div>
 
+
+    <!-- Add Sidebar Area -->
     <?= __header(__('add_new'), url('vendor/settings/add_new_tax'), 'tax_list') ?>
 
-    <div class="form-group">
-        <label><?= __('tax_name') ?></label>
-        <input type="text" name="tax_name" id="area_name" class="form-control" placeholder="<?= __('tax_name') ?>">
-    </div>
+        <div class="form-group">
+            <label><?= __('tax_name') ?></label>
+            <input type="text" name="tax_name" id="area_name" class="form-control" placeholder="<?= __('tax_name') ?>">
+        </div>
 
-    <div class="form-group">
-        <label><?= __('tax_percentage') ?></label>
-        <div class="ci-input-group input-group-prepand ">
-            <input type="text" name="tax_percentage" id="tax_percentage" class="form-control"
-                placeholder="<?= __('tax_percentage') ?>">
-            <div class="input-group ci-color">
-                <span> %</span>
+        <div class="form-group">
+            <label><?= __('tax_percentage') ?></label>
+            <div class="ci-input-group input-group-prepand ">
+                <input type="text" name="tax_percentage" id="tax_percentage" class="form-control"
+                    placeholder="<?= __('tax_percentage') ?>">
+                <div class="input-group ci-color">
+                    <span> %</span>
+                </div>
             </div>
         </div>
 
-    </div>
-
-    <?= hidden('id', 0) ?>
+        <?= hidden('id', 0) ?>
     <?= __footer() ?>
 
 
-    <?= __header(__('edit'), url('vendor/settings/add_new_tax'), 'tax_list_1') ?>
-    <div class="form-group">
-        <label><?= __('tax_name') ?></label>
-        <input type="text" name="tax_name" id="area_name" class="form-control" placeholder="<?= __('tax_name') ?>"
-            value="">
-    </div>
-
-    <div class="form-group">
-        <label><?= __('tax_percentage') ?></label>
-        <div class="ci-input-group input-group-prepand ">
-            <input type="text" name="tax_percentage" id="tax_percentage" class="form-control"
-                placeholder="<?= __('tax_percentage') ?>" value="">
-            <div class="input-group ci-color">
-                <span> %</span>
+    <!-- Edit Sidebar Area -->
+    @foreach ($tax_list as $row)
+        <?= __header(__('edit'), url('vendor/settings/add_new_tax'), 'tax_list_'.$row->id) ?>
+            <div class="form-group">
+                <label><?= __('tax_name') ?></label>
+                <input type="text" name="tax_name" class="form-control" placeholder="<?= __('tax_name') ?>"
+                    value="{{ $row->tax_name }}">
             </div>
-        </div>
+            <div class="form-group">
+                <label><?= __('tax_percentage') ?></label>
+                <div class="ci-input-group input-group-prepand ">
+                    <input type="text" name="tax_percentage" class="form-control" placeholder="<?= __('tax_percentage') ?>" value="{{ $row->tax_percentage }}">
+                    <div class="input-group ci-color">
+                        <span> %</span>
+                    </div>
+                </div>
+            </div>
+            <?= hidden('id', __isset($row, 'id')) ?>
+        <?= __footer() ?>
+    @endforeach
 
-    </div>
-
-    <?= hidden('id', 0) ?>
-    <?= __footer() ?>
 @endsection

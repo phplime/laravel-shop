@@ -12,15 +12,17 @@
 </head>
 
 <body class="sidebar-mini layout-fixed layout-navbar-fixed theme-light">
-    <div class="wrapper">
-        @include('backend.vendor.layouts.vendor_menu')
-        @include('backend.vendor.layouts.vendor_sidebar')
+    <div id="mainContent">
+        <div class="wrapper">
+            @include('backend.vendor.layouts.vendor_menu')
+            @include('backend.vendor.layouts.vendor_sidebar')
 
-        @yield('content')
+            @yield('content')
 
-        @include('backend.vendor.partials.footer')
+            @include('backend.vendor.partials.footer')
 
-        @stack('scripts')
+        </div>
     </div>
 </body>
+
 </html>

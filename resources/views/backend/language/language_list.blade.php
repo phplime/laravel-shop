@@ -26,7 +26,10 @@
                                 @foreach ($language_list as $key => $row)
                                     <tr>
                                         <td data-label="#">{{ $key + 1 }}</td>
-                                        <td data-label="{{ lang('name') }}">{{ $row->language_name }}</td>
+                                        <td data-label="{{ lang('name') }}">
+                                            <?= country($row->country_id)->flag ?>&nbsp;
+                                            {{ $row->language_name }}
+                                        </td>
                                         <td data-label="{{ lang('slug') }}">{{ $row->slug }}</td>
                                         <td data-label="{{ lang('direction') }}">{{ $row->direction }}</td>
                                         <td data-label="{{ lang('status') }}">
@@ -52,7 +55,7 @@
     <div class="form-group mb-0">
         <select class="sidebarSelect form-control" name="country_id" onchange="updateFlag(this)">
             @foreach ($country_list as $country)
-                <option value="{{ $country->id }}" data-src="">{{ $country->name }}</option>
+                <option value="{{ $country->id }}" data-src="{{ asset("assets/flags/4x3/" . strtolower($country->iso2) . ".svg") }}">{{ $country->name }}</option>
             @endforeach
 
         </select>
@@ -93,8 +96,8 @@
         <div class="form-group mb-0">
             <select class="sidebarSelect form-control" name="country_id" onchange="updateFlag(this)">
                 @foreach ($country_list as $country)
-                    <option value="{{ $country->id }}" data-src=""
-                        {{ isset($lang->id) && $lang->id == $country->id ? 'selected' : '' }}>{{ $country->name }}
+                    <option value="{{ $country->id }}" data-src="{{ asset("assets/flags/4x3/" . strtolower($country->iso2) . ".svg") }}"
+                        {{ isset($lang->id) && $lang->country_id == $country->id ? 'selected' : '' }}>{{ $country->name }}
                     </option>
                 @endforeach
 
@@ -132,4 +135,6 @@
         </div>
         <?= __footer(['hidden:id' => $lang->id ?? 0]) ?>
     @endforeach
+
+
 @endsection

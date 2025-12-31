@@ -75,190 +75,199 @@
                     </a>
                 </li>
 
-                <li class="nav-drawer-header"><?= __('orders') ?></li>
+                <?php if(isset($page_title) && $page_title != 'Onboarding'):?>
+
+                    <li class="nav-drawer-header"><?= __('orders') ?></li>
+
+                    <li class="nav-item ">
+                        <a href="{{ url('vendor/order-list') }}"
+                            class="nav-link <?= isset($page) && $page == 'Order' ? 'active' : '' ?>">
+                            <i class="nav-icon fas fa-shopping-bag"></i>
+                            <p> <?= __('online_orders') ?></p>
+                        </a>
+                    </li>
+
+                    <li class="nav-item ">
+                        <a href="{{ url('vendor/all-orders-list') }}"
+                            class="nav-link <?= isset($page) && $page == 'Orders' ? 'active' : '' ?>">
+                            <i class="nav-icon fas fa-cloud-meatball"></i>
+                            <p> <?= __('vendor_order') ?></p>
+                        </a>
+                    </li>
+
+                    <li class="nav-drawer-header"><?= __('settings') ?></li>
+                    <li class="nav-item ">
+                        <a href="{{ url('vendor/settings') }}"
+                            class="nav-link <?= isset($page) && $page == 'settings' ? 'active' : '' ?>">
+                            <i class="nav-icon fas fa-cog"></i>
+                            <p> <?= __('settings') ?></p>
+                        </a>
+                    </li>
+
+
+                    <li class="nav-item ">
+                        <a href="{{ url('vendor/settings/order-types') }}"
+                            class="nav-link <?= isset($page) && $page == 'order config' ? 'active' : '' ?>">
+                            <i class="nav-icon fas fa-cogs"></i>
+                            <p> <?= __('order_configuration') ?></p>
+                        </a>
+                    </li>
+
+                    <li class="nav-drawer-header"><?= __('items') ?></li>
+
+                    <li class="nav-item <?= isset($page) && $page == 'products' ? 'menu-open' : '' ?>">
+                        <a href="#" class="nav-link">
+                            <i class=" nav-icon fab fa-product-hunt"></i>
+                            <p>
+                                <?= __('products') ?>
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ url('vendor/products') }}"
+                                    class="nav-link <?= (isset($page_title) && $page_title == 'Products') || $page_title == 'Create Product' || $page_title == 'Addons' ? 'active' : '' ?>">
+                                    <i class="fa fa-angle-double-right nav-icon"></i>
+                                    <p> <?= __('item_products') ?> </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ url('vendor/products/categories') }}"
+                                    class="nav-link <?= isset($page_title) && $page_title == 'Categories' ? 'active' : '' ?>">
+                                    <i class="fa fa-angle-double-right nav-icon"></i>
+                                    <p> <?= __('categories') ?></p>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="{{ url('vendor/products/subcategories') }}"
+                                    class="nav-link <?= isset($page_title) && $page_title == 'Sub Categories' ? 'active' : '' ?>">
+                                    <i class="fa fa-angle-double-right nav-icon"></i>
+                                    <p> <?= __('subcategories') ?></p>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="{{ url('vendor/products/allergens') }}"
+                                    class="nav-link <?= isset($page_title) && $page_title == 'Allergens' ? 'active' : '' ?>">
+                                    <i class="fa fa-angle-double-right nav-icon"></i>
+                                    <p> <?= __('allergens') ?></p>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="{{ url('vendor/products/addons-library') }}"
+                                    class="nav-link <?= isset($page_title) && $page_title == 'Addon Library' ? 'active' : '' ?>">
+                                    <i class="fa fa-angle-double-right nav-icon"></i>
+                                    <p> <?= __('addon_library') ?></p>
+                                </a>
+                            </li>
+                        </ul>
+
+                    </li>
+
+                    <li class="nav-drawer-header"><?= __('communications') ?></li>
+
+                    <li class="nav-item <?= isset($page) && $page == 'whatsapp' ? 'menu-open' : '' ?>">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fab fa-whatsapp"></i>
+                            <p>
+                                <?= __('whatsapp_config') ?>
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ url('vendor/whatsapp-order') }}"
+                                    class="nav-link <?= isset($page_title) && $page_title == 'WhatsApp Order' ? 'active' : '' ?>">
+                                    <i class="fa fa-angle-double-right nav-icon"></i>
+                                    <p> <?= __('whatsapp_order') ?> </p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-drawer-header"><?= __('users') ?></li>
+
+                    <li class="nav-item ">
+                        <a href="{{ url('vendor/customer-list') }}"
+                            class="nav-link <?= isset($page_title) && $page_title == 'Customers' ? 'active' : '' ?>">
+                            <i class="nav-icon icofont-users-social"></i>
+                            <p> <?= __('customers') ?></p>
+                        </a>
+                    </li>
+
+                    <li class="nav-drawer-header"><?= __('others') ?></li>
+
+                    <li class="nav-item <?= isset($page) && $page == 'Reports' ? 'menu-open' : '' ?>">
+                        <a href="#" class="nav-link">
+                            <i class="icofont-sound-wave nav-icon"></i>
+                            <p>
+                                <?= __('reports') ?>
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ url('vendor/reports/item-reports') }}"
+                                    class="nav-link <?= isset($page_title) && $page_title == 'Item Statistics' ? 'active' : '' ?>">
+                                    <i class="fa fa-angle-double-right nav-icon"></i>
+                                    <p><?= __('item') ?> <?= __('statistics') ?> </p>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="{{ url('vendor/reports/order-reports') }}"
+                                    class="nav-link <?= isset($page_title) && $page_title == 'Order Reports' ? 'active' : '' ?>">
+                                    <i class="fa fa-angle-double-right nav-icon"></i>
+                                    <p><?= __('order') ?> <?= __('reports') ?> </p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item <?= isset($page) && $page == 'Pages' ? 'menu-open' : '' ?>">
+                        <a href="#" class="nav-link">
+                            <i class="icofont-page nav-icon"></i>
+                            <p>
+                                <?= __('pages') ?>
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ url('vendor/cookies') }}"
+                                    class="nav-link <?= isset($page_title) && $page_title == 'Cookies' ? 'active' : '' ?>">
+                                    <i class="fa fa-angle-double-right nav-icon"></i>
+                                    <p> <?= __('cookies_and_privacy') ?> </p>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="{{ url('vendor/terms') }}"
+                                    class="nav-link <?= isset($page_title) && $page_title == 'Terms' ? 'active' : '' ?>">
+                                    <i class="fa fa-angle-double-right nav-icon"></i>
+                                    <p> <?= __('terms_and_condition') ?> </p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item ">
+                        <a href="" class="nav-link <?= $page_title == 'Profile' ? 'active' : '' ?>">
+                            <i class="nav-icon fas fa-plus"></i>
+                            <p> <?= __('create_new_shop') ?> </p>
+                        </a>
+                    </li>
+
+                <?php endif; ?>
 
                 <li class="nav-item ">
-                    <a href="{{ url('vendor/order-list') }}"
-                        class="nav-link <?= isset($page) && $page == 'Order' ? 'active' : '' ?>">
-                        <i class="nav-icon fas fa-shopping-bag"></i>
-                        <p> <?= __('online_orders') ?></p>
-                    </a>
-                </li>
-
-                <li class="nav-item ">
-                    <a href="{{ url('vendor/all-orders-list') }}"
-                        class="nav-link <?= isset($page) && $page == 'Orders' ? 'active' : '' ?>">
-                        <i class="nav-icon fas fa-cloud-meatball"></i>
-                        <p> <?= __('vendor_order') ?></p>
-                    </a>
-                </li>
-
-                <li class="nav-drawer-header"><?= __('settings') ?></li>
-                <li class="nav-item ">
-                    <a href="{{ url('vendor/settings') }}"
-                        class="nav-link <?= isset($page) && $page == 'settings' ? 'active' : '' ?>">
-                        <i class="nav-icon fas fa-cog"></i>
-                        <p> <?= __('settings') ?></p>
-                    </a>
-                </li>
-
-
-                <li class="nav-item ">
-                    <a href="{{ url('vendor/settings/order-types') }}"
-                        class="nav-link <?= isset($page) && $page == 'order config' ? 'active' : '' ?>">
-                        <i class="nav-icon fas fa-cogs"></i>
-                        <p> <?= __('order_configuration') ?></p>
-                    </a>
-                </li>
-
-                <li class="nav-drawer-header"><?= __('items') ?></li>
-
-                <li class="nav-item <?= isset($page) && $page == 'products' ? 'menu-open' : '' ?>">
-                    <a href="#" class="nav-link">
-                        <i class=" nav-icon fab fa-product-hunt"></i>
-                        <p>
-                            <?= __('products') ?>
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ url('vendor/products') }}" class="nav-link <?= isset($page_title) && $page_title == 'Products' || $page_title == 'Create Product' || $page_title == 'Addons' ? 'active' : '' ?>">
-                                <i class="fa fa-angle-double-right nav-icon"></i>
-                                <p> <?= __('item_products') ?> </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ url('vendor/products/categories') }}"
-                                class="nav-link <?= isset($page_title) && $page_title == 'Categories' ? 'active' : '' ?>">
-                                <i class="fa fa-angle-double-right nav-icon"></i>
-                                <p> <?= __('categories') ?></p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="{{ url('vendor/products/subcategories') }}"
-                                class="nav-link <?= isset($page_title) && $page_title == 'Sub Categories' ? 'active' : '' ?>">
-                                <i class="fa fa-angle-double-right nav-icon"></i>
-                                <p> <?= __('subcategories') ?></p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="{{ url('vendor/products/allergens') }}"
-                                class="nav-link <?= isset($page_title) && $page_title == 'Allergens' ? 'active' : '' ?>">
-                                <i class="fa fa-angle-double-right nav-icon"></i>
-                                <p> <?= __('allergens') ?></p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="{{ url('vendor/products/addons-library') }}"
-                                class="nav-link <?= isset($page_title) && $page_title == 'Addon Library' ? 'active' : '' ?>">
-                                <i class="fa fa-angle-double-right nav-icon"></i>
-                                <p> <?= __('addon_library') ?></p>
-                            </a>
-                        </li>
-                    </ul>
-
-                </li>
-
-                <li class="nav-drawer-header"><?= __('communications') ?></li>
-
-                <li class="nav-item <?= isset($page) && $page == 'whatsapp' ? 'menu-open' : '' ?>">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fab fa-whatsapp"></i>
-                        <p>
-                            <?= __('whatsapp_config') ?>
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ url('vendor/whatsapp-order') }}"
-                                class="nav-link <?= isset($page_title) && $page_title == 'WhatsApp Order' ? 'active' : '' ?>">
-                                <i class="fa fa-angle-double-right nav-icon"></i>
-                                <p> <?= __('whatsapp_order') ?> </p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="nav-drawer-header"><?= __('users') ?></li>
-
-                <li class="nav-item ">
-                    <a href="{{ url('vendor/customer-list') }}"
-                        class="nav-link <?= isset($page_title) && $page_title == 'Customers' ? 'active' : '' ?>">
-                        <i class="nav-icon icofont-users-social"></i>
-                        <p> <?= __('customers') ?></p>
-                    </a>
-                </li>
-
-                <li class="nav-drawer-header"><?= __('others') ?></li>
-
-                <li class="nav-item <?= isset($page) && $page == 'Reports' ? 'menu-open' : '' ?>">
-                    <a href="#" class="nav-link">
-                        <i class="icofont-sound-wave nav-icon"></i>
-                        <p>
-                            <?= __('reports') ?>
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ url('vendor/reports/item-reports') }}" class="nav-link <?= isset($page_title) && $page_title == 'Item Statistics' ? 'active' : '' ?>">
-                                <i class="fa fa-angle-double-right nav-icon"></i>
-                                <p><?= __('item') ?> <?= __('statistics') ?> </p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="{{ url('vendor/reports/order-reports') }}" class="nav-link <?= isset($page_title) && $page_title == 'Order Reports' ? 'active' : '' ?>">
-                                <i class="fa fa-angle-double-right nav-icon"></i>
-                                <p><?= __('order') ?> <?= __('reports') ?> </p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="nav-item <?= isset($page) && $page == 'Pages' ? 'menu-open' : '' ?>">
-                    <a href="#" class="nav-link">
-                        <i class="icofont-page nav-icon"></i>
-                        <p>
-                            <?= __('pages') ?>
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ url('vendor/cookies') }}"
-                                class="nav-link <?= isset($page_title) && $page_title == 'Cookies' ? 'active' : '' ?>">
-                                <i class="fa fa-angle-double-right nav-icon"></i>
-                                <p> <?= __('cookies_and_privacy') ?> </p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="{{ url('vendor/terms') }}"
-                                class="nav-link <?= isset($page_title) && $page_title == 'Terms' ? 'active' : '' ?>">
-                                <i class="fa fa-angle-double-right nav-icon"></i>
-                                <p> <?= __('terms_and_condition') ?> </p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="nav-item ">
-                    <a href="" class="nav-link <?= $page_title == 'Profile' ? 'active' : '' ?>">
-                        <i class="nav-icon fas fa-plus"></i>
-                        <p> <?= __('create_new_shop') ?> </p>
-                    </a>
-                </li>
-                <li class="nav-item ">
-                    <a href="{{ url('vendor/subscriptions') }}" class="nav-link <?= isset($page) && $page == 'Subscriptions' ? 'active' : '' ?>">
+                    <a href="{{ url('vendor/subscriptions') }}"
+                        class="nav-link <?= isset($page) && $page == 'Subscriptions' ? 'active' : '' ?>">
                         <i class="nav-icon far fa-gem"></i>
                         <p> <?= __('subscriptions') ?></p>
                     </a>
@@ -274,9 +283,8 @@
 <div class="content-wrapper">
     <div class="content">
         <div class="container-fluid">
-            <div id="mainContent">
 
-                {{-- <script>
+            {{-- <script>
                     let numberFormat = `<?= __vsettings('number_format') ?>`;
                     let currencyPosition = '<?= __vsettings('currency_position') ?>';
                     let currencyIcon = ' <?= __vcountry(_ID())->currency_icon ?>';

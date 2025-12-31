@@ -90,11 +90,14 @@ class LanguageController extends Controller
 
     public function add_new_language(Request $request)
     {
+
+        $id = $request->id ?: null;
+
         try {
             $request->validate([
                 'country_id' => 'required',
-                'language_name' => 'required|alpha|unique:language_list,language_name',
-                'slug' => 'required|alpha|unique:language_list,slug',
+                'language_name' => "required|alpha|unique:language_list,language_name,{$id}",
+                'slug' => "required|alpha|unique:language_list,slug,{$id}",
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             $errors = $e->validator->errors()->all();

@@ -88,10 +88,10 @@
                 <!-- Menu Body -->
                 <!-- Menu Footer-->
                 <li class="user-footer">
-                    <a href=""
+                    <a href="{{ url('vendor/profile') }}"
                         class="btn btn-default btn-flat float-left"><?= __('profile') ?></a>
                     <a href=""
-                        class="btn btn-default btn-flat float-right"><?= __('profile') ?></a>
+                        class="btn btn-default btn-flat float-right"><?= __('logout') ?></a>
                 </li>
             </ul>
         </li>

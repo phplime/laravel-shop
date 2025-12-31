@@ -6,7 +6,7 @@
             <div class="row align-center justify-content-center">
                 <div class="col-md-8 col-lg-5 col-sm-12">
                     <form action="{{ url('weblogin') }}" method="post" onsubmit="formSubmit(event,this)">
-                        @csrf;
+                        @csrf
                         <div class="card
                         shadow-none">
                             <div class="card-body">

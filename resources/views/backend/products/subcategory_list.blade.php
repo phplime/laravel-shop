@@ -22,67 +22,68 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>
-                                            <img src="{{ asset('assets/backend/images/default-612x612.jpg') }}"
-                                                alt="category_image" class="avatar round mr-10">
 
-                                            <div class="mt-10">
-                                                <div class="catName">
-                                                    <div class="langItem">
-                                                        <span data-title="English" data-toggle="tooltip"
-                                                            data-original-title="" title="">
-                                                            <i class="fi fi-us"></i>
-                                                        </span>
-                                                        <span class="title-text">Pasta</span>
+                                    @foreach ($subcategory_list as $key => $row)
+                                        <tr>
+                                            <td data-label="{{ __('#') }}">{{ $key+1 }}</td>
+                                            <td data-label="{{ __('category_name') }}">
+                                                <img src="<?= __image($row->category_img, 'thumb') ?>" alt="category_image"
+                                                    class="avatar round mr-10">
+
+                                                <?php $category_names = __langData($row->cat_id, 'category_id', 'vendor_category_list_ln'); ?>
+
+                                                <div class="mt-10">
+                                                    <div class="catName">
+                                                        <?= __names($category_names, 'category_name', true); ?>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <table class="table table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th>#</th>
-                                                        <th><?= __('images') ?></th>
-                                                        <th><?= __('subcategory_name') ?></th>
-                                                        <th><?= __('status') ?></th>
-                                                        <th><?= __('action') ?></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr id="hide_1">
-                                                        <td>1</td>
-                                                        <td>
-                                                            <img src="{{ asset('assets/backend/images/default-612x612.jpg') }}"
-                                                                alt="category_image" class="avatar round">
-                                                        </td>
-                                                        <td>
-                                                            <div class="catName">
-                                                                <div class="langItem">
-                                                                    <span data-title="English" data-toggle="tooltip"
-                                                                        data-original-title="" title="">
-                                                                        <i class="fi fi-us"></i>
-                                                                    </span>
-                                                                    <span class="title-text">Pasta</span>
-                                                                </div>
-                                                            </div>
+                                            </td>
+                                            <td data-label="{{ __('subcategories') }}">
+                                                <!-- Sub Category Table -->
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th><?= __('images') ?></th>
+                                                            <th><?= __('subcategory_name') ?></th>
+                                                            <th><?= __('status') ?></th>
+                                                            <th><?= __('action') ?></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach ($row->subcategory as $_key => $item)
 
-                                                        </td>
+                                                            <?php $subCat_names = __langData($item->id, 'subcategory_id', 'vendor_subcategory_list_ln'); ?>
 
-                                                        <td> <?= __status(1, 1, 'subcategories') ?></td>
-                                                        <td class="">
-                                                            <div class="btnGroup">
-                                                                <?= __editBtn('', true, ['is_sidebar' => 1, 'class' => 'edit_subcategory_1']) ?>
-                                                                <?= __deleteBtn(1, 'subcategories', true) ?>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </td>
-                                    </tr>
+                                                            <tr id="hide_1">
+                                                                <td data-label="{{ __('#') }}">{{ $_key+1 }}</td>
+                                                                <td data-label="{{ __('images') }}">
+                                                                    <img src="<?= __image($item->images, 'thumb') ?>"
+                                                                        alt="category_image" class="avatar round">
+                                                                </td>
+                                                                <td data-label="{{ __('subcategory_name') }}">
+                                                                    <div class="catName">
+                                                                        <?= __names($subCat_names, 'subcategory_name', true); ?>
+                                                                    </div>
+                                                                </td>
+
+                                                                <td data-label="{{ __('status') }}">
+                                                                    <?= __status($item->id, $item->status, 'vendor_subcategory_list') ?>
+                                                                </td>
+                                                                <td data-label="{{ __('action') }}">
+                                                                    <div class="btnGroup">
+                                                                        <?= __editBtn('', true, ['is_sidebar' => 1, 'class' => 'edit_subcategory_'.$item->id]) ?>
+                                                                        <?= __deleteBtn($item->id, 'vendor_subcategory_list', true) ?>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                                <!-- Sub Category Table -->
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -93,54 +94,85 @@
     </div>
 
 
+
+    <!-- Add Sidebar Area -->
     <?= __header(__('add_new'), url('vendor/products/add_subcategory'), 'add_subcategory') ?>
-    <div class="form-group">
-        <label><?= __('category_name') ?> <?= __required() ?></label>
-        <select name="category_id" id="category_id" class="form-control">
-            <option value=""><?= __('select') ?></option>
-            <option value="1">Pizza</option>
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label><?= __('subcategory_name') ?></label>
-        <input type="text" name="subcategory_name[en]" class="form-control" value="">
-    </div>
-
-    <div class="form-group">
-        <label><?= __('image') ?></label>
-        <div class="mb-4">
-            {{-- <?= media_files('image', 'single', '') ?> --}}
+        <div class="form-group">
+            <label><?= __('category_name') ?> <?= __required() ?></label>
+            <select name="category_id" id="category_id" class="form-control">
+                <option value=""><?= __('select') ?></option>
+                @foreach ($category_list as $category)
+                    <?php if($category->status == 1):?>
+                    <option value="{{ $category->id }}">
+                        {{ __names($category->category_names) }}
+                    </option>
+                    <?php endif; ?>
+                @endforeach
+            </select>
         </div>
+        @foreach (shop_language() as $lang)
+            <div class="form-group">
+                <label><?= __('subcategory_name') ?> <?= country($lang->country_id)->flag ?> <?= __required() ?></label>
+                <input type="text" name="subcategory_name[<?= $lang->slug ?>]" class="form-control" value="">
+            </div>
+        @endforeach
 
-    </div>
-    <?= hidden('id', 0) ?>
+        <div class="form-group">
+            <label><?= __('image') ?></label>
+            <div class="mb-4">
+                <?= media_files('image', 'single', '') ?>
+            </div>
+
+        </div>
+        <?= hidden('id', 0) ?>
     <?= __footer() ?>
 
 
+    <!-- Edit Sidebar Area -->
+    @foreach ($subcategories as $item)
+    <?= __header(__('edit'), url('vendor/products/add_subcategory'), 'edit_subcategory_'.$item->id) ?>
 
-    <?= __header(__('edit'), url('vendor/products/add_subcategory'), 'edit_subcategory_1') ?>
-
-    <div class="form-group">
-        <label><?= __('category_name') ?> <?= __required() ?></label>
-        <select name="category_id" id="category_id" class="form-control">
-            <option value=""><?= __('select') ?></option>
-            <option value="1">pizza</option>
-        </select>
-    </div>
-    <div class="form-group">
-        <label><?= __('subcategory_name') ?></label>
-        <input type="text" name="subcategory_name[en]" class="form-control" value="">
-    </div>
-
-
-    <div class="form-group">
-        <label><?= __('image') ?></label>
-        <div class="mb-4">
-            {{-- <?= media_files('image', 'single', __isset($erow, 'thumb')) ?> --}}
+        <div class="form-group">
+            <label><?= __('category_name') ?> <?= __required() ?></label>
+            <select name="category_id" id="category_id" class="form-control">
+                <option value=""><?= __('select') ?></option>
+                @foreach ($category_list as $category)
+                    <?php if($category->status == 1):?>
+                    <option <?= ($item->category_id == $category->id) ? 'selected':'' ?> value="{{ $category->id }}">
+                        {{ __names($category->category_names) }}
+                    </option>
+                    <?php endif; ?>
+                @endforeach
+            </select>
         </div>
 
-    </div>
-    <?= hidden('id', 1) ?>
+        <?php $subCat_data = __langData($item->id, 'subcategory_id', 'vendor_subcategory_list_ln'); ?>
+
+        @foreach (shop_language() as $lang)
+            <?php
+                $subcategory_names = [];
+                if(!empty($subCat_data)):
+                    foreach ($subCat_data as $key => $value) {
+                        $subcategory_names[$value->language] = $value->subcategory_name;
+                    }
+                endif;
+            ?>
+
+            <div class="form-group">
+                <label><?= __('subcategory_name') ?> <?= country($lang->country_id)->flag ?> <?= __required() ?></label>
+                <input type="text" name="subcategory_name[<?= $lang->slug ?>]" class="form-control" value="{{ isset($subcategory_names[$lang->slug]) ? $subcategory_names[$lang->slug]:'' }}">
+            </div>
+        @endforeach
+
+        <div class="form-group">
+            <label><?= __('image') ?></label>
+            <div class="mb-4">
+                <?= media_files('image', 'single', __isset($item, 'thumb')) ?>
+            </div>
+        </div>
+
+        <?= hidden('id', __isset($item, 'id')) ?>
     <?= __footer() ?>
+    @endforeach
+
 @endsection

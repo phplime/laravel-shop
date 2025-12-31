@@ -23,32 +23,28 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @foreach ($allergen_list as $key => $row)
+                                        <?php $langData = __langData($row->id, 'allergen_id', 'vendor_allergen_list_ln') ?>
+                                        <tr id="hide_1">
+                                            <td>{{ $key+1 }}</td>
+                                            <td>
+                                                <img src="<?= __image($row->images, 'thumb') ?>"
+                                                    alt="allergen_image" class="avatar round">
+                                            </td>
 
-                                    <tr id="hide_1">
-                                        <td>1</td>
-                                        <td>
-                                            <img src="{{ asset('assets/backend/images/default-612x612.jpg') }}"
-                                                alt="allergen_image" class="avatar round">
-                                        </td>
+                                            <td>
+                                                <?= __names($langData, 'allergen_name', true) ?>
+                                            </td>
 
-                                        <td>
-                                            <div class="langItem">
-                                                <span data-title="English" data-toggle="tooltip" data-original-title=""
-                                                    title="">
-                                                    <i class="fi fi-us"></i>
-                                                </span>
-                                                <span class="title-text">Oil</span>
-                                            </div>
-                                        </td>
-
-                                        <td> <?= __status(1, 1, 'vendor_allergen_list') ?></td>
-                                        <td class="">
-                                            <div class="btnGroup">
-                                                <?= __editBtn('', true, ['is_sidebar' => 1, 'class' => 'edit_allergen_1']) ?>
-                                                <?= __deleteBtn(1, 'vendor_allergen_list', true) ?>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                            <td> <?= __status($row->id, $row->status, 'vendor_allergen_list') ?></td>
+                                            <td class="">
+                                                <div class="btnGroup">
+                                                    <?= __editBtn('', true, ['is_sidebar' => 1, 'class' => 'edit_allergen_'.$row->id]) ?>
+                                                    <?= __deleteBtn($row->id, 'vendor_allergen_list', true) ?>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -58,44 +54,59 @@
         </div>
     </div>
 
+    <!-- Add Sidebar Area  -->
+    <?= __header(__('add_new'), url('vendor/products/add-allergen'), 'add_allergen') ?>
 
-    <?= __header(__('add_new'), url('vendor/products/add_allergen'), 'add_allergen') ?>
+        @foreach (shop_language() as $lang)
+            <div class="form-group">
+                <label> <?= __('allergen_name') ?> <?= country($lang->country_id)->flag ?> <?= __required() ?></label>
+                <input type="text" name="allergen_name[<?= $lang->slug ?>]" class="form-control" value="">
+            </div>
+        @endforeach
 
+        <div class="form-group">
+            <label><?= __('image') ?></label>
+            <div class="mb-4">
+                <?= media_files('image', 'single', '') ?>
+            </div>
 
-    <div class="form-group">
-        <label> <?= __('allergen_name') ?> </label>
-        <input type="text" name="allergen_name[en]" class="form-control" value="">
-    </div>
-
-
-    <div class="form-group">
-        <label><?= __('image') ?></label>
-        <div class="mb-4">
-            {{-- <?= media_files('image', 'single', '') ?> --}}
         </div>
-
-    </div>
-    <?= hidden('id', 0) ?>
+        <?= hidden('id', 0) ?>
     <?= __footer() ?>
 
 
 
+    <!-- Edit Sidebar Area -->
+    @foreach ($allergen_list as $row)
+        <?php $lang_names = __langData($row->id, 'allergen_id', 'vendor_allergen_list_ln') ?>
+        <?= __header(__('edit'), url('vendor/products/add-allergen'), 'edit_allergen_'.$row->id) ?>
 
-    <?= __header(__('edit'), url('vendor/products/add_allergen'), 'edit_allergen_1') ?>
+        @foreach (shop_language() as $lang)
 
+            <?php
+                $allergen_names =[];
+                if(!empty($lang_names)){
+                    foreach ($lang_names as $value) {
+                        $allergen_names[$value->language] = $value->allergen_name;
+                    }
+                }
+            ?>
 
-    <div class="form-group">
-        <label><?= __('allergen_name') ?></label>
-        <input type="text" name="allergen_name[en]" class="form-control" value="">
-    </div>
+            <div class="form-group">
+                <label> <?= __('allergen_name') ?> <?= country($lang->country_id)->flag ?> <?= __required() ?></label>
+                <input type="text" name="allergen_name[<?= $lang->slug ?>]" class="form-control" value="{{ $allergen_names[$lang->slug] }}">
+            </div>
+        @endforeach
 
-    <div class="form-group">
-        <label><?= __('image') ?></label>
-        <div class="mb-4">
-            {{-- <?= media_files('image', 'single', __isset($erow, 'thumb')) ?> --}}
+        <div class="form-group">
+            <label><?= __('image') ?></label>
+            <div class="mb-4">
+                <?= media_files('image', 'single', __isset($row, 'thumb')) ?>
+            </div>
+
         </div>
+        <?= hidden('id', __isset($row, 'id')) ?>
+        <?= __footer() ?>
+    @endforeach
 
-    </div>
-    <?= hidden('id', 0) ?>
-    <?= __footer() ?>
 @endsection
