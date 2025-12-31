@@ -137,12 +137,19 @@
             </div>
         </li>
 
+        <!-- Theme Toggle -->
+        <li class="nav-item">
+            <a class="nav-link" href="#" id="themeToggle" title="Toggle Dark/Light Mode">
+                <i class="fas fa-moon" id="themeIcon"></i>
+            </a>
+        </li>
+
 
         <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                 <img src="{{ asset('assets/backend/images/avatar.png') }}"
                     class="user-image uploaded_img" alt="User Image">
-                <span class="hidden-xs">emran</span>
+                <span class="hidden-xs">{{ user()->name??user()->username }}</span>
             </a>
             <ul class="dropdown-menu">
                 <!-- User image -->
@@ -157,8 +164,11 @@
                 <!-- Menu Body -->
                 <!-- Menu Footer-->
                 <li class="user-footer">
-                    <a href="" class="btn btn-default btn-flat float-left">profile</a>
-                    <a href="" class="btn btn-default btn-flat float-right">logout</a>
+                    <a href="" class="btn btn-default btn-flat float-left">{{__('profile')}}</a>
+                    <form action="{{ route('tyro-login.logout') }}" method="post">
+                        @csrf
+                        <button type="submit" class="btn btn-default btn-flat float-right">{{__('logout')}}</button>
+                    </form>
                 </li>
             </ul>
         </li>

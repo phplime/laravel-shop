@@ -237,7 +237,7 @@
                                                         class="themeInput dark"></span></label>
                                             </div>
                                         </div>
-                                        <div class="form-group col-md-6">
+                                        <div class="form-group col-md-12">
                                             <label><?= __('color') ?></label>
                                             <div class="color_picker">
                                                 <label class="ci-input-group input-group-prepand">

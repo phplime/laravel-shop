@@ -16,19 +16,19 @@ $menu_style = __settings('menu_style') == 1 ? true : false;
             'title' => __('preferences'),
             'url' => 'admin/settings/preferences',
             'icon' => 'icofont-badge',
-            '_title' => 'preferences Settings',
+            '_title' => 'Preferences',
             'page_title' => $page_title ?? ''
         ],
         [
             'title' => __('email_settings'),
-            'url' => 'admin/settings/email_settings',
+            'url' => 'admin/settings/email-settings',
             'icon' => 'icofont-envelope',
             '_title' => 'Email Settings',
             'page_title' => $page_title ?? ''
         ],
         [
             'title' => __('payment_settings'),
-            'url' => 'admin/settings/payment_settings',
+            'url' => 'admin/settings/payment-settings',
             'icon' => 'fas fa-credit-card',
             '_title' => 'Payment Settings',
             'page_title' => $page_title ?? ''

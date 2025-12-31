@@ -84,9 +84,9 @@
             function (start, end, label) {
                 console.log(
                     "A new date selection was made: " +
-                        start.format("MMMM D, YYYY") +
-                        " to " +
-                        end.format("MMMM D, YYYY")
+                    start.format("MMMM D, YYYY") +
+                    " to " +
+                    end.format("MMMM D, YYYY")
                 );
             }
         );
@@ -96,8 +96,8 @@
             function (ev, picker) {
                 $(this).val(
                     picker.startDate.format("D MMM YYYY") +
-                        " - " +
-                        picker.endDate.format("D MMM YYYY")
+                    " - " +
+                    picker.endDate.format("D MMM YYYY")
                 );
             }
         );
@@ -153,7 +153,7 @@
                 function () {
                     $.get(
                         url,
-                        { _token: csrf_token },
+                        { _token: _csrf },
                         function (json) {
                             if (json.st == 1) {
                                 swal(
@@ -290,7 +290,7 @@
         var url = addLangToUrl(`${base_url}admin/pos/remove_cart_item/${id}`);
         $.post(
             url,
-            { _token: csrf_token },
+            { _token: _csrf },
             function (json) {
                 if (json.st == 1) {
                     $("#show_posItems").html(json.load_data);
@@ -315,8 +315,8 @@
                         isAdd
                             ? ++currentVal
                             : currentVal > 1
-                            ? --currentVal
-                            : currentVal
+                                ? --currentVal
+                                : currentVal
                     );
                 var soldPrice = parseFloat($sold_price.val());
                 console.log(soldPrice);
@@ -325,7 +325,7 @@
                 );
                 $.post(
                     url,
-                    { _token: csrf_token },
+                    { _token: _csrf },
                     function (json) {
                         if (json.st == 1) {
                             $("#show_posItems").html(json.load_data);
@@ -351,7 +351,7 @@
             );
             $.post(
                 url,
-                { _token: csrf_token },
+                { _token: _csrf },
                 function (json) {
                     if (json.st == 1) {
                         $("#show_posItems").html(json.load_data);
@@ -411,33 +411,7 @@
             Change preferences settings
   ----------------------------------------------*/
 
-    $(function () {
-        $(document).on("change", ".setting_option", function () {
-            var type = $(this).data("type");
-            var value = $(this).data("value");
-            var setData = this;
-            var url = addLangToUrl(
-                `${base_url}admin/settings/setting_status/${type}/${value}`
-            );
-            $.post(
-                url,
-                { _token: csrf_token },
-                function (json) {
-                    if (json.st == 1) {
-                        if (value == 1) {
-                            MSG(0, item_deactive);
-                            $(setData).data("value", 0);
-                        } else {
-                            MSG(1, item_active);
-                            $(setData).data("value", 1);
-                        }
-                    }
-                },
-                "json"
-            );
-            return false;
-        });
-    });
+
 
     $(document).on("submit", ".productVariants", function (e) {
         var url = $(this).attr("action");
@@ -504,7 +478,7 @@
             function () {
                 $.post(
                     url,
-                    { _token: csrf_token },
+                    { _token: _csrf },
                     function (json) {
                         if (json.st == 1) {
                             swal(
@@ -514,7 +488,7 @@
                                     type: "success",
                                     showCancelButton: false,
                                 },
-                                function () {}
+                                function () { }
                             );
                         }
                     },
@@ -531,4 +505,35 @@
             .replace(/[^A-Za-z0-9]/g, "");
         $(this).val(cleanValue);
     });
+
+
+
+    /*----------------------------------------------
+              Change preferences settings
+    ----------------------------------------------*/
+
+    $(function () {
+        $(document).on('change', '.setting_option', function (e) {
+            e.preventDefault();
+
+            var type = $(this).data('type');
+            var value = $(this).data('value');
+            var setData = this;
+            var url = addLangToUrl(`${base_url}admin/settings/setting_status/${type}/${value}`);
+            $.post(url, { '_token': _csrf }, function (json) {
+                if (json.st == 1) {
+                    if (value == 1) {
+                        MSG(0, item_deactivated);
+                        $(setData).data('value', 0);
+                    } else {
+                        MSG(1, item_activated);
+                        $(setData).data('value', 1);
+                    }
+
+                }
+            }, 'json');
+            return false;
+        });
+    });
+
 })(jQuery);

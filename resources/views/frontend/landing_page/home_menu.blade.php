@@ -27,11 +27,11 @@
                 </ul>
                 <ul class="my-2 my-lg-0 ml-auto d-flex gap-10 homeNav_actionBtn">
                     <li class="nav-item">
-                        <a class="ci-register-btn" href="{{ route('register') }}"><i class="fas fa-user-plus"></i>
+                        <a class="ci-register-btn" href="{{ url('register') }}"><i class="fas fa-user-plus"></i>
                             Register {{ session('locale') }} </a>
                     </li>
                     <li class="nav-item">
-                        <a class="ci-login-btn " href="{{ route('login') }}"><i
+                        <a class="ci-login-btn " href="{{ url('login') }}"><i
                                 class="fas fa-sign-out-alt"></i>Login</a>
                     </li>
                 </ul>
@@ -41,7 +41,7 @@
                     Session Locale: {{ session('locale') }}<br>
                     App Locale: {{ app()->getLocale() }}<br>
                     URL Defaults: {{ json_encode(app('url')->getDefaultParameters()) }}<br>
-                    Test Route: {{ route('login') }}<br>
+                    Test Route: {{ url('login') }}<br>
                     Test url: {{ url('login') }}<br>
                     utl style: {{ config('localization.url_style', 'query'); }}<br>
                 </div>

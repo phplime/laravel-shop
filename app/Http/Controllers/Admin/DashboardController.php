@@ -2,42 +2,108 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\User;
+use App\Models\Package;
+use App\Models\Subscription;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Repositories\BaseRepository;
+use App\Services\SubscriptionService;
+use App\Services\UserAccessService;
+use App\Models\Vendor;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
     protected BaseRepository $baseRepository;
+    protected SubscriptionService $subscriptionService;
+    protected UserAccessService $userAccessService;
 
-    public function __construct(BaseRepository $baseRepository)
-    {
+    public function __construct(
+        BaseRepository $baseRepository,
+        SubscriptionService $subscriptionService,
+        UserAccessService $userAccessService
+    ) {
         $this->baseRepository = $baseRepository;
+        $this->subscriptionService = $subscriptionService;
+        $this->userAccessService = $userAccessService;
     }
 
 
     public function index()
     {
         $data = [];
+
         $data['page_title'] = 'Dashboard';
         $data['page'] = 'Dashboard';
         return view('backend.admin.dashboard', $data);
     }
 
 
-    public function user_list()
+    public function subscriber_list()
     {
-        $page_title = 'User List';
-        return view('backend.admin.auth.user_list', compact('page_title'));
+        $data = [];
+        $data['page_title'] = 'Subscriber List';
+
+        $data['subscriber_list'] = User::where('role', '!=', 'admin')
+            ->with(['package', 'subscription'])
+            ->filter(request()->all())
+            ->orderBy('id', 'asc')
+            ->paginate(5)
+            ->withQueryString();
+
+
+
+        return view('backend.admin.auth.user_list', $data);
     }
+
+
+    public function vendor_list()
+    {
+        $data = [];
+        $data['page_title'] = 'Vendor List';
+
+        $data['vendor_list'] = Vendor::filter(request()->all())
+            ->orderBy('id', 'asc')
+            ->paginate(5)
+            ->withQueryString();
+
+
+        return view('backend.admin.auth.vendor_list', $data);
+    }
+
 
 
     public function user_details($username)
     {
-        $page_title = 'User Details';
-        return view('backend.admin.auth.user_details', compact('page_title'));
+        $user = User::where('username', $username)->firstOrFail();
+
+        // Sync data before viewing to ensure accuracy
+        $this->subscriptionService->syncUserAccessData($user->id);
+
+        $data = $this->userAccessService->getUserAccessData($username);
+
+        $data['page_title'] = 'User Details';
+
+        return view('backend.admin.auth.user_details', $data);
+    }
+
+    public function update_user_access(Request $request)
+    {
+        $updated = $this->userAccessService->updateAccess(
+            $request->user_id,
+            $request->type,
+            $request->id,
+            $request->status
+        );
+
+        if ($updated) {
+            return response()->json(['st' => 1, 'msg' => __('success_msg')]);
+        }
+
+        return response()->json(['st' => 0, 'msg' => __('something_went_wrong')]);
     }
 
 

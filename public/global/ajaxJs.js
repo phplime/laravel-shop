@@ -51,4 +51,51 @@
             }, 100);
         });
     });
+
+    /*----------------------------------------------
+    AJAX FILTER & PAGINATION
+    ----------------------------------------------*/
+
+
+    $(document).on("submit", ".ajaxFilterForm", function (e) {
+        e.preventDefault();
+        var $form = $(this);
+        var url = $form.attr("action") + "?" + $form.serialize();
+        var target = $form.data("target") || ".card-content";
+
+        history.pushState({ target: target }, "", url);
+        ajaxFilter(url, target);
+    });
+
+
+    $(document).on("click", ".ui-pagination a", function (e) {
+        var $container = $(this).closest("[data-ajax-container]");
+        if ($container.length > 0) {
+            e.preventDefault();
+            var url = $(this).attr("href");
+            var target = $container.data("ajax-container");
+
+            history.pushState({ target: target }, "", url);
+            ajaxFilter(url, target);
+        }
+    });
+
+    $(document).on("click", ".ajaxFilterLink", function (e) {
+        e.preventDefault();
+        var url = $(this).attr("href");
+        var target = $(this).data("target") || ".card-content";
+
+        history.pushState({ target: target }, "", url);
+        ajaxFilter(url, target);
+    });
+
+    window.onpopstate = function (e) {
+        if (e.state && e.state.target) {
+            ajaxFilter(window.location.href, e.state.target);
+        } else {
+            // Fallback if no state (initial page load state)
+            location.reload();
+        }
+    };
+
 })(jQuery);

@@ -31,12 +31,13 @@
 <script src="{{ asset('assets/backend/plugins/niceselect/jquery.nice-select.min.js') }}"></script>
 <!-- sweetalert -->
 <script src="{{ asset('assets/backend/plugins/sweetalert/sweetalert.min.js') }}"></script>
+<script src="{{ asset('assets/backend/plugins/bootstrapToggle.js') }}"></script>
 <script src="{{ asset('assets/plugins/notify/notify.main.js') }}"></script>
 
 
 <!-- main js -->
-<script src="{{ asset('global/ajaxJs.js') }}"></script>
-<script src="{{ asset('global/admin.main.js') }}"></script>
+<script src="{{ asset('global/ajaxJs.js?t='.time()) }}"></script>
+<script src="{{ asset('global/admin.main.js?t='.time()) }}"></script>
 
 <div class="defaultSidebar theme-1">
     <div class="sidebarWrapper">
@@ -53,39 +54,39 @@
 
 
 @if (session('success'))
-    <script>
-        new Notify({
-            status: 'success',
-            title: "{{ __('success') }}",
-            text: "{{ session('success') }}",
-            effect: 'slide',
-            speed: 300,
-            autoclose: true,
-            showCloseButton: true,
-            gap: 20,
-            distance: 20,
-            customClass: 'ci-notify',
-            type: 'filled', // or 'outline'
-        });
-    </script>
+<script>
+    new Notify({
+        status: 'success',
+        title: "{{ __('success') }}",
+        text: "{{ session('success') }}",
+        effect: 'slide',
+        speed: 300,
+        autoclose: true,
+        showCloseButton: true,
+        gap: 20,
+        distance: 20,
+        customClass: 'ci-notify',
+        type: 'filled', // or 'outline'
+    });
+</script>
 @endif
 
 @if (session('error'))
-    <script>
-        new Notify({
-            status: 'error',
-            title: "{{ __('error') }}",
-            text: "{{ session('error') }}",
-            effect: 'slide',
-            speed: 300,
-            autoclose: true,
-            showCloseButton: true,
-            gap: 20,
-            distance: 20,
-            customClass: 'ci-notify',
-            type: 'filled', // or 'outline'
-        });
-    </script>
+<script>
+    new Notify({
+        status: 'error',
+        title: "{{ __('error') }}",
+        text: "{{ session('error') }}",
+        effect: 'slide',
+        speed: 300,
+        autoclose: true,
+        showCloseButton: true,
+        gap: 20,
+        distance: 20,
+        customClass: 'ci-notify',
+        type: 'filled', // or 'outline'
+    });
+</script>
 @endif
 
 
@@ -133,4 +134,59 @@
         }
     }
 </script>
+
+<script>
+    // Theme Toggle Functionality
+    (function() {
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const body = document.body;
+
+        // Get saved theme from localStorage or default to light
+        const savedTheme = localStorage.getItem('theme') || 'theme-light';
+        if (savedTheme == 'theme-dark') {
+            body.classList.remove('theme-light');
+            body.classList.remove('light');
+        } else {
+            body.classList.remove('theme-dark');
+            body.classList.remove('dark');
+        }
+        // Apply saved theme on page load
+        body.classList.add(savedTheme);
+        updateIcon(savedTheme);
+
+        // Toggle theme on button click
+        if (themeToggle) {
+            themeToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                // Toggle between theme-dark and theme-light
+                if (body.classList.contains('theme-dark')) {
+                    body.classList.remove('theme-dark');
+                    body.classList.remove('dark');
+                    body.classList.add('theme-light');
+                    localStorage.setItem('theme', 'theme-light');
+                    updateIcon('theme-light');
+                } else {
+                    body.classList.remove('theme-light');
+                    body.classList.remove('light');
+                    body.classList.add('theme-dark');
+                    localStorage.setItem('theme', 'theme-dark');
+                    updateIcon('theme-dark');
+                }
+            });
+        }
+
+        function updateIcon(theme) {
+            if (theme === 'theme-dark') {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+        }
+    })();
+</script>
+
 @yield('scripts')

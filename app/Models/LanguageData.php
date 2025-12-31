@@ -17,20 +17,7 @@ class LanguageData extends Model
      */
     protected $guarded = [];
 
-    /**
-     * Automatically clear cache for the locale
-     * when translations are added, updated, or deleted.
-     */
-    protected static function booted()
-    {
-        static::saved(function ($model) {
-            Cache::forget("lang_{$model->locale}");
-        });
 
-        static::deleted(function ($model) {
-            Cache::forget("lang_{$model->locale}");
-        });
-    }
 
     /**
      * Get translation by key and locale (with optional fallback).

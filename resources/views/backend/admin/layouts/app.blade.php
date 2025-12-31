@@ -11,7 +11,7 @@
     @include('backend.admin.partials.header')
 </head>
 
-<body class="sidebar-mini layout-fixed layout-navbar-fixed theme-light">
+<body class="sidebar-mini layout-fixed layout-navbar-fixed  <?= __settings('theme') == 'dark' ? 'theme-dark dark' : 'theme-light light'; ?>">
     <div id="mainContent">
         <div class="wrapper">
             @include('backend.admin.layouts.admin_menu')

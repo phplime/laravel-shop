@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\SetLocale;
+use App\Http\Middleware\SetTimezone;
 use App\Providers\UrlServiceProvider;
 use Illuminate\Foundation\Application;
 use App\Http\Middleware\ForceDatabaseTranslator;
@@ -26,11 +27,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->prepend(ForceDatabaseTranslator::class);
         $middleware->append([
             SetLocale::class,
+            SetTimezone::class,
         ]);
     })
     ->withProviders([
-        UrlServiceProvider::class, //
-
+        UrlServiceProvider::class,
     ])
     ->withExceptions(function (Exceptions $exceptions): void {
         //

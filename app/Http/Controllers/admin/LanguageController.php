@@ -165,7 +165,7 @@ class LanguageController extends Controller
     private function removeLanguageColumn(string $slug)
     {
         $slug = str($slug)->slug('_'); // normalize column name
-
+ 
         if (Schema::hasColumn('language_data', $slug)) {
             Schema::table('language_data', function (Blueprint $table) use ($slug) {
                 $table->dropColumn($slug);
@@ -209,7 +209,6 @@ class LanguageController extends Controller
                 $updated = true;
             }
         }
-
 
         if ($updated) {
             return redirect()->back()->with('success', __('Save Change Successful'));

@@ -48,7 +48,7 @@
         </div>
     </div>
 
-    <?= __header(__('add_new_language'), url('admin/add_new_language'), 'language') ?>
+    <?= __header(__('add_new_language'), url('admin/language/add_new_language'), 'language') ?>
     <div class="form-group mb-0">
         <select class="sidebarSelect form-control" name="country_id" onchange="updateFlag(this)">
             @foreach ($country_list as $country)
@@ -89,7 +89,7 @@
 
 
     @foreach ($language_list as $key => $lang)
-        <?= __header(__('edit'), url('admin/add_new_language'), 'edit_language_' . $lang->id) ?>
+        <?= __header(__('edit'), url('admin/language/add_new_language'), 'edit_language_' . $lang->id) ?>
         <div class="form-group mb-0">
             <select class="sidebarSelect form-control" name="country_id" onchange="updateFlag(this)">
                 @foreach ($country_list as $country)

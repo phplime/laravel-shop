@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Translation\Translator;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Support\Facades\Event;
+use App\Services\SubscriptionService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -37,6 +40,13 @@ class AppServiceProvider extends ServiceProvider
                 \$__env->stopPush();
             }
         ?>";
+        });
+
+        // Sync user access data on login
+        Event::listen(Login::class, function (Login $event) {
+            if ($event->user && $event->user->id) {
+                app(SubscriptionService::class)->syncUserAccessData($event->user->id);
+            }
         });
     }
 }

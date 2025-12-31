@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('settings', function (Blueprint $table) {
-            $table->id();
-            $table->string('key')->nullable();
-            $table->longText('value')->nullable();
-            $table->timestamps();
-        });
+        // Schema::create('settings', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('key')->nullable();
+        //     $table->longText('value')->nullable();
+        //     $table->timestamps();
+        // });
     }
 
     /**

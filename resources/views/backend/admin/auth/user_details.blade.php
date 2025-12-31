@@ -1,164 +1,290 @@
-<x-admin-layout>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title"><a href="{{ url('admin/user_list') }}"><i class="fa fa-arrow-left mr-5"></i>
-                            phplime</a></h4>
+@extends('backend.admin.layouts.app')
+
+@section('content')
+
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title">{{ __('user_details') }}</h4>
+        <a href="{{ url('admin/subscriber_list') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left mr-1"></i> {{ __('back') }}
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">{{ __('user_information') }}</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>{{ __('name') }}</label>
+                                    <input type="text" class="form-control form-control-premium" value="{{ $user->name }}" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>{{ __('email') }}</label>
+                                    <input type="email" class="form-control form-control-premium" value="{{ $user->email }}" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>{{ __('new_password') }} <span class="text-muted small">({{ __('leave_blank_to_keep_current') }})</span></label>
+                                    <input type="password" class="form-control form-control-premium" placeholder="********">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>{{ __('confirm_new_password') }}</label>
+                                    <input type="password" class="form-control form-control-premium" placeholder="********">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div class="userDeatils d-flex aling-center flex-column justify-content-center gap-10">
-                        <div class="d-flex flex-column align-center justify-content-center">
-                            <div class="avatar avatar-big avatar-circle">
-                                <img src="{{ asset('assets/backend/images/avatar.png') }}" alt="profile image">
+            </div><!-- col-12 -->
+        </div><!-- row -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">{{ __('assign_access') }}</h4>
+                    </div>
+                    <div class="card-body">
+                        <fieldset>
+                            <legend>{{ __('features') }}</legend>
+                            <div class="access-grid mb-4">
+                                @foreach($features as $feature)
+                                @php
+                                $is_package = isset($package_features[$feature->id]) && $package_features[$feature->id] == 1;
+                                $is_available = $is_package; // Disabled if not in package
+                                $is_checked = isset($user_features[$feature->id]) && $user_features[$feature->id] == 1;
+                                @endphp
+                                <div class="access-card {{ !$is_available ? 'disabled' : '' }}">
+                                    <label class="custom-checkbox d-flex align-items-center space-between mb-2">
+                                        <div class="itemDetails d-flex align-items-center gap-5">
+                                            <input type="checkbox" name="feature[]" class="access-toggle"
+                                                data-type="feature"
+                                                data-id="{{ $feature->id }}"
+                                                id="feature_{{ $feature->id }}"
+                                                value="{{ $feature->id }}"
+                                                {{ $is_checked ? 'checked' : '' }}
+                                                {{ !$is_available ? 'disabled' : '' }}>
+                                            <div class="itemContent">
+                                                <span>{{ $feature->name }}</span>
+                                                <span class="text-muted small">{{ $feature->slug }}</span>
+                                            </div>
+                                        </div>
+                                        @if($is_package)
+                                        <span class="badge-package text-warning"><i class="fa fa-box-open"></i></span>
+                                        @endif
+                                    </label>
+                                </div>
+                                @endforeach
                             </div>
-                            <div class="mt-10 text-center">
-                                <h4>phplime</h4>
-                                <p>phplime.envato@gmail.com</p>
-                                <p>09 Apr, 2024 - 10:26 pm</p>
+
+                        </fieldset>
+
+                        <fieldset class="mt-2rm">
+                            <legend>{{ __('order_types') }}</legend>
+                            <div class="access-grid mb-4">
+                                @foreach($order_types as $type)
+                                @php
+                                $is_package = isset($package_order_types[$type->id]) && $package_order_types[$type->id] == 1;
+                                $is_available = $is_package; // Disabled if not in package
+                                $is_checked = isset($user_order_types[$type->id]) && $user_order_types[$type->id] == 1;
+                                @endphp
+
+                                <div class="access-card {{ !$is_available ? 'disabled' : '' }}">
+                                    <label class="custom-checkbox d-flex align-items-center space-between mb-2">
+                                        <div class="itemDetails d-flex align-items-center gap-5">
+                                            <input type="checkbox" name="order_type[]" class="access-toggle"
+                                                data-type="order_type"
+                                                data-id="{{ $type->id }}"
+                                                id="order_type_{{ $type->id }}"
+                                                value="{{ $type->id }}"
+                                                {{ $is_checked ? 'checked' : '' }}
+                                                {{ !$is_available ? 'disabled' : '' }}>
+                                            <div class="itemContent">
+                                                <span>{{ $type->title??$type->name }}</span>
+                                                <span class="text-muted small">{{ $type->slug }}</span>
+                                            </div>
+                                        </div>
+                                        @if($is_package)
+                                        <span class="badge-package text-warning"><i class="fa fa-box-open"></i></span>
+                                        @endif
+                                    </label>
+                                </div>
+
+                                @endforeach
                             </div>
-                        </div>
-                        <div class="text-center d-flex gap-10 align-center-center justify-content-center">
-                            <span data-toggle="tooltip" data-placement="top" data-title="Activated"
-                                class="text-success  fz-25" data-original-title="" title=""><i
-                                    class="fas fa-user-shield"></i></span>
+                        </fieldset>
 
-                            <span data-toggle="tooltip" data-placement="top" data-title="Verified"
-                                class="text-success  fz-25" data-original-title="" title=""><i
-                                    class="fa fa-envelope"></i></span>
 
-                            <span data-toggle="tooltip" data-placement="top" data-title="Payment Verified"
-                                class="text-success  fz-25" data-original-title="" title=""><i
-                                    class="fa fa-credit-card"></i>
-                            </span>
-                        </div>
-                        <div class="d-flex align-center-center justify-content-center mt-1rm gap-10">
-                            <a href="javascript:;" class="btn btn-primary btn-sm"
-                                onclick="sidebar(`edit_username_1Sidebar`)"><i class="fa fa-edit"></i>
-                                <?= __('Username') ?></a>
-                            <a href="javascript:;" class="btn btn-primary btn-sm"
-                                onclick="sidebar(`edit_email_1Sidebar`)"><i class="fa fa-edit"></i>
-                                <?= __('Email') ?></a>
-                        </div>
+                        <fieldset class="mt-2rm">
+                            <legend>{{ __('payment_methods') }}</legend>
+                            <div class="access-grid">
+                                @foreach($payment_gateways as $gateway)
+                                @php
+                                $is_checked = isset($user_payments[$gateway->slug]) && $user_payments[$gateway->slug] == 1;
+                                @endphp
+                                <div class="access-card">
+                                    <label class="custom-checkbox d-flex space-between align-items-center mb-2">
+                                        <div class="itemDetails d-flex">
+                                            <input type="checkbox" class="access-toggle"
+                                                id="payment_{{ $gateway->slug }}"
+                                                data-type="payment"
+                                                data-id="{{ $gateway->slug }}"
+                                                {{ $is_checked ? 'checked' : '' }}>
+                                            <span>{{ $gateway->title }}</span>
+                                        </div>
 
-                        <div class="d-flex align-center-center justify-content-center mt-1rm gap-10">
-                            <a href="/0" data-msg="<?= __('want_to_deactivate_account') ?>"
-                                class="btn btn-success btn-sm action_btn" data-title="<?= __('activated') ?>"
-                                data-toggle="tooltip"><i class="fa fa-check"></i> <?= __('activated') ?> </a>
-                            {{-- <a href="/1" data-msg="<?= __('want_to_activate_account') ?>"
-                                class="btn btn-danger btn-sm action_btn" data-title="<?= __('deactive_account') ?>"
-                                data-toggle="tooltip"><i class="fa fa-ban"></i> <?= __('deactive_account') ?></a> --}}
-                            <a href="" class="btn btn-danger btn-sm action_btn" data-title="<?= __('delete') ?>"
-                                data-toggle="tooltip"><i class="fa fa-trash"></i> </a>
-                        </div>
+                                        <img src="{{ asset('assets/images/payout/' . $gateway->slug . '.png') }}" alt="{{ $gateway->title }}" class="paymentLogo">
+                                    </label>
+                                </div>
+                                @endforeach
+                            </div>
+                        </fieldset>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="col-md-12">
-                @include('backend.admin.auth.current_subscription_thumb')
+    </div><!-- col-8 mainDiv-->
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title font-weight-bold">{{ __('current_package') }}</h4>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <ul class="flex align-flex-start flex-column gap-10">
-                        <li>
-                            <span class="min-w-120"><?= __('id') ?></span>
-                            <b>4</b>
-                        </li>
-                        <li>
-                            <span class="min-w-120"><?= __('email') ?></span>
-                            <b>phplime.envato@gmail.com</b>
-                        </li>
-                        <li>
-                            <span class="min-w-120"><?= __('phone') ?></span>
-                            <b>+0912380923</b>
-                        </li>
-                        <li>
-                            <span class="min-w-120"><?= __('country') ?></span>
-                            <b><i class="fi fi-bd"></i> Bangladesh</b>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
-    <!-- subscription information -->
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <h4 class="title"><?= __('subscription_info') ?></h4>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive responsiveTable">
-                        <table class="table table-striped table-bordered data-table">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th><?= __('package') ?></th>
-                                    <th><?= __('price') ?></th>
-                                    <th><?= __('date') ?></th>
-                                    <th><?= __('overview') ?></th>
-                                    <th><?= __('status') ?></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class='text-success'>
-                                    <td data-label="#">1</td>
-                                    <td data-label="<?= __('package') ?>">pro</td>
-                                    <td data-label="<?= __('price') ?>">$546</td>
-                                    <td data-label="<?= __('date') ?>">
-                                        <p><?= __('active_date') . ' - ' . '14 Aug, 2025' ?></p>
-                                        <p><?= __('expire_date') . ' - ' . '14 Aug, 2025' ?></p>
-                                    </td>
-                                    <td data-label="<?= __('overview') ?>">
-                                        <label class="badge badge-secondary" data-toggle="tooltip"
-                                            data-title="<?= __('payment_method') ?>">Stripe</label>
-                                        <label class="badge badge-secondary" data-toggle="tooltip"
-                                            data-title="<?= __('payment_by') ?>">Self</label>
-                                        <label class="badge badge-secondary" data-toggle="tooltip"
-                                            data-title="<?= __('subscription_form') ?>">subscription</label>
-                                    </td>
-                                    <td data-label="<?= __('status') ?>">
-                                        <label class="badge badge-success"><i class="fa fa-check"></i> Paid </label>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="font-weight-bold text-primary mb-1">{{ $user->package->package_name ?? __('n/a') }}</h6>
+                        <p class="text-muted small mb-0">{{ __('expiry_date') }}: {{ $user->subscription->expire_date ?? __('n/a') }}</p>
                     </div>
+                    <i class="fas fa-box-open text-muted fa-2x opacity-20"></i>
                 </div>
             </div>
         </div>
-    </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">{{ __('account_status') }}</h4>
+            </div>
+            <div class="card-body account-status-card">
+                <div class="user-profile-summary">
+                    <img src="<?= avatar($user->image, 'profile') ?>" alt="User">
+                    <h5>{{ $user->name }}</h5>
+                    <p>{{ __('member_since') }} {{ $user->created_at->format('M d, Y') }}</p>
+                </div>
+
+                <div class="status-badge-container">
+                    <span class="text-muted font-weight-bold small">{{ __('status') }}</span>
+                    <span class="badge badge-pill badge-success px-3 py-2">{{ __('active') }}</span>
+                </div>
+
+                <button class="btn-suspend">
+                    <i class="fas fa-pause-circle"></i> {{ __('suspend_user') }}
+                </button>
+
+                <div class="danger-zone text-left">
+                    <h6>{{ __('danger_zone') }}</h6>
+                    <p>{{ __('once_you_delete_a_user_there_is_no_going_back_please_be_certain') }}</p>
+                    <button class="btn-delete-user">
+                        <i class="fas fa-trash-alt"></i> {{ __('delete_user') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div><!-- col-4 -->
+</div><!-- row/main -->
 
 
+@endsection
 
-    <!-- edit username -->
-    <?= __header(__('edit'), 'edit','edit_username_1') ?>
-    <div class="form-group">
-        <label><?= lang('username') ?></label>
-        <input class="form-control username" type="text" name="username" id="username"
-            placeholder="<?= __('name') ?>" value="emran">
-    </div>
-    <?= hidden('id', 0) ?>
-    <?= __footer() ?>
-    <!-- edit username -->
+@section('scripts')
+<script>
+    $(document).on('change', '.access-toggle', function() {
+        var $this = $(this);
+        var type = $this.data('type');
+        var id = $this.data('id');
+        var status = $this.prop('checked') ? 1 : 0;
+        var user_id = "{{ $user->id }}";
 
-    <!-- edit email -->
-    <?= __header(__('edit'),'edit', 'edit_email_1') ?>
-    <div class="form-group">
-        <label><?= lang('email') ?></label>
-        <input class="form-control" type="text" name="email" id="email" placeholder="<?= __('email') ?>"
-            value="esd@gmail.com">
-    </div>
-    <?= hidden('id', 0) ?>
-    <?= __footer() ?>
-    <!-- edit email -->
+        $this.prop('disabled', true);
 
-</x-admin-layout>
+        $.post("{{ url('admin/dashboard/update_user_access') }}", {
+            _token: "{{ csrf_token() }}",
+            user_id: user_id,
+            type: type,
+            id: id,
+            status: status
+        }, function(json) {
+            $this.prop('disabled', false);
+            if (json.st == 1) {
+                MSG('success', json.msg);
+            } else {
+                MSG('error', json.msg);
+                $this.prop('checked', !status);
+            }
+        }, 'json').fail(function() {
+            $this.prop('disabled', false);
+            $this.prop('checked', !status);
+            MSG('error', "{{ __('something_went_wrong') }}");
+        });
+    });
+
+
+    //suspend and delete user
+    $(document).on('click', '.btn-suspend', function() {
+        var $this = $(this);
+        var user_id = "{{ $user->id }}";
+
+        $this.prop('disabled', true);
+
+        $.post("{{ url('admin/dashboard/suspend_user') }}", {
+            _token: "{{ csrf_token() }}",
+            user_id: user_id
+        }, function(json) {
+            $this.prop('disabled', false);
+            if (json.st == 1) {
+                MSG('success', json.msg);
+            } else {
+                MSG('error', json.msg);
+            }
+        }, 'json').fail(function() {
+            $this.prop('disabled', false);
+            MSG('error', "{{ __('something_went_wrong') }}");
+        });
+    });
+
+    $(document).on('click', '.btn-delete-user', function() {
+        var $this = $(this);
+        var user_id = "{{ $user->id }}";
+
+        $this.prop('disabled', true);
+
+        $.post("{{ url('admin/dashboard/delete_user') }}", {
+            _token: "{{ csrf_token() }}",
+            user_id: user_id
+        }, function(json) {
+            $this.prop('disabled', false);
+            if (json.st == 1) {
+                MSG('success', json.msg);
+            } else {
+                MSG('error', json.msg);
+            }
+        }, 'json').fail(function() {
+            $this.prop('disabled', false);
+            MSG('error', "{{ __('something_went_wrong') }}");
+        });
+    });
+
+
+</script>
+@endsection

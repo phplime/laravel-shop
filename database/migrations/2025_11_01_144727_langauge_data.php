@@ -9,19 +9,19 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('language_data', function (Blueprint $table) {
-            $table->id();
-            $table->string('locale', 10); // en, bn, etc.
-            $table->string('key'); // welcome_message, login_button, etc.
-            $table->text('value'); // Translated text
-            $table->timestamps();
+    // public function up(): void
+    // {
+    //     Schema::create('language_data', function (Blueprint $table) {
+    //         $table->id();
+    //         $table->string('locale', 10); // en, bn, etc.
+    //         $table->string('key'); // welcome_message, login_button, etc.
+    //         $table->text('value'); // Translated text
+    //         $table->timestamps();
 
-            $table->unique(['locale', 'key']);
-            $table->index('locale');
-        });
-    }
+    //         $table->unique(['locale', 'key']);
+    //         $table->index('locale');
+    //     });
+    // }
 
     /**
      * Reverse the migrations.

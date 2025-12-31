@@ -1158,6 +1158,37 @@
     }
 
 
+    /*----------------------------------------------
+     AJAX FILTER 
+    ----------------------------------------------*/
+    window.ajaxFilter = function (url, targetContainer = ".card-content") {
+        $(targetContainer).addClass("loading-overlay");
+        $.ajax({
+            url: url,
+            type: "GET",
+            dataType: "html",
+            success: function (response) {
+                $(targetContainer).html($(response).find(targetContainer).html());
+                $(targetContainer).addClass("ajax-content-fade");
+                $(targetContainer).removeClass("loading-overlay");
+
+                // Remove fade class after animation completes
+                setTimeout(() => {
+                    $(targetContainer).removeClass("ajax-content-fade");
+                }, 500);
+
+                // Re-initialize tooltips or other plugins if needed
+                if ($.isFunction($.fn.tooltip)) {
+                    $('[data-toggle="tooltip"]').tooltip();
+                }
+            },
+            error: function () {
+                $(targetContainer).removeClass("loading-overlay");
+                console.error("AJAX Filter failed");
+            }
+        });
+    };
+
 
     document.addEventListener("click", function (e) {
         const target = e.target.closest(".ci-pagination a");

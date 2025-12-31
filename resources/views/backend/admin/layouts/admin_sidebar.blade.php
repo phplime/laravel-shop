@@ -22,8 +22,8 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="{{ url('admin/user_list') }}"
-                        class="nav-link <?= isset($page_title) && $page_title == 'User List' ? 'active' : '' ?>">
+                    <a href="{{ url('admin/subscriber-list') }}"
+                        class="nav-link <?= isset($page_title) && $page_title == 'Subscriber List' ? 'active' : '' ?>">
                         <i class="nav-icon fas fa-user-circle"></i>
                         <p>
                             {{ __('subscribers') }}
@@ -115,7 +115,7 @@
 
                         <li class="nav-item ">
                             <a href="{{ url('admin/settings') }}"
-                                class="nav-link <?= isset($page_title) && $page_title == 'Site Settings' ? 'active' : '' ?>">
+                                class="nav-link <?= isset($page) && $page == 'Settings' ? 'active' : '' ?>">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
                                 <p> {{ __('site_settings') }} </p>
                             </a>
@@ -156,7 +156,7 @@
                     <ul class="nav nav-treeview">
 
                         <li class="nav-item ">
-                            <a href="{{ url('admin/language-list') }}"
+                            <a href="{{ url('admin/language/language-list') }}"
                                 class="nav-link {{ isset($page_title) && $page_title == 'Language List' ? 'active' : '' }} ">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
                                 @lang('language_list')
@@ -165,7 +165,7 @@
 
 
                         <li class="nav-item ">
-                            <a href="{{ url('admin/language-data') }}"
+                            <a href="{{ url('admin/language/language-data') }}"
                                 class="nav-link <?= isset($page_title) && $page_title == 'Language Data' ? 'active' : '' ?>">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
                                 @lang('language_data')

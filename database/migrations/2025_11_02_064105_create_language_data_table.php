@@ -9,25 +9,25 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('language_data', function (Blueprint $table) {
-            $table->id();
-            $table->string('keyword');
-            $table->string('details');
-            $table->string('en')->nullable();
-            $table->string('ar')->nullable();
-            $table->string('bn')->nullable();
-            $table->string('es')->nullable();
-            $table->timestamps();
-        });
-    }
+    // public function up(): void
+    // {
+    //     Schema::create('language_data', function (Blueprint $table) {
+    //         $table->id();
+    //         $table->string('keyword');
+    //         $table->string('details');
+    //         $table->string('en')->nullable();
+    //         $table->string('ar')->nullable();
+    //         $table->string('bn')->nullable();
+    //         $table->string('es')->nullable();
+    //         $table->timestamps();
+    //     });
+    // }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('language_data');
-    }
+    // /**
+    //  * Reverse the migrations.
+    //  */
+    // public function down(): void
+    // {
+    //     Schema::dropIfExists('language_data');
+    // }
 };

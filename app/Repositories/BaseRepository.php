@@ -22,6 +22,7 @@ class BaseRepository
         'module_feature_list',
         'order_type_list',
         'module_list',
+        'payment_gateway_list',
         // Add your 10+ tables here
     ];
 
@@ -109,7 +110,7 @@ class BaseRepository
      */
     public function find(int $id, string $table, array $columns = ['*'])
     {
-    
+
         $this->validateTable($table);
         return DB::table($table)->select($columns)->find($id);
     }
@@ -133,6 +134,28 @@ class BaseRepository
         return $update > 0 ? 1 : $id;
     }
 
+
+    public function updateWhere(array $data, array $where, string $table): int|array|null
+    {
+        $this->validateTable($table);
+
+        $ids = DB::table($table)
+            ->where($where)
+            ->pluck('id')
+            ->all();
+
+        if (empty($ids)) {
+            return null;
+        }
+
+        DB::table($table)
+            ->whereIn('id', $ids)
+            ->update($data);
+        return match (count($ids)) {
+            1 => $ids[0],
+            default => $ids,
+        };
+    }
     /**
      * Delete a record.
      */
@@ -190,6 +213,12 @@ class BaseRepository
         return $query->get();
     }
 
+
+    public function getWhere(array|string $column, array|string|int $value, string $table, array $columns = ['*'])
+    {
+        $this->validateTable($table);
+        return DB::table($table)->select($columns)->where($column, $value)->first();
+    }
 
 
     public function getPaginatedData(int $perPage = 15, $table): LengthAwarePaginator
