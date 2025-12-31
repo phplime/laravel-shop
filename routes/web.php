@@ -1,7 +1,10 @@
 <?php
 
+<<<<<<< Updated upstream
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\admin\LanguageController;
+=======
+>>>>>>> Stashed changes
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\URL;
@@ -13,11 +16,14 @@ use App\Http\Controllers\MediaFileController;
 use App\Http\Controllers\Admin\ModuleController;
 use App\Http\Controllers\admin\PackageController;
 use App\Http\Controllers\Admin\SettingsController;
+<<<<<<< Updated upstream
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\CssController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RegisterController;
+=======
+>>>>>>> Stashed changes
 use App\Http\Controllers\Vendor\DashboardController as VendorDashboardController;
 use App\Http\Controllers\Vendor\OrderController;
 use App\Http\Controllers\Vendor\PagesController;
