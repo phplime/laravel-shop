@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Session;
 
 
 
+
 if (!function_exists('__request')) {
     /**
      * Universal Laravel response helper (AJAX + normal)
@@ -369,117 +370,6 @@ if (!function_exists('localizedRoute')) {
 
 
 
-if (!function_exists('media_files')) {
-    function media_files($name = 'image', $type = 'single', $value = '')
-    {
-        $selectedImages = collect();
-
-        if (!empty($value)) {
-            $ids = array_filter(array_map('trim', explode(',', $value)), 'is_numeric');
-            if (!empty($ids)) {
-                $selectedImages = \App\Models\MediaFile::whereIn('id', $ids)
-                    ->orderBy('id', 'desc')
-                    ->get();
-            }
-        }
-
-        return view('media_layouts/upload_file', [
-            'name' => $name,
-            'type' => $type,
-            'value' => $value,
-            'isHide' => true,
-            'selectedImages' => $selectedImages,
-        ]);
-    }
-}
-
-
-if (!function_exists('__check')) {
-
-    function __check($data, $raw = false)
-    {
-        $service = app(SettingsService::class);
-
-        if (is_array($data)) {
-            return $service->saveMany($data, $raw);
-        }
-
-        return $service->exists($data);
-    }
-}
-
-
-if (!function_exists('__settings')) {
-    function __settings($key = null)
-    {
-        $service = app(SettingsService::class);
-        $all = $service->all();
-
-        if ($key === null) {
-            return (object) $all;
-        }
-
-        return $all[$key] ?? '';
-    }
-}
-
-
-if (!function_exists('__config')) {
-    function __config($key)
-    {
-        if (Schema::hasTable('settings')) :
-            return \App\Models\Settings::where('key', $key)->value('value');
-        else :
-            return [];
-        endif;
-    }
-}
-
-if (!function_exists('country')) {
-
-    function country($id)
-    {
-        if (empty($id)) {
-            return null;
-        }
-        $repo = app(BaseRepository::class);
-        $data = $repo->find($id, 'country_list');
-        if (!empty($data)) {
-            return (object) [
-                'name' => $data->name,
-                'code' => strtolower($data->iso2),
-                'currency_code' => strtoupper($data->currency_code),
-                'dial_code' => $data->dial_code,
-                'currency_icon' => $data->currency_symbol,
-                'flag' => '<i class="fi fi-' . strtolower($data->iso2) . '"></i>',
-
-            ];
-        } else {
-            return (object) [
-                'name' => 'United States',
-                'code' => 'us',
-                'currency_code' => 'USD',
-                'dial_code' => '1',
-                'currency_icon' => '$',
-                'flag' => "<i class='fi fi-us'></i>",
-
-            ];
-        }
-    }
-}
-
-
-if (!function_exists('__isNew')) {
-    function __isNew($version)
-    {
-        $current_version = __settings('version');
-        if ($current_version == $version) {
-            return '<span class="ab-position custom_badge danger-light-active">' . __("new") . '</span>';
-        }
-    }
-}
-
-
 
 
 if (!function_exists('__adminMenu')) {
@@ -508,5 +398,166 @@ if (!function_exists('__adminMenu')) {
         $menuHtml .= '</div>';
 
         echo $menuHtml;
+    }
+}
+
+if (!function_exists('isJson')) {
+    function isJson($string)
+    {
+        if (empty($string) || !is_string($string)) {
+            return false;
+        }
+        json_decode($string);
+        return (json_last_error() == JSON_ERROR_NONE);
+    }
+}
+
+if (!function_exists('mail_type')) {
+    function mail_type($type = '')
+    {
+        $mailType = [
+            'recovery_mail' => ['SITE_NAME', 'USERNAME', 'PASSWORD'],
+            'contact_mail' => ['SITE_NAME', 'NAME', 'EMAIL', 'MESSAGE'],
+            'resend_verify_mail' => ['SITE_NAME', 'USERNAME', 'LINK'],
+            'email_verification_mail' => ['SITE_NAME', 'USERNAME', 'EMAIL', 'NAME', 'PACKAGE_NAME', 'VERIFY_LINK'],
+            // 'account_create_invoice' => ['SITE_NAME', 'USERNAME', 'PACKAGE_NAME', 'PRICE'],
+            // 'new_user_mail' => ['SITE_NAME', 'USERNAME', 'EMAIL', 'PACKAGE_NAME'],
+            'offline_payment_request_mail' => ['SITE_NAME', 'USERNAME', 'EMAIL', 'PACKAGE_NAME', 'PRICE', 'TXNID'],
+            'payment_confirmation_mail' => ['SITE_NAME', 'USERNAME', 'EMAIL', 'PAYMENT_METHOD', 'PAYMENT_DATE', 'TXNID', 'EXPIRE_DATE', 'PACKAGE_NAME', 'PRICE'],
+            'expire_reminder_mail' => ['SITE_NAME', 'USERNAME', 'EMAIL', 'EXPIRE_DATE', 'REMAINING_DAYS'],
+            'account_expire_mail' => ['SITE_NAME', 'USERNAME', 'EMAIL', 'EXPIRE_DATE'],
+        ];
+        if ($type == '') {
+            return $mailType;
+        } else {
+            return !empty($mailType[$type]) ? $mailType[$type] : '';
+        }
+    }
+}
+
+if (!function_exists('__site_language')) {
+    function __site_language()
+    {
+        return app()->getLocale();
+    }
+}
+
+
+if (!function_exists('addDays')) {
+    function addDays($type, $duration, $isFormat = true)
+    {
+        if (in_array($type, ['yearly', 'year'])) {
+            return $isFormat ? now()->addYears($duration)->format('Y-m-d H:i:s') : now()->addYears($duration);
+        }
+
+        if (in_array($type, ['trial', 'trail'])) {
+            return $isFormat ? now()->addMonths($duration)->format('Y-m-d H:i:s') : now()->addMonths($duration);
+        }
+        if (in_array($type, ['monthly', 'month'])) {
+            return $isFormat ? now()->addMonths($duration)->format('Y-m-d H:i:s') : now()->addMonths($duration);
+        }
+        if (in_array($type, ['weekly', 'week'])) {
+            return $isFormat ? now()->addWeeks($duration)->format('Y-m-d H:i:s') : now()->addWeeks($duration);
+        }
+        if (in_array($type, ['daily', 'day'])) {
+            return $isFormat ? now()->addDays($duration)->format('Y-m-d H:i:s') : now()->addDays($duration);
+        }
+        if (in_array($type, ['hourly', 'hour'])) {
+            return $isFormat ? now()->addHours($duration)->format('Y-m-d H:i:s') : now()->addHours($duration);
+        }
+        if (in_array($type, ['minute', 'min'])) {
+            return $isFormat ? now()->addMinutes($duration)->format('Y-m-d H:i:s') : now()->addMinutes($duration);
+        }
+        if (in_array($type, ['second', 'sec'])) {
+            return $isFormat ? now()->addSeconds($duration)->format('Y-m-d H:i:s') : now()->addSeconds($duration);
+        }
+        return $isFormat ? now()->format('Y-m-d H:i:s') : now();
+    }
+}
+
+
+if (!function_exists('getDuration')) {
+    function getDuration($type, $duration, $withDuration = true)
+    {
+        if (in_array($type, ['yearly', 'year'])) {
+            return ($withDuration ? $duration : '') . ' ' . ($duration == 1 ? __('year') : __('years'));
+        }
+
+        if (in_array($type, ['trial', 'trail'])) {
+            return ($withDuration ? $duration : '') . ' ' . ($duration == 1 ? __('month') : __('months'));
+        }
+        if (in_array($type, ['monthly', 'month'])) {
+            return ($withDuration ? $duration : '') . ' ' . ($duration == 1 ? __('month') : __('months'));
+        }
+        if (in_array($type, ['weekly', 'week'])) {
+            return ($withDuration ? $duration : '') . ' ' . ($duration == 1 ? __('week') : __('weeks'));
+        }
+        if (in_array($type, ['daily', 'day'])) {
+            return ($withDuration ? $duration : '') . ' ' . ($duration == 1 ? __('day') : __('days'));
+        }
+        if (in_array($type, ['hourly', 'hour'])) {
+            return ($withDuration ? $duration : '') . ' ' . ($duration == 1 ? __('hour') : __('hours'));
+        }
+        if (in_array($type, ['minute', 'min'])) {
+            return ($withDuration ? $duration : '') . ' ' . ($duration == 1 ? __('minute') : __('minutes'));
+        }
+        if (in_array($type, ['second', 'sec'])) {
+            return ($withDuration ? $duration : '') . ' ' . ($duration == 1 ? __('second') : __('seconds'));
+        }
+    }
+}
+
+
+if (!function_exists('dateTime')) {
+    function dateTime()
+    {
+        return now()->format('Y-m-d H:i:s');
+    }
+}
+
+
+if (!function_exists('makeDate')) {
+
+    function makeDate($date, $type = 'fulldate')
+    {
+        if (empty($date)) {
+            return '';
+        }
+
+        $d = \Carbon\Carbon::parse($date);
+
+        switch ($type) {
+            case 'fulldate':
+                return $d->format('d M, Y');
+            case 'fulldatetime':
+                return $d->format('d M, Y h:i A');
+            case 'datewithdash':
+                return $d->format('Y-m-d');
+            case 'datetimewithdash':
+                return $d->format('Y-m-d H:i:s');
+            case 'time':
+                return $d->format('h:i A');
+            default:
+                return $d->format('d M, Y');
+        }
+    }
+}
+
+if (!function_exists('getPercent')) {
+    function getPercent($amount, $percent)
+    {
+        if ($amount == 0 || $amount == "0") {
+            return 0;
+        } else {
+            return ($amount * $percent) / 100;
+        }
+    }
+}
+
+
+if (!function_exists('is_test')) {
+    function is_test()
+    {
+        return 0;
     }
 }
