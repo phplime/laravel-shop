@@ -9,6 +9,8 @@ use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
 use App\Repositories\MediaFileRepository;
 use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Encoders\WebpEncoder;
+use Illuminate\Support\Facades\Cache;
 
 class MediaFileService
 {
@@ -23,15 +25,24 @@ class MediaFileService
 
     public function getFiles(array $filters)
     {
-        $perPage = $filters['per_page'] ?? 10;
-        $recent = $this->repo->getRecentFiles($filters, 3);
-        $excludeIds = $recent->pluck('id')->toArray();
-        $old = $this->repo->getOldFiles($filters, $excludeIds, $perPage);
+        $role = $filters['role'] ?? 'admin';
+        $vendorId = $filters['vendorId'] ?? 0;
+        $versionKey = "media_cache_version_{$role}_{$vendorId}";
 
-        return [
-            'recent' => $recent,
-            'old'    => $old,
-        ];
+        $version = Cache::get($versionKey, 1);
+        $cacheKey = "media_files_v{$version}_" . md5(json_encode($filters));
+
+        return Cache::remember($cacheKey, now()->addMinutes(60), function () use ($filters) {
+            $perPage = $filters['per_page'] ?? 10;
+            $recent = $this->repo->getRecentFiles($filters, 3);
+            $excludeIds = $recent->pluck('id')->toArray();
+            $old = $this->repo->getOldFiles($filters, $excludeIds, $perPage);
+
+            return [
+                'recent' => $recent,
+                'old'    => $old,
+            ];
+        });
     }
 
     public function handleUpload(Request $request, $userId, $vendorId, $role)
@@ -88,6 +99,10 @@ class MediaFileService
             // Save to database and get IDs
             $insertedIds = $this->repo->save($uploadData);
 
+            // Increment media cache version to "refresh" the library
+            $versionKey = "media_cache_version_{$role}_{$vendorId}";
+            Cache::increment($versionKey);
+
             return [
                 'response' => [
                     'st' => 1,
@@ -115,16 +130,17 @@ class MediaFileService
 
             // Generate UUID filename
             $extension = $file->getClientOriginalExtension();
-            $filename = Str::uuid()->toString() . '.' . $extension;
+            $isImage = str_starts_with($file->getMimeType(), 'image/');
+            $filename = Str::uuid()->toString() . ($isImage ? '.webp' : '.' . $extension);
             $fullPath = "{$uploadPath}/{$filename}";
 
             $thumbPath = null;
 
-            if (str_starts_with($file->getMimeType(), 'image/')) {
+            if ($isImage) {
                 // Process main image
                 $image = $this->imageManager->read($file)
                     ->scaleDown(width: 1600)
-                    ->encode();
+                    ->encode(new WebpEncoder(quality: 80));
 
                 Storage::disk('public')->put($fullPath, (string) $image);
 
@@ -133,7 +149,7 @@ class MediaFileService
                 $thumbFullPath = "{$uploadPath}/{$thumbName}";
                 $thumb = $this->imageManager->read($file)
                     ->scaleDown(width: 400)
-                    ->encode();
+                    ->encode(new WebpEncoder(quality: 80));
                 Storage::disk('public')->put($thumbFullPath, (string) $thumb);
 
                 $thumbPath = $thumbFullPath;
@@ -164,14 +180,15 @@ class MediaFileService
 
 
         $extension = $file->getClientOriginalExtension();
-        $filename  = Str::uuid()->toString() . '.' . $extension;
+        $isImage = str_starts_with($file->getMimeType(), 'image/');
+        $filename  = Str::uuid()->toString() . ($isImage ? '.webp' : '.' . $extension);
         $fullPath  = "{$path}/{$filename}";
 
-        if (str_starts_with($file->getMimeType(), 'image/')) {
+        if ($isImage) {
             // Process main image
             $image = $this->imageManager->read($file)
                 ->scaleDown(width: 1600)
-                ->encode();
+                ->encode(new WebpEncoder(quality: 80));
 
             Storage::disk('public')->put($fullPath, (string) $image);
 
@@ -180,7 +197,7 @@ class MediaFileService
             $thumbPath = "{$path}/{$thumbName}";
             $thumb = $this->imageManager->read($file)
                 ->scaleDown(width: 400)
-                ->encode();
+                ->encode(new WebpEncoder(quality: 80));
             Storage::disk('public')->put($thumbPath, (string) $thumb);
         } else {
             Storage::disk('public')->putFileAs($path, $file, $filename);
@@ -217,7 +234,15 @@ class MediaFileService
             }
 
             // Delete database record
-            return $this->repo->delete($id);
+            $deleted = $this->repo->delete($id);
+
+            if ($deleted) {
+                $versionKey = "media_cache_version_{$media->role}_{$media->vendor_id}";
+                Cache::increment($versionKey);
+                Cache::forget("media_file_{$id}");
+            }
+
+            return $deleted;
         } catch (\Exception $e) {
             return $e->getMessage();
         }

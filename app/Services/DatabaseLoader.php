@@ -10,6 +10,14 @@ use Illuminate\Contracts\Translation\Loader;
 class DatabaseLoader implements Loader
 {
     protected $hints = [];
+    protected $cacheEnabled;
+    protected $cacheDuration;
+
+    public function __construct()
+    {
+        $this->cacheEnabled = config('app.translation_cache_enabled', false);
+        $this->cacheDuration = config('app.translation_cache_duration', 3600);
+    }
 
     public function load($locale, $group, $namespace = null): array
     {
@@ -21,6 +29,24 @@ class DatabaseLoader implements Loader
             return []; // column does not exist
         }
 
+        $cacheKey = "translations_{$locale}_{$group}_{$namespace}";
+
+        // If cache is disabled, fetch directly without caching
+        if (!$this->cacheEnabled) {
+            return $this->fetchTranslations($locale, $group, $namespace);
+        }
+
+        // Otherwise, use cache
+        return \Illuminate\Support\Facades\Cache::remember($cacheKey, $this->cacheDuration, function () use ($locale, $group, $namespace) {
+            return $this->fetchTranslations($locale, $group, $namespace);
+        });
+    }
+
+    /**
+     * Fetch translations from database
+     */
+    protected function fetchTranslations($locale, $group, $namespace): array
+    {
         // JSON-like translations (__('Hello')) → keys without dot
         if ($group === '*' && $namespace === '*') {
             return DB::table('language_data')
@@ -47,6 +73,21 @@ class DatabaseLoader implements Loader
         return [];
     }
 
+    /**
+     * Enable or disable cache at runtime
+     */
+    public function setCacheEnabled(bool $enabled): void
+    {
+        $this->cacheEnabled = $enabled;
+    }
+
+    /**
+     * Check if cache is enabled
+     */
+    public function isCacheEnabled(): bool
+    {
+        return $this->cacheEnabled;
+    }
 
     public function addNamespace($namespace, $hint): void
     {

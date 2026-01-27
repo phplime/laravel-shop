@@ -43,7 +43,7 @@
                     <ul class="nav nav-treeview">
 
                         <li class="nav-item">
-                            <a href="{{ url('/admin/package_list') }}"
+                            <a href="{{ url('/admin/package/package_list') }}"
                                 class="nav-link <?= isset($page_title) && $page_title == 'Packages' ? 'active' : '' ?>">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
                                 <p>
@@ -53,7 +53,7 @@
                         </li>
 
                         <li class="nav-item ">
-                            <a href="{{ url('admin/feature-list') }}"
+                            <a href="{{ url('admin/package/feature-list') }}"
                                 class="nav-link <?= isset($page_title) && $page_title == 'Feature List' ? 'active' : '' ?>">
                                 <i class="fa fa-angle-double-right nav-icon"></i>
                                 <p>

@@ -162,6 +162,7 @@ class RegisterController extends baseRegisterController
             Auth::login($user);
         }
 
-        return redirect(config('tyro-login.redirects.after_register', '/'));
+        $redirectRoute = $user->role === 'admin' ? 'admin.dashboard.index' : 'vendor.dashboard.index';
+        return redirect()->route($redirectRoute);
     }
 }

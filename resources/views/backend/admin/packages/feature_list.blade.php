@@ -46,7 +46,7 @@
         </div>
     </div>
 
-    <?= __header(__('add_new'), url('admin/add_new_feature'), 'add_feature') ?>
+    <?= __header(__('add_new'), url('admin/package/add_new_feature'), 'add_feature') ?>
     <div class="form-group">
         <label for="">{{ __('title') }}</label>
         <input type="text" name="name" class="form-control" placeholder="{{ __('title') }}">
@@ -58,7 +58,7 @@
     <?= __footer(['hidde:id' => $data->id ?? 0]) ?>
 
     @foreach ($feature_list as $key => $feature)
-        <?= __header(__('add_new'), url('admin/add_new_feature'), 'edit_feature_' . $feature->id) ?>
+        <?= __header(__('add_new'), url('admin/package/add_new_feature'), 'edit_feature_' . $feature->id) ?>
         <div class="form-group">
             <label for="">{{ __('title') }}</label>
             <input type="text" name="name" class="form-control" placeholder="{{ __('title') }}"

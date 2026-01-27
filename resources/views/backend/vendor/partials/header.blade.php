@@ -19,11 +19,12 @@
 <link rel="stylesheet" href="{{ asset('assets/plugins/notify/notify.main.css') }}">
 
 <!-- style.css -->
-<link rel="stylesheet" href="{{ asset('assets/plugins/commoncss.php') }}">
+<link rel="stylesheet" href="{{ url('dynamic/commoncss?t=' . time()) }}">
 <link rel="stylesheet" href="{{ asset('assets/backend/css/adminlte.css') }}">
-<link rel="stylesheet" href="{{ asset('assets/backend/css/admin_style.css') }}">
-<link rel="stylesheet" href="{{ asset('assets/backend/css/default.css') }}">
-<link rel="stylesheet" href="{{ asset('assets/backend/css/reset.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/backend/css/admin_style.css?t=' . time()) }}">
+<link rel="stylesheet" href="{{ asset('assets/backend/css/default.css?t=' . time()) }}">
+<link rel="stylesheet" href="{{ asset('assets/backend/css/reset.css?t=' . time()) }}">
+<link rel="stylesheet" href="{{ asset('assets/backend/css/theme-toggle.css?t=' . time()) }}">
 <link rel="stylesheet" href="{{ asset('global/admin.main.css') }}">
 <link rel="stylesheet" href="{{ asset('global/admin.responsive.css') }}">
 

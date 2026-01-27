@@ -1294,7 +1294,7 @@ hr {
   margin-top: 1rem;
   margin-bottom: 1rem;
   border: 0;
-  border-top: 1px solid #eaf2f9;
+  border-top: 1px solid var(--border-color);
 }
 
 .modal-header button {
@@ -1795,13 +1795,7 @@ button[type="submit"] {
 }
 
 
-.table-striped tr:nth-of-type(odd) td {
-  background-color: rgba(0, 0, 0, 0.05);
-}
 
-.table-striped tr:nth-of-type(even) td {
-  background-color: rgba(0, 0, 0, 0.02);
-}
 
 table.table {
   background-color: transparent;
@@ -1813,6 +1807,11 @@ table.table * {
 
 .preText label {
   color: var(--color) !important;
+}
+
+.theme-light .table-bordered td,
+.theme-light .table-bordered th {
+  border: 1px solid #dee2e6;
 }
 
 /*----------------------------------------------

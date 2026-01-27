@@ -4,7 +4,7 @@
     <div class="row">
         @include('backend.vendor_settings.inc.v_settings_menu')
         <div class="col-lg-9 col-xs-12">
-            <form action="" method="post">
+            <form action="{{ url('vendor/settings/add_general_settings') }}" method="post" class="ajaxSubmit">
                 @csrf
                 <div class="row">
                     <div class="col-lg-7">
@@ -14,18 +14,18 @@
                                     <div class="form-group col-md-12">
                                         <label><?= lang('username') ?></label>
                                         <input type="text" name="username" class="form-control"
-                                            value="phplime" disabled readonly>
+                                            value="{{ $vendor->username }}" disabled readonly>
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label><?= lang('app_name') ?> <?= __required() ?></label>
                                         <input type="text" name="app_name" class="form-control"
-                                            value="shop" <?= __required(true) ?>>
+                                            value="{{ $vendor->app_name }}" <?= __required(true) ?>>
                                     </div>
 
                                     <div class="form-group col-md-6">
                                         <label><?= lang('email') ?> <?= __required() ?></label>
                                         <input type="text" name="email" class="form-control"
-                                            value="phplime@gmail.com" <?= __required(true) ?>>
+                                            value="{{ $vendor->email }}" <?= __required(true) ?>>
                                     </div>
 
                                     <div class="form-group col-md-12">
@@ -35,11 +35,11 @@
                                                 <span>
                                                     <span
                                                         class="fi fi-bd"></span>
-                                                    <span class="ml-5"> + 88</span>
+                                                    <span class="ml-5"> + {{ $vendor->dial_code }}</span>
                                                 </span>
                                             </div>
                                             <input type="text" name="phone" class="form-control"
-                                                value="017347234" <?= __required(true) ?>>
+                                                value="{{ $vendor->phone }}" <?= __required(true) ?>>
                                         </div>
                                         <!-- /# -->
                                     </div>
@@ -49,14 +49,14 @@
                                     <div class="form-group col-md-6">
                                         <label><?= lang('latitude') ?></label>
                                         <input type="text" name="latitude" class="form-control"
-                                            value="">
+                                            value="{{ $vendor->latitude }}">
                                     </div>
 
                                     <div class="form-group col-md-6">
                                         <label><?= lang('longitude') ?></label>
                                         <div class="ci-input-group  input-group-prepand">
                                             <input type="text" name="longitude" class="form-control"
-                                                value="">
+                                                value="{{ $vendor->longitude }}">
                                             <div class="input-group">
                                                 <button class="btn btn-primary btn-sm" type="button"
                                                     onclick=getLocation();><i class="fas fa-map-marker-alt"></i></button>
@@ -69,14 +69,12 @@
                                     <div class="form-group col-md-6">
                                         <label><?= lang('google_map_location_link') ?></label>
                                         <input type="text" name="location" class="form-control"
-                                            value="">
+                                            value="{{ $vendor->location }}">
                                     </div>
                                     <div class="form-group col-sm-12">
                                         <label class="control-label"><?= lang('address') ?> <?= __required() ?></label>
                                         <div class="">
-                                            <textarea class="form-control" placeholder="address" name="address" required>
-                                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium, explicabo?
-                                            </textarea>
+                                            <textarea class="form-control" placeholder="address" name="address" required>{{ $vendor->address }}</textarea>
                                         </div>
                                     </div>
                                 </div><!-- row -->
@@ -85,9 +83,7 @@
                                         <label class="control-label"><?= lang('about_short') ?> (<?= lang('max') ?> 120)
                                             <?= __required() ?></label>
                                         <div class="">
-                                            <textarea class="form-control" placeholder="<?= lang('about_short') ?>" name="about_short" required>
-                                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum, facilis?
-                                            </textarea>
+                                            <textarea class="form-control" placeholder="<?= lang('about_short') ?>" name="about_short" required>{{ $vendor->about_short }}</textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -97,9 +93,7 @@
                                         <label
                                             class="control-label"><?= !empty(lang('description')) ? lang('description') : 'description' ?></label>
                                         <div class="">
-                                            <textarea class="form-control data_textarea" placeholder="description" name="description">
-                                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque, adipisci?
-                                            </textarea>
+                                            <textarea class="form-control data_textarea" placeholder="description" name="description">{{ $vendor->description }}</textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -116,7 +110,7 @@
                                     <div class="form-group col-md-6">
                                         <label for=""><?= lang('logo') ?> <?= __('light') ?></label>
                                         <div class="mb-4">
-                                            <?= media_files('logo_light', 'single') ?>
+                                            <?= media_files('logo_light', 'single', $vendor->logo_light) ?>
                                         </div>
 
                                     </div>
@@ -125,7 +119,7 @@
                                     <div class="form-group col-md-6">
                                         <label for=""><?= lang('logo') ?> <?= __('dark') ?></label>
                                         <div class="mb-4">
-                                            <?= media_files('logo_dark', 'single') ?>
+                                            <?= media_files('logo_dark', 'single', $vendor->logo_dark) ?>
                                         </div>
 
                                     </div>
@@ -133,7 +127,7 @@
                                     <div class="form-group col-md-12">
                                         <label for=""><?= lang('favicon') ?></label>
                                         <div class="mb-4">
-                                            <?= media_files('favicon', 'single') ?>
+                                            <?= media_files('favicon', 'single', $vendor->favicon) ?>
                                         </div>
                                     </div>
                                 </div>

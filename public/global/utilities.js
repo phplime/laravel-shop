@@ -416,6 +416,7 @@
                 setTimeout(() => {
                     console.log(response.data);
                     $('#mainContent').html(response.data);
+                    reinitializePlugins();
                 }, 2000);
             })
             .catch(function (error) {
@@ -461,6 +462,10 @@
         $('.defaultSidebar .sidebarWrapper > .sidebar_header > .title').text(heading);
         $('.defaultSidebar .sidebarWrapper > .sidebarContent').html(content);
         $('.defaultSidebar').addClass('active');
+
+        if ($('.customModal').length > 0) {
+            $('.customModal').hide();
+        }
 
         setTimeout(() => {
             sidebarInit();
@@ -779,12 +784,9 @@
                 if ($('.filterForm').length) {
                     $('.filterForm').slideDown();
                 }
-                if ($('[name="daterange"]').length) {
-                    setTimeout(() => {
-                        daterangeInit();
-                    }, 200);
-                }
 
+                // Re-initialize all plugins
+                reinitializePlugins();
 
                 lazyLoad();
 
@@ -1333,6 +1335,8 @@
                 if (newPagination) {
                     document.querySelector(".ci-paginationArea").innerHTML = newPagination.innerHTML;
                 }
+
+                reinitializePlugins();
             })
             .catch(err => {
                 console.error("Error loading page content:", err);
@@ -1341,6 +1345,69 @@
     }
 
 
+    /*----------------------------------------------
+     Re-initialize Plugins
+    ----------------------------------------------*/
+    window.reinitializePlugins = function () {
+        // Nice Select
+        if ($(".niceSelect").length > 0) {
+            $(".niceSelect").niceSelect();
+        }
+
+        // Select2
+        if ($(".select2").length > 0) {
+            $(".select2").select2();
+        }
+
+        // Tooltip
+        $('[data-toggle="tooltip"]').tooltip();
+
+        // Summernote
+        if ($(".textarea").length > 0) {
+            $(".textarea").summernote({
+                minHeight: 150,
+            });
+        }
+        if ($(".data_textarea").length > 0) {
+            $(".data_textarea").summernote({
+                height: 100,
+                codemirror: {
+                    theme: "monokai",
+                    mode: "text/html",
+                    lineNumbers: true,
+                    htmlMode: true,
+                },
+                toolbar: [["font", ["bold", "italic", "underline", "clear"]]],
+            });
+        }
+
+        // Date Range Picker
+        if ($('input[name="daterange"]').length > 0) {
+            daterangeInit();
+        }
+
+        // CountTo
+        if ($(".count").length > 0) {
+            $(".count").countTo({ duration: 3000 });
+        }
+
+        // DataTable
+        if ($('.dataTable').length > 0 || $('.data-table').length > 0) {
+            $('.dataTable, .data-table').DataTable();
+        }
+
+        // Selectr
+        if ($('.singeSelect').length > 0) {
+            if (typeof initslectr === 'function') {
+                initslectr();
+            }
+        }
+
+        // Initialize Sidebar elements if any
+        if (typeof sidebarInit === 'function') {
+            sidebarInit();
+        }
+    };
 
 
 })(jQuery);

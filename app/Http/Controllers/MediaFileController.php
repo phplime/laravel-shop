@@ -19,13 +19,16 @@ class MediaFileController extends Controller
 
     public function index(Request $request)
     {
-        $perPage = (int) $request->get('per_page', 30);
-        $page    = (int) $request->get('page', 1);
+        $perPage = (int) $request->input('per_page', 30);
+        $page    = (int) $request->input('page', 1);
 
         $filters = [
             'per_page' => $perPage,
             'page'     => $page,
-            // add other filters from $request if needed
+            'role'     => $request->input('role', 'admin'),
+            'vendorId' => $request->input('vendor_id', 0),
+            'userId'   => $request->input('user_id', 0),
+            'search'   => $request->input('search', ''),
         ];
 
         // Call service (correct)
@@ -70,7 +73,7 @@ class MediaFileController extends Controller
     public function delete(Request $request)
     {
         try {
-            $id = $request->get('id');
+            $id = $request->input('id');
 
             if (!$id) {
                 return response()->json([

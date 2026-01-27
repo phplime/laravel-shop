@@ -89,9 +89,9 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        if(Auth::user()->user_role == 'admin'){
+        if (Auth::user()->user_role == 'admin') {
             return __request(1, "Login Successful", url("admin/dashboard"));
-        }else{
+        } else {
             return __request(1, "Login Successful", url("vendor/dashboard"));
         }
     }
@@ -120,7 +120,7 @@ class AuthController extends Controller
     // ✅ Logout (revoke token)
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        // $request->user()->currentAccessToken()->delete();
         return response()->json(['message' => 'Logged out']);
     }
 

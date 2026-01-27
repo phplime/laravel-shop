@@ -54,15 +54,25 @@
         </li>
         <!-- Notifications Dropdown Menu -->
         <li class="nav-item dropdown">
-
+            @php
+                $currentLangCode = app()->getLocale();
+                $languages = shop_language();
+                $currentLang = $languages->where('slug', $currentLangCode)->first();
+            @endphp
             <a class="nav-link" data-toggle="dropdown" href="#">
-                <i class="fi fi-en fz-14"></i> <span class="hidden-xs hidden-sm">English</span>
-                <!-- <span class="badge badge-warning navbar-badge">english</span> -->
+                @if($currentLang)
+                    <i class="fi fi-{{ $currentLang->iso2 ?? 'us' }} fz-14"></i> 
+                    <span class="hidden-xs hidden-sm">{{ $currentLang->language_name }}</span>
+                @else
+                    <i class="fi fi-us fz-14"></i> <span class="hidden-xs hidden-sm">English</span>
+                @endif
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right langMenu">
-                <a href="" class="dropdown-item">
-                    <i class="fi fi-en"></i> English
-                </a>
+                @foreach($languages as $lang)
+                    <a href="{{ route('switch_language', $lang->slug) }}" class="dropdown-item">
+                        <i class="fi fi-{{ $lang->iso2 }}"></i> {{ $lang->language_name }}
+                    </a>
+                @endforeach
             </div>
         </li>
 

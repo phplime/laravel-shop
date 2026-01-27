@@ -21,7 +21,7 @@
                 </div>
                 <div class="card-footer text-right">
                     <?= hidden('id', 0);?>
-                    <a href="<?= url("admin/feature");?>" class="btn btn-default float-left"><?= lang('cancel');?></a>
+                    <a href="<?= url("admin/package/feature-list");?>" class="btn btn-default float-left"><?= lang('cancel');?></a>
                    <?= __submitBtn(true);?>
                 </div>
             </form>

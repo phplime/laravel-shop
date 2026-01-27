@@ -1,5 +1,5 @@
 * {
-    box-sizing: border-box;
+    box-sizing: border-box !important;
 }
 
 :root {
@@ -560,4 +560,8 @@ input:-webkit-autofill:focus {
         flex: 0 0 100%;
         max-width: 100%;
     }
+}
+
+.hidden {
+    display: none !important;
 }

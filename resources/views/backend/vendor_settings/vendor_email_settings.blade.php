@@ -3,7 +3,7 @@
     <div class="row">
         @include('backend.vendor_settings.inc.v_settings_menu')
         <div class="col-lg-7">
-            <form action="" method="post" class="formSubmit" onsubmit="formSubmit(event,this);">
+            <form action="{{ url('vendor/settings/add_email_settings') }}" method="post" class="ajaxSubmit">
                 @csrf
                 <div class="card">
                     <div class="card-header">
@@ -14,8 +14,9 @@
                             <div class="form-group col-md-12">
                                 <label class=""><?= __('type') ?> <?= __required() ?></label>
                                 <select name="mail_type" class="form-control email_option">
-                                    <option value="smtp" selected> <?= __('smtp') ?></option>
-                                    <option value="sendgrid"> <?= __('sendgrid') ?></option>
+                                    <?php $vmail_type = __vsettings('mail_type', 'smtp'); ?>
+                                    <option value="smtp" <?= $vmail_type == 'smtp' ? 'selected' : '' ?>> <?= __('smtp') ?></option>
+                                    <option value="sendgrid" <?= $vmail_type == 'sendgrid' ? 'selected' : '' ?>> <?= __('sendgrid') ?></option>
                                 </select>
                             </div>
                             <div class="form-group col-md-12">
@@ -23,15 +24,18 @@
                                 <div class="">
                                     <input type="text" name="smtp_mail"
                                         placeholder="<?= !empty(lang('email_or_username')) ? lang('email_or_username') : 'Email / username' ?>"
-                                        class="form-control" value="">
+                                        class="form-control" value="<?= __vsettings('smtp_mail') ?>">
                                 </div>
                             </div>
 
                             <div class="form-group col-md-12">
                                 <label><?= !empty(lang('send_mail_from')) ? lang('send_mail_from') : 'Send Emails From (Email)' ?></label>
                                 <div class="">
+                                    <?php 
+                                        $vconfig = json_decode(__vsettings('smtp_config'));
+                                    ?>
                                     <input type="text" name="no_reply" placeholder="do-not-reply@xxx.com"
-                                        class="form-control" value="" autocomplete="off">
+                                        class="form-control" value="<?= $vconfig->no_reply ?? '' ?>" autocomplete="off">
                                 </div>
                             </div>
                         </div><!-- row -->
@@ -60,7 +64,7 @@
                                     <label class=""><?= lang('smtp_host') ?> <?= __required() ?></label>
                                     <div class="">
                                         <input type="text" name="smtp_host" placeholder="<?= lang('smtp_host') ?>"
-                                            class="form-control" value="">
+                                            class="form-control" value="<?= $vconfig->smtp_host ?? '' ?>">
                                     </div>
                                 </div>
 
@@ -68,14 +72,14 @@
                                     <label class=""><?= lang('smtp_port') ?> <?= __required() ?></label>
                                     <div class="">
                                         <input type="text" name="smtp_port" placeholder="<?= lang('smtp_port') ?>"
-                                            class="form-control" value="" autocomplete="off">
+                                            class="form-control" value="<?= $vconfig->smtp_port ?? '' ?>" autocomplete="off">
                                     </div>
                                 </div>
                                 <div class="form-group col-md-12">
                                     <label><?= lang('password') ?> <?= __required() ?></label>
                                     <div class="">
                                         <input type="password" name="smtp_password" placeholder="<?= lang('password') ?>"
-                                            class="form-control" value="" autocomplete="off">
+                                            class="form-control" value="<?= $vconfig->smtp_password ?? '' ?>" autocomplete="off">
                                     </div>
                                 </div>
                             </div>
@@ -85,7 +89,7 @@
 
                                 <div class="form-group col-md-12">
                                     <label><?= lang('sendgrid_api_key') ?> <?= __required() ?></label>
-                                    <input type="text" name="sendgrid_api_key" class="form-control" value=""
+                                    <input type="text" name="sendgrid_api_key" class="form-control" value="<?= $vconfig->sendgrid_api_key ?? '' ?>"
                                         placeholder="<?= lang('sendgrid_api_key') ?>">
                                 </div>
                             </div>

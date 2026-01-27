@@ -24,7 +24,6 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($allergen_list as $key => $row)
-                                        <?php $langData = __langData($row->id, 'allergen_id', 'vendor_allergen_list_ln') ?>
                                         <tr id="hide_1">
                                             <td>{{ $key+1 }}</td>
                                             <td>
@@ -33,7 +32,7 @@
                                             </td>
 
                                             <td>
-                                                <?= __names($langData, 'allergen_name', true) ?>
+                                                <?= __names($row, 'allergen_name', true) ?>
                                             </td>
 
                                             <td> <?= __status($row->id, $row->status, 'vendor_allergen_list') ?></td>
@@ -78,23 +77,20 @@
 
     <!-- Edit Sidebar Area -->
     @foreach ($allergen_list as $row)
-        <?php $lang_names = __langData($row->id, 'allergen_id', 'vendor_allergen_list_ln') ?>
         <?= __header(__('edit'), url('vendor/products/add-allergen'), 'edit_allergen_'.$row->id) ?>
-
-        @foreach (shop_language() as $lang)
+        <?php $languages = shop_language(); ?>
+        @foreach ($languages as $lang)
 
             <?php
                 $allergen_names =[];
-                if(!empty($lang_names)){
-                    foreach ($lang_names as $value) {
-                        $allergen_names[$value->language] = $value->allergen_name;
-                    }
+                foreach ($row->getTranslations() as $value) {
+                    $allergen_names[$value->language] = $value->allergen_name;
                 }
             ?>
 
             <div class="form-group">
                 <label> <?= __('allergen_name') ?> <?= country($lang->country_id)->flag ?> <?= __required() ?></label>
-                <input type="text" name="allergen_name[<?= $lang->slug ?>]" class="form-control" value="{{ $allergen_names[$lang->slug] }}">
+                <input type="text" name="allergen_name[<?= $lang->slug ?>]" class="form-control" value="{{ $allergen_names[$lang->slug] ?? '' }}">
             </div>
         @endforeach
 

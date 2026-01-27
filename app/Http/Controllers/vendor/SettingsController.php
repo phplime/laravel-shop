@@ -25,16 +25,17 @@ class SettingsController extends Controller
         $data['page'] = 'settings';
         return view('backend.vendor_settings.settings', $data);
     }
-
+ 
     public function general()
     {
         $data = [];
         $data['page_title'] = 'General Settings';
         $data['page'] = 'settings';
+        $data['vendor'] = __activeVendor('all');
         return view('backend.vendor_settings.general_settings', $data);
     }
-
-
+ 
+ 
     public function email_settings()
     {
         $data = [];
@@ -42,14 +43,36 @@ class SettingsController extends Controller
         $data['page'] = 'settings';
         return view('backend.vendor_settings.vendor_email_settings', $data);
     }
-
-
+ 
+ 
     public function apperence()
     {
         $data = [];
         $data['page_title'] = 'Apperence';
         $data['page'] = 'settings';
         return view('backend.vendor_settings.apperence', $data);
+    }
+ 
+    public function add_settings(Request $request)
+    {
+        $data = $request->except('_token');
+        $insert = __vcheck($data);
+        if ($insert) {
+            return __request(1, __('success_text'), $request->header('referer'));
+        } else {
+            return __request(0, __('error_text'), '');
+        }
+    }
+ 
+    public function add_general_settings(Request $request)
+    {
+        $data = $request->except(['_token', 'id', 'username']);
+        $insert = $this->baseRepo->update(_ID(), $data, 'vendor_list');
+        if ($insert) {
+            return __request(1, __('success_text'), $request->header('referer'));
+        } else {
+            return __request(0, __('error_text'), '');
+        }
     }
 
 
@@ -71,6 +94,51 @@ class SettingsController extends Controller
     }
 
 
+    public function add_email_settings(Request $request)
+    {
+        try {
+            if ($request->mail_type == 'smtp') {
+                $request->validate([
+                    'mail_type' => 'required',
+                    'smtp_mail' => 'required',
+                    'smtp_port' => 'required',
+                    'smtp_password' => 'required',
+                    'smtp_host' => 'required',
+                ]);
+            } elseif ($request->mail_type == 'sendgrid') {
+                $request->validate([
+                    'mail_type' => 'required',
+                    'sendgrid_api_key' => 'required',
+                ]);
+            }
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $errors = $e->validator->errors()->all();
+            return __request(0, $errors, '');
+        }
+ 
+        $mailData = [
+            'smtp_port' => $request->smtp_port ?? '',
+            'smtp_password' => $request->smtp_password ?? '',
+            'smtp_host' => $request->smtp_host ?? '',
+            'no_reply' => $request->no_reply ?? '',
+            'sendgrid_api_key' => $request->sendgrid_api_key ?? '',
+        ];
+ 
+        $data = [
+            'smtp_mail' => $request->smtp_mail,
+            'mail_type' => $request->mail_type ?? 'smtp',
+            'smtp_config' => json_encode($mailData),
+        ];
+ 
+        $insert = __vcheck($data);
+ 
+        if ($insert) {
+            return __request(1, __('success_text'), $request->header('referer'));
+        } else {
+            return __request(0, __('error_text'), '');
+        }
+    }
+ 
     public function slider()
     {
         $data = [];

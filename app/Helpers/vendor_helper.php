@@ -2,7 +2,8 @@
 
 use App\Repositories\BaseRepository;
 use App\Services\SettingsService;
-use Illuminate\Container\Attributes\Auth;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
@@ -26,131 +27,25 @@ if (!function_exists('__single')) {
 if (!function_exists('shop_language')) {
     function shop_language()
     {
-        $base = app(BaseRepository::class);
-        $data = $base->get_vendor_language_list();
+        return Cache::remember('shop_languages', 86400, function () {
+            $base = app(BaseRepository::class);
+            return $base->get_vendor_language_list();
+        });
+    }
+}
+
+
+
+
+if (!function_exists('__loader')) {
+    function __loader($type = 'image')
+    {
+        $data = asset('assets/images/background.gif');
         return $data;
     }
 }
 
 
-if (!function_exists('__image')) {
-
-    function __image($value, $type = 'thumb', $isPath = false, $all = false)
-    {
-        // -----------------------------
-        // 1. Normalize input
-        // -----------------------------
-        if (empty($value)) {
-            return avatar('', 'logo');
-        }
-
-        // If CSV → convert to array
-        if (is_string($value) && str_contains($value, ',')) {
-            $value = array_filter(array_map('trim', explode(',', $value)));
-        }
-
-        // If single numeric string → convert to array [id]
-        if (is_numeric($value)) {
-            $value = [(int) $value];
-        }
-
-        // If it's not array yet, force array
-        if (!is_array($value)) {
-            $value = [$value];
-        }
-
-        // Clean numeric IDs
-        $ids = array_filter($value, fn($v) => is_numeric($v));
-
-        if (empty($ids)) {
-            return avatar('', 'logo');
-        }
-
-        // -----------------------------
-        // 2. Fetch images
-        // -----------------------------
-        $images = \App\Models\MediaFile::whereIn('id', $ids)
-            ->orderBy('id', 'desc')
-            ->get();
-
-        if ($images->isEmpty()) {
-            return avatar('', 'logo');
-        }
-
-        // -----------------------------
-        // 3. If $all = true → return all images
-        // -----------------------------
-        if ($all) {
-            return $images->map(function ($img) use ($type, $isPath) {
-                return __image_return($img, $type, $isPath);
-            })->values();  // return a clean array
-        }
-
-        // -----------------------------
-        // 4. If single mode → return first
-        // -----------------------------
-        $first = $images->first();
-
-        return __image_return($first, $type, $isPath);
-    }
-}
-
-/**
- * Helper to extract the real image based on type
- */
-if (!function_exists('__image_return')) {
-    function __image_return($image, $type, $isPath)
-    {
-        if (!$image) {
-            return avatar('', 'logo');
-        }
-
-        $field = $type === 'thumb' ? 'thumb' : 'images';
-        $path  = $image->$field ?? '';
-
-        if (!$path) {
-            return avatar('', 'logo');
-        }
-
-        if ($isPath) {
-            return $path; // raw path
-        }
-
-        return asset($path); // full URL
-    }
-}
-
-
-if (!function_exists('avatar')) {
-    function avatar($img = '', $type = 'profile')
-    {
-        // 1. If comma-separated, use first one
-        if (!empty($img) && is_string($img) && str_contains($img, ',')) {
-            $img = explode(',', $img)[0];
-        }
-
-        // 2. If numeric → load media record
-        if (is_numeric($img)) {
-            $file = \App\Models\MediaFile::find($img);
-            $img = $file->thumb ?? '';
-        }
-
-        // 3. If file exists in public folder
-        if (!empty($img)) {
-            $fullPath = public_path($img);
-            if (file_exists($fullPath)) {
-                return asset($img);
-            }
-        }
-
-        // 4. Fallback images
-        if ($type === 'profile') {
-            return asset(config('media.default_avatar', 'images/default-avatar.png'));
-        }
-
-        return asset(config('media.empty_image', 'images/empty.png'));
-    }
-}
 
 
 
@@ -158,45 +53,56 @@ if (!function_exists('__isset')) {
     function __isset($data = [], $property = null, $returnVal = false)
     {
         $default = ($returnVal === true) ? 0 : ($returnVal === false ? '' : $returnVal);
-
-        if (is_array($data)) {
-            $value = isset($data[$property]) && !empty($data[$property]) ? $data[$property] : $default;
-        } elseif (is_object($data)) {
-            $value = isset($data->$property) && !empty($data->$property) ? $data->$property : $default;
-        } else {
-            $value = isset($data) && !empty($data) ? $data : $default;
-        }
-
-        return $value;
+        return data_get($data, $property, $default);
     }
 }
 
 
-if (!function_exists('__single_lang_by_slug')) {
-    function __single_lang_by_slug($slug)
+if (!function_exists('__vendorLanguage')) {
+    function __vendorLanguage($slug)
     {
-        $language = DB::table('language_list')->where('slug', $slug)->first();
-        $data = country($language->country_id);
-
-        if (!empty($data)) {
-            return (object) [
-                'language_name' => $language->language_name,
-                'dial_code' => $data->dial_code,
-                'currency_icon' => $data->currency_icon,
-                'flag' => '<i class="fi fi-' . $data->code . '"></i>',
-
-            ];
-        } else {
-            return (object) [
-                'language_name' => 'English',
-                'code' => 'us',
-                'currency_code' => 'USD',
-                'dial_code' => '1',
-                'currency_icon' => '$',
-                'flag' => "<i class='fi fi-us'></i>",
-
-            ];
+        static $cache = [];
+        if (isset($cache[$slug])) {
+            return $cache[$slug];
         }
+
+        $result = Cache::remember('lang_details_' . $slug, 86400, function () use ($slug) {
+            $language = DB::table('language_list')->where('slug', $slug)->first();
+
+            if (!$language) {
+                return (object) [
+                    'language_name' => 'English',
+                    'code' => 'us',
+                    'currency_code' => 'USD',
+                    'dial_code' => '1',
+                    'currency_icon' => '$',
+                    'flag' => "<i class='fi fi-us'></i>",
+                ];
+            }
+
+            $data = country($language->country_id);
+
+            if (!empty($data)) {
+                return (object) [
+                    'language_name' => $language->language_name,
+                    'dial_code' => $data->dial_code,
+                    'currency_icon' => $data->currency_icon,
+                    'flag' => '<i class="fi fi-' . $data->code . '"></i>',
+                ];
+            } else {
+                return (object) [
+                    'language_name' => 'English',
+                    'code' => 'us',
+                    'currency_code' => 'USD',
+                    'dial_code' => '1',
+                    'currency_icon' => '$',
+                    'flag' => "<i class='fi fi-us'></i>",
+                ];
+            }
+        });
+
+        $cache[$slug] = $result;
+        return $result;
     }
 }
 
@@ -212,10 +118,85 @@ if (!function_exists('country_list')) {
 
 
 
+if (!function_exists('_ID')) {
+    function _ID($id = null)
+    {
+        // Step 1: Check static cache (for same request)
+        static $cache = [];
+        $key = $id ?? 'default';
+
+        if (isset($cache[$key])) {
+            return $cache[$key];
+        }
+
+        // Step 2: Check Laravel Cache (across requests)
+        $cacheKey = 'vendor_id_' . ($id ?? 'auth_' . (Auth::id() ?? 'guest'));
+
+        $result = Cache::remember($cacheKey, 300, function () use ($id) {
+            // Get the vendor ID
+            if (!empty($id)) {
+                if (is_numeric($id)) {
+                    return DB::table('vendor_list')
+                        ->where('user_id', $id)
+                        ->where('is_primary', 1)
+                        ->value('id') ?? 0;
+                } else {
+                    return DB::table('vendor_list')
+                        ->where('username', $id)
+                        ->value('id') ?? 0;
+                }
+            } elseif (request()->has('vendor_id')) {
+                return request('vendor_id');
+            } elseif (request()->has('u')) {
+                return DB::table('vendor_list')
+                    ->where('username', request('u'))
+                    ->value('id') ?? 0;
+            } elseif (Auth::check()) {
+                return DB::table('vendor_list')
+                    ->where('user_id', Auth::id())
+                    ->where('is_primary', 1)
+                    ->value('id') ?? 0;
+            }
+
+            return 0;
+        });
+
+        // Store in static cache too
+        $cache[$key] = $result;
+
+        return $result;
+    }
+}
+
+
+
 if (!function_exists('__activeVendor')) {
     function __activeVendor($column = 'id')
     {
-        return 1;
+        static $vendorCache = [];
+        $id = _ID();
+
+        if ($id <= 0) return 0;
+        if ($column == 'id') return $id;
+
+        if (!isset($vendorCache[$id])) {
+            $vendorCache[$id] = DB::table('vendor_list')->where('id', $id)->first();
+        }
+
+        if (is_null($column) || $column == 'all') {
+            return $vendorCache[$id];
+        }
+
+        return $vendorCache[$id]->$column ?? 0;
+    }
+}
+
+
+if (!function_exists('__vendorId')) {
+    function __vendorId($vendorId = null)
+    {
+        $vendorId = $vendorId ?? _ID();
+        return $vendorId;
     }
 }
 
@@ -233,47 +214,85 @@ if (!function_exists('__langData')) {
 if (!function_exists('__names')) {
     function __names($object, $type_name = 'category_name', $is_flag = false)
     {
-        if (!empty($object)) {
+        if (empty($object)) {
+            return '';
+        }
 
-            if ($is_flag == true) {
-                $html = '';
-
-                foreach ($object as $item) {
-
-                    $langDetails = __single_lang_by_slug($item->language);
-
-                    $html .= '<div class="langItem">';
-
-                    $html .= '<span data-title="' . $langDetails->language_name . '" data-toggle="tooltip"
-                                data-original-title="" title="">
-                                ' . $langDetails->flag . '
-                            </span>';
-
-                    $html .= '<span class="title-text">' . $item->$type_name . '</span>';
-                    $html .= '</div>';
-                }
-
-                return $html;
-            }else{
-                $names = [];
-                foreach ($object as $value) {
-                    $names[] = ($value->$type_name) ??'';
-                }
-                return implode(', ', $names);
+        // If it's a single Eloquent model with HasTranslations trait
+        if ($object instanceof \Illuminate\Database\Eloquent\Model && method_exists($object, 'getTranslations')) {
+            if ($is_flag === true) {
+                // Use the model's translations for the flags
+                $object = $object->getTranslations();
+            } else {
+                // Just return the localized name for the current locale
+                return $object->$type_name;
             }
+        }
+
+        if ($is_flag == true) {
+            $html = '';
+
+            foreach ($object as $item) {
+                $langDetails = __vendorLanguage($item->language);
+
+                $html .= '<div class="langItem">';
+                $html .= '<span data-title="' . $langDetails->language_name . '" data-toggle="tooltip"
+                            data-original-title="" title="">
+                            ' . $langDetails->flag . '
+                        </span>';
+
+                $html .= '<span class="title-text">' . ($item->$type_name ?? '') . '</span>';
+                $html .= '</div>';
+            }
+
+            return $html;
+        } else {
+            $names = [];
+            foreach ($object as $value) {
+                // This works for both stdClass and Eloquent models (via magic __get)
+                $names[] = ($value->$type_name) ?? '';
+            }
+            return implode(', ', $names);
         }
     }
 }
 
 
 if (!function_exists('__uid')) {
-    function __uid(int $digit = 8, string $table = '')
+    /**
+     * Generate a unique UID with race condition protection
+     * 
+     * @param int $digit Length of the UID (default 8)
+     * @param string $table Table name to check uniqueness against
+     * @param int $maxRetries Maximum retry attempts (default 10)
+     * @return string Unique uppercase UID
+     * @throws \RuntimeException if unable to generate unique UID after max retries
+     */
+    function __uid(int $digit = 8, string $table = '', int $maxRetries = 10)
     {
+        $attempts = 0;
+
         do {
+            // Generate random UID using uppercase alphanumeric characters
             $uid = strtoupper(Str::random($digit));
-        } while (
-            !empty($table) && DB::table($table)->where('uid', $uid)->exists()
-        );
+
+            // If no table specified, return immediately (no uniqueness check needed)
+            if (empty($table)) {
+                return $uid;
+            }
+
+            // Check if UID already exists
+            $exists = DB::table($table)->where('uid', $uid)->exists();
+
+            $attempts++;
+
+            // Prevent infinite loop
+            if ($attempts >= $maxRetries) {
+                throw new \RuntimeException(
+                    "Failed to generate unique UID after {$maxRetries} attempts for table '{$table}'. Consider increasing digit length."
+                );
+            }
+        } while ($exists);
 
         return $uid;
     }
@@ -281,56 +300,133 @@ if (!function_exists('__uid')) {
 
 
 
-if(!function_exists('__variantPrice')){
+if (!function_exists('__variantPrice')) {
     function __variantPrice($row, $language = false)
     {
         $base = app(BaseRepository::class);
         $html = '';
 
-        if (!empty($row)) {
+        if (empty($row)) {
+            return $html;
+        }
 
-            $variantClass = isset($row->is_variants) && $row->is_variants == 1 ? 'variantGroup':'';
+        $variantClass = (isset($row->is_variants) && $row->is_variants == 1)
+            ? 'variantGroup'
+            : '';
 
-            $html .= '<div class="priceGroup '.$variantClass.'">';
+        $html .= '<div class="priceGroup ' . $variantClass . '">';
 
-            if (isset($row->is_variants) && $row->is_variants == 1) {
+        // ================= VARIANT ITEMS =================
+        if (isset($row->is_variants) && $row->is_variants == 1) {
 
-                $variant = $base->get_variants_by_item_id($row->id);
-                $variant_details = [];
+            // Get variants
+            if ($row instanceof \App\Models\Item) {
+                $variants = $row->getTranslations();
+            } else {
+                $variants = $base->get_variants_by_item_id($row->id);
+            }
 
-                foreach ($variant as $var) {
-                    $variant_details[$var->language] = json_decode($var->variants);
+            $variantDetails = [];
+
+            foreach ($variants as $var) {
+
+                if (empty($var->variants)) {
+                    continue;
                 }
 
-                foreach ($variant_details as $key => $value)
-                {
-                    $langDetails = __single_lang_by_slug($key);
-                    $html .= '<div class="variantArea">';
+                $decoded = json_decode($var->variants);
 
-                    if ($language == true) {
-                        $html .= '<div class="langItem">';
-                        $html .= '<span data-title="'.$langDetails->language_name.'" data-toggle="tooltip">'.$langDetails->flag.'</span>';
-                        $html .= '<span>'.$value->variant_name.'</span>';
-                        $html .= '</div>';
-                    }
-
-                    $html .= '<ul>';
-                    foreach ($value->variant_options as $v) {
-                        $html .= '<li><a href="javascript:;">'.$v->name.' : '.$v->price.'.00 $</a></li>';
-                    }
-                    $html .= '</ul>';
-                    $html .= '</div>';
+                // 🔒 Guard invalid JSON
+                if (
+                    json_last_error() !== JSON_ERROR_NONE ||
+                    empty($decoded) ||
+                    !is_object($decoded)
+                ) {
+                    continue;
                 }
-            }else{
-                if (isset($row->price) && !empty($row->price)) {
-                    $html .=  " <span class='currentPrice'>" . $row->price . "$</span>";
 
-					if (isset($row->previous_price) && !empty($row->previous_price)) {
-						$html .=  " <span class='previous_price'>" . $row->previous_price . "$</span>";
-					}
+                // 🔒 Prevent overwriting valid language data
+                if (!isset($variantDetails[$var->language])) {
+                    $variantDetails[$var->language] = $decoded;
                 }
             }
-            $html .= '</div>';
+
+            // Render variants
+            foreach ($variantDetails as $lang => $value) {
+
+                // 🔒 HARD GUARD (this fixes your error)
+                if (
+                    !isset($value->variant_name) ||
+                    empty($value->variant_options) ||
+                    !is_array($value->variant_options)
+                ) {
+                    continue;
+                }
+
+                $langDetails = __vendorLanguage($lang);
+
+                $html .= '<div class="variantArea">';
+
+                if ($language === true && $langDetails) {
+                    $html .= '<div class="langItem">';
+                    $html .= '<span data-title="' . e($langDetails->language_name) . '" data-toggle="tooltip">'
+                        . $langDetails->flag . '</span>';
+                    $html .= '<span>' . e($value->variant_name) . '</span>';
+                    $html .= '</div>';
+                }
+
+                $html .= '<ul>';
+
+                foreach ($value->variant_options as $v) {
+
+                    if (!isset($v->name, $v->price)) {
+                        continue;
+                    }
+
+                    $html .= '<li><a href="javascript:;">'
+                        . e($v->name) . ' : '
+                        . __currency_position($v->price)
+                        . '</a></li>';
+                }
+
+                $html .= '</ul>';
+                $html .= '</div>';
+            }
+
+            // ================= NON-VARIANT ITEMS =================
+        } else {
+
+            if (!empty($row->price)) {
+                $html .= "<span class='currentPrice'>"
+                    . __currency_position($row->price)
+                    . "</span>";
+
+                if (!empty($row->previous_price)) {
+                    $html .= "<span class='previous_price'>"
+                        . __currency_position($row->previous_price)
+                        . "</span>";
+                }
+            }
+        }
+
+        $html .= '</div>';
+
+        return $html;
+    }
+}
+
+
+
+if (!function_exists('__vegType')) {
+    function __vegType($row, $is_text = false, $type = 'round')
+    {
+        $html = '';
+        if (isset($row->veg_type) && !empty($row->veg_type)) {
+            if ($is_text == true) :
+                $html .= '<span class="vegType ' . $type . ' ' . $row->veg_type . '"> <span></span>' . __($row->veg_type == 'nonveg' ? 'non_vegetarian' : 'vegetarian') . "</span>";
+            else :
+                $html .= '<span data-title="' . __($row->veg_type == 'nonveg' ? 'non_vegetarian' : 'vegetarian') . '" data-toggle="tooltip" class="vegType ' . $type . ' ' . $row->veg_type . '"><span></span></span>';
+            endif;
         }
 
         return $html;
@@ -338,63 +434,70 @@ if(!function_exists('__variantPrice')){
 }
 
 
-if (!function_exists('__vegType')) {
-	function __vegType($row, $is_text = false, $type = 'round')
-	{
-		$html = '';
-		if (isset($row->veg_type) && !empty($row->veg_type)) {
-			if ($is_text == true) :
-				$html .= '<span class="vegType ' . $type . ' ' . $row->veg_type . '"> <span></span>' . __($row->veg_type == 'nonveg' ? 'non_vegetarian' : 'vegetarian') . "</span>";
-			else :
-				$html .= '<span data-title="' . __($row->veg_type == 'nonveg' ? 'non_vegetarian' : 'vegetarian') . '" data-toggle="tooltip" class="vegType ' . $type . ' ' . $row->veg_type . '"><span></span></span>';
-			endif;
-		}
-
-		return $html;
-	}
-}
-
-
 if (!function_exists('__itemTax')) {
-	function __itemTax($item_id, $vendor_id = null, $isItem = true)
-	{
-		$taxItems = [];
-		$vendor_id = !empty($vendor_id) ? $vendor_id : __activeVendor('id');
+    function __itemTax($item, $vendor_id = null, $isItem = true)
+    {
+        $taxItems = [];
+        $vendor_id = !empty($vendor_id) ? $vendor_id : __activeVendor('id');
 
-        $base = app(BaseRepository::class);
+        // Use static cache for vendor taxes to avoid repeated queries
+        static $vendorTaxes = [];
+        if (!isset($vendorTaxes[$vendor_id])) {
+            $vendorTaxes[$vendor_id] = DB::table('vendor_tax_list')
+                ->where('vendor_id', $vendor_id)
+                ->where('status', 1)
+                ->get()
+                ->keyBy('id');
+        }
 
-		$taxs = $base->get_item_tax($item_id);
+        // Get tax IDs from the item object or ID
+        if (is_object($item)) {
+            $taxIds = isset($item->tax) && !empty($item->tax) ? json_decode($item->tax) : [];
+        } else {
+            $row = DB::table('vendor_item_list')->find($item);
+            $taxIds = ($row && isset($row->tax) && !empty($row->tax)) ? json_decode($row->tax) : [];
+        }
 
-		if (empty($taxs)) {
-			return '';
-		}
-		foreach ($taxs as $tax) {
-			$taxStatus = $tax->tax_status == 'include' ? __('included') : __('excluded');
-			$taxItems[] = "{$tax->tax_name} {$tax->tax_percentage}% {$taxStatus}";
-		}
+        if (empty($taxIds)) {
+            return '';
+        }
 
-		$taxList = implode(', ', $taxItems);
+        $taxs = [];
+        foreach ($taxIds as $id) {
+            if (isset($vendorTaxes[$vendor_id][$id])) {
+                $taxs[] = $vendorTaxes[$vendor_id][$id];
+            }
+        }
 
-		$html = '';
+        if (empty($taxs)) {
+            return '';
+        }
 
-		$html .= '<div class="taxArea">';
+        foreach ($taxs as $tax) {
+            $taxStatus = $tax->tax_status == 'include' ? __('included') : __('excluded');
+            $taxItems[] = "{$tax->tax_name} {$tax->tax_percentage}% {$taxStatus}";
+        }
 
-		if ($isItem == true) :
-			$html .= '<p class="taxName">';
-			$html .= "<small>{$taxList}</small>";
-			$html .= '</p>';
-		else :
-			$html .= '<ul class="taxName">';
-			foreach ($taxs as $key => $tax) {
+        $taxList = implode(', ', $taxItems);
 
-				$taxStatus = $tax->tax_status == 'include' ? __('included') : __('excluded');
-				$html .= "<li> <span>{$tax->tax_name} {$tax->tax_percentage} % {$taxStatus}</span> <span></span></li>";
-			}
-			$html .= '</ul>';
-		endif;
-		$html .= '</div>';
-		return $html;
-	}
+        $html = '';
+        $html .= '<div class="taxArea">';
+
+        if ($isItem == true) :
+            $html .= '<p class="taxName">';
+            $html .= "<small>{$taxList}</small>";
+            $html .= '</p>';
+        else :
+            $html .= '<ul class="taxName">';
+            foreach ($taxs as $key => $tax) {
+                $taxStatus = $tax->tax_status == 'include' ? __('included') : __('excluded');
+                $html .= "<li> <span>{$tax->tax_name} {$tax->tax_percentage} % {$taxStatus}</span> <span></span></li>";
+            }
+            $html .= '</ul>';
+        endif;
+        $html .= '</div>';
+        return $html;
+    }
 }
 
 
@@ -403,30 +506,33 @@ if (!function_exists('__itemTax')) {
 if (!function_exists('get_subcategories_by_cat_id')) {
     function get_subcategories_by_cat_id($cat_id)
     {
-        return DB::table('vendor_subcategory_list')->where('vendor_id', __activeVendor('id'))->where('category_id', $cat_id)->get();
+        $subcategories = \App\Models\Subcategory::where('vendor_id', __activeVendor('id'))
+            ->where('category_id', $cat_id)
+            ->get();
+
+        \App\Models\Subcategory::loadTranslations($subcategories);
+        return $subcategories;
     }
 }
 
 
 if (!function_exists('str_slug')) {
-	function str_slug($string, $separator = '-')
-	{
-		$string = trim($string);
-		$string = mb_strtolower($string, 'UTF-8');
-		$string = preg_replace('/\s+/', $separator, $string);
-		return $string;
-	}
+    function str_slug($string, $separator = '-')
+    {
+        return Str::slug($string, $separator);
+    }
 }
 
 
-if(!function_exists('single_variants_by_item_id')){
-    function single_variants_by_item_id($item_id, $lang){
+if (!function_exists('single_variants_by_item_id')) {
+    function single_variants_by_item_id($item_id, $lang)
+    {
         return DB::table('vendor_item_list_ln')->where('item_id', $item_id)->where('language', $lang)->first();
     }
 }
 
 
-if(!function_exists('__selectln')){
+if (!function_exists('__selectln')) {
     function __selectln($table, $check_id, $isActive = false)
     {
         $base = app(BaseRepository::class);
@@ -436,18 +542,85 @@ if(!function_exists('__selectln')){
 
 
 if (!function_exists('__aExtra')) {
-	function __aExtra($ext, $type = 'price')
-	{
-		$is_active = $ext->is_active == 1;
+    function __aExtra($ext, $type = 'price')
+    {
+        if ($type === 'price') {
+            return (float) $ext->price == null ? (float) ($ext->addonLibrary->price ?? 0) : (float) $ext->price;
+        }
 
-		if ($type === 'price') {
-			return $is_active ? ($ext->item_extra_price ?? 0) : ($ext->price ?? 0);
-		}
+        if ($type === 'max_qty') {
+            return (int) $ext->max_select_qty == null ? ($ext->addonLibrary->max_select_qty ?? 0) : (int) $ext->max_select_qty;
+        }
 
-		if ($type === 'max_qty') {
-			return $is_active ? ($ext->item_extra_max_select_qty ?? 0) : ($ext->max_select_qty ?? 0);
-		}
+        return 0;
+    }
+}
+if (!function_exists('__vsettings')) {
+    function __vsettings($key, $default = '', $vendorId = null)
+    {
+        return app(\App\Services\VendorSettingsService::class)->get($key, $default, $vendorId);
+    }
+}
 
-		return 0;
-	}
+if (!function_exists('__vcountry')) {
+    function __vcountry($vendorId = null)
+    {
+        $countryId = __vsettings('country_id', 0, $vendorId);
+        return country($countryId);
+    }
+}
+
+if (!function_exists('__vcheck')) {
+    function __vcheck($data, $vendorId = null)
+    {
+        $service = app(\App\Services\VendorSettingsService::class);
+        if (is_array($data)) {
+            return $service->save($data, $vendorId);
+        }
+        return !empty($service->get($data, '', $vendorId));
+    }
+}
+
+if (!function_exists('__vsettings_save')) {
+    function __vsettings_save(array $data, $vendorId = null)
+    {
+        return app(\App\Services\VendorSettingsService::class)->save($data, $vendorId);
+    }
+}
+
+if (!function_exists('__resetCache')) {
+
+    function __resetCache(string $type, $vendorId = null, $userId = null): void
+    {
+        $key = makeCacheKey($type, $vendorId, $userId);
+        Cache::forget($key);
+    }
+}
+
+
+
+
+if (!function_exists('__clearVendorCache')) {
+    /**
+     * Clear all cached data for a vendor (categories, subcategories, etc.)
+     */
+    function __clearVendorCache($vendorId = null, $userId = null): void
+    {
+        app(\App\Repositories\VendorRepository::class)->clearAllCache($vendorId, $userId);
+    }
+}
+
+
+if (!function_exists('__currency_position')) {
+
+    function __currency_position($amount, $id = null)
+    {
+        $dir = !empty(__vsettings('currency_position', $id)) ? __vsettings('currency_position', $id) : 'left';
+        $number_formats = __vsettings('number_format', $id);
+        if ($dir == 'right') {
+            return number_formats($amount, $number_formats) . ' ' . country(__config('currency'))->currency_icon;
+        } else {
+            return country(__config('currency'))->currency_icon . ' ' . number_formats($amount, $number_formats);
+        }
+    }
 }

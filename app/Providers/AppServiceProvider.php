@@ -48,5 +48,9 @@ class AppServiceProvider extends ServiceProvider
                 app(SubscriptionService::class)->syncUserAccessData($event->user->id);
             }
         });
+
+        View::composer('*', function ($view) {
+            $view->with('shopLanguages', shop_language());
+        });
     }
 }

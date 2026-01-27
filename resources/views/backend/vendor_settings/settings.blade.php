@@ -6,7 +6,7 @@
         <div class="col-lg-8 col-xs-12">
             <div class="row">
                 <div class="col-md-12">
-                    <form action="" method="post">
+                    <form action="{{ url('vendor/settings/add_settings') }}" method="post" class="ajaxSubmit">
                         @csrf
                         <div class="card">
                             <div class="card-body">
@@ -14,14 +14,15 @@
                                     <div class="form-group col-md-12 mb-2rm">
                                         <label><?= lang('language') ?></label>
                                         <div class="mt-10 flex gap-20 flex-wrap">
+                                            <?php $vlang = __vsettings('language', 'en'); ?>
                                             <label class="custom-radio"> <input type="radio" name="language"
-                                                    value="en" checked> English</label>
+                                                    value="en" <?= $vlang == 'en' ? 'checked' : '' ?>> English</label>
                                             <label class="custom-radio"> <input type="radio" name="language"
-                                                    value="ar"> عربي</label>
+                                                    value="ar" <?= $vlang == 'ar' ? 'checked' : '' ?>> عربي</label>
                                             <label class="custom-radio"> <input type="radio" name="language"
-                                                    value="bn"> Bangla</label>
+                                                    value="bn" <?= $vlang == 'bn' ? 'checked' : '' ?>> Bangla</label>
                                             <label class="custom-radio"> <input type="radio" name="language"
-                                                    value="es"> Español</label>
+                                                    value="es" <?= $vlang == 'es' ? 'checked' : '' ?>> Español</label>
                                         </div>
                                     </div>
                                 </div>
@@ -31,8 +32,20 @@
                                         <label><?= lang('country') ?></label>
                                         <select name="country_id" id="country_id" class="form-control singeSelect">
                                             <option value="" data-src=""><?= lang('select') ?></option>
-                                            <option data-src="" value="1" data-currency="AFN" data-dial="93"
-                                                data-icon="؋" data-zone="Asia/Kabul" data-code="AF"> Afghanistan</option>
+                                            <?php $vcountry_id = __vsettings('country_id'); ?>
+                                            @foreach (country_list() as $country)
+                                                <?php $timezone = json_decode($country->timezones); ?>
+                                                <option data-src="<?= asset('app/assets/flags/4x3/' . strtolower($country->iso2) . '.svg') ?>" 
+                                                    value="{{ $country->id }}" 
+                                                    data-currency="{{ $country->currency_code }}" 
+                                                    data-dial="{{ $country->dial_code }}"
+                                                    data-icon="{{ $country->currency_symbol }}" 
+                                                    data-zone="{{ $timezone[0]->zoneName ?? '' }}" 
+                                                    data-code="{{ $country->iso2 }}"
+                                                    <?= $vcountry_id == $country->id ? 'selected' : '' ?>> 
+                                                    {{ $country->name }}
+                                                </option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -42,7 +55,12 @@
                                         <label><?= lang('currency') ?></label>
                                         <select name="currency_id" id="currency" class="form-control select2">
                                             <option value=""><?= lang('select') ?></option>
-                                            <option value="3"> ALL (Lek)</option>
+                                            <?php $vcurrency_id = __vsettings('currency_id'); ?>
+                                            @foreach (country_list() as $country)
+                                                <option value="{{ $country->id }}" <?= $vcurrency_id == $country->id ? 'selected' : '' ?>> 
+                                                    {{ $country->currency_code }} ({{ $country->currency_symbol }})
+                                                </option>
+                                            @endforeach
                                         </select>
                                         <!-- /# -->
                                     </div>
@@ -55,7 +73,7 @@
                                                 </span>
                                             </div>
                                             <input type="text" name="dial_code" class="form-control only_number"
-                                                value="+88">
+                                                value="<?= __vsettings('dial_code') ?>">
                                         </div>
                                         <!-- /# -->
                                     </div>
@@ -63,7 +81,22 @@
                                         <label><?= lang('timezone') ?></label>
                                         <select name="timezone" id="timezone" class="form-control select2">
                                             <option value="">select</option>
-                                            <option value="Africa/Abidjan">Africa/Abidjan</option>
+                                            <?php 
+                                                $vtimezone = __vsettings('timezone');
+                                                $timezones = [];
+                                                foreach(country_list() as $c) {
+                                                    $tzs = json_decode($c->timezones);
+                                                    if($tzs) {
+                                                        foreach($tzs as $t) {
+                                                            $timezones[$t->zoneName] = $t->zoneName;
+                                                        }
+                                                    }
+                                                }
+                                                asort($timezones);
+                                            ?>
+                                            @foreach ($timezones as $tz)
+                                                <option value="{{ $tz }}" <?= $vtimezone == $tz ? 'selected' : '' ?>>{{ $tz }}</option>
+                                            @endforeach
                                         </select>
                                         <!-- /# -->
                                     </div>
@@ -76,18 +109,20 @@
                                         <label><?= lang('currency_position') ?></label>
                                         <select name="currency_position" id="currency_position"
                                             class="form-control niceSelect">
-                                            <option value="left" selected>$ 100 </option>
-                                            <option value="right">100 $ </option>
+                                            <?php $vcurr_pos = __vsettings('currency_position', 'left'); ?>
+                                            <option value="left" <?= $vcurr_pos == 'left' ? 'selected' : '' ?>>$ 100 </option>
+                                            <option value="right" <?= $vcurr_pos == 'right' ? 'selected' : '' ?>>100 $ </option>
                                         </select>
                                     </div>
 
                                     <div class="form-group col-md-6">
                                         <label><?= lang('number_format') ?></label>
                                         <select name="number_format" id="number_format" class="form-control niceSelect">
-                                            <option value="0">100</option>
-                                            <option value="1" selected>100.00</option>
-                                            <option value="2">1.00,00 </option>
-                                            <option value="3">1,00.00 </option>
+                                            <?php $vnum_format = __vsettings('number_format', '1'); ?>
+                                            <option value="0" <?= $vnum_format == '0' ? 'selected' : '' ?>>100</option>
+                                            <option value="1" <?= $vnum_format == '1' ? 'selected' : '' ?>>100.00</option>
+                                            <option value="2" <?= $vnum_format == '2' ? 'selected' : '' ?>>1.00,00 </option>
+                                            <option value="3" <?= $vnum_format == '3' ? 'selected' : '' ?>>1,00.00 </option>
                                         </select>
                                     </div>
                                 </div><!-- row -->
@@ -97,24 +132,15 @@
                                         <label class="control-label"><?= lang('date_format') ?></label>
 
                                         <select name="date_format" class="form-control">
-                                            <option value="1" >
-                                                d-m-Y</option>
-                                            <option value="2" >
-                                                Y-m-d</option>
-                                            <option value="3">
-                                                d/m/Y</option>
-                                            <option value="4">
-                                                Y/m/d</option>
-                                            <option value="5">
-                                                d.m.Y</option>
-                                            <option value="6">
-                                                Y.m.d</option>
-                                            <option value="7">
-                                                d M, Y</option>
-                                            <option value="7" >
-                                                d M, Y</option>
-                                            <option value="8">
-                                                d M Y</option>
+                                            <?php $vdate_format = __vsettings('date_format', '1'); ?>
+                                            <option value="1" <?= $vdate_format == '1' ? 'selected' : '' ?>>d-m-Y</option>
+                                            <option value="2" <?= $vdate_format == '2' ? 'selected' : '' ?>>Y-m-d</option>
+                                            <option value="3" <?= $vdate_format == '3' ? 'selected' : '' ?>>d/m/Y</option>
+                                            <option value="4" <?= $vdate_format == '4' ? 'selected' : '' ?>>Y/m/d</option>
+                                            <option value="5" <?= $vdate_format == '5' ? 'selected' : '' ?>>d.m.Y</option>
+                                            <option value="6" <?= $vdate_format == '6' ? 'selected' : '' ?>>Y.m.d</option>
+                                            <option value="7" <?= $vdate_format == '7' ? 'selected' : '' ?>>d M, Y</option>
+                                            <option value="8" <?= $vdate_format == '8' ? 'selected' : '' ?>>d M Y</option>
                                         </select>
                                     </div>
 
@@ -122,10 +148,9 @@
                                         <label class="control-label"><?= lang('time_format') ?></label>
 
                                         <select name="time_format" class="form-control">
-                                            <option value="1" selected>
-                                                12 <?= lang('format') ?></option>
-                                            <option value="2">
-                                                24 <?= lang('format') ?></option>
+                                            <?php $vtime_format = __vsettings('time_format', '1'); ?>
+                                            <option value="1" <?= $vtime_format == '1' ? 'selected' : '' ?>>12 <?= lang('format') ?></option>
+                                            <option value="2" <?= $vtime_format == '2' ? 'selected' : '' ?>>24 <?= lang('format') ?></option>
                                         </select>
                                     </div>
                                 </div>

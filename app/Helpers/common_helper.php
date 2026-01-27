@@ -1,9 +1,11 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 use App\Repositories\BaseRepository;
 use App\Services\SettingsService;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+
 
 if (!function_exists('media_files')) {
     function media_files($name = 'image', $type = 'single', $value = '')
@@ -62,11 +64,7 @@ if (!function_exists('__settings')) {
 if (!function_exists('__config')) {
     function __config($key)
     {
-        if (Schema::hasTable('settings')) :
-            return \App\Models\Settings::where('key', $key)->value('value');
-        else :
-            return [];
-        endif;
+        return __settings($key);
     }
 }
 
@@ -91,27 +89,9 @@ if (!function_exists('country')) {
 
     function country($id)
     {
-        $data = null;
-        if (!empty($id)) {
-            $repo = app(BaseRepository::class);
-            if (is_numeric($id)):
-                $data = $repo->find($id, 'country_list');
-            else:
-                $data = $repo->getWhere('currency_code', $id, 'country_list');
-            endif;
-        }
+        static $countryCache = [];
 
-        if (!empty($data)) {
-            return (object) [
-                'name' => $data->name,
-                'code' => strtolower($data->iso2),
-                'currency_code' => strtoupper($data->currency_code),
-                'dial_code' => $data->dial_code,
-                'currency_icon' => $data->currency_symbol,
-                'flag' => '<i class="fi fi-' . strtolower($data->iso2) . '"></i>',
-
-            ];
-        } else {
+        if (empty($id)) {
             return (object) [
                 'name' => 'United States',
                 'code' => 'us',
@@ -119,9 +99,43 @@ if (!function_exists('country')) {
                 'dial_code' => '1',
                 'currency_icon' => '$',
                 'flag' => "<i class='fi fi-us'></i>",
-
             ];
         }
+
+        if (isset($countryCache[$id])) {
+            return $countryCache[$id];
+        }
+
+        $data = null;
+        $repo = app(BaseRepository::class);
+        if (is_numeric($id)):
+            $data = $repo->find($id, 'country_list');
+        else:
+            $data = $repo->getWhere('currency_code', $id, 'country_list');
+        endif;
+
+        if (!empty($data)) {
+            $result = (object) [
+                'name' => $data->name,
+                'code' => strtolower($data->iso2),
+                'currency_code' => strtoupper($data->currency_code),
+                'dial_code' => $data->dial_code,
+                'currency_icon' => $data->currency_symbol,
+                'flag' => '<i class="fi fi-' . strtolower($data->iso2) . '"></i>',
+            ];
+        } else {
+            $result = (object) [
+                'name' => 'United States',
+                'code' => 'us',
+                'currency_code' => 'USD',
+                'dial_code' => '1',
+                'currency_icon' => '$',
+                'flag' => "<i class='fi fi-us'></i>",
+            ];
+        }
+
+        $countryCache[$id] = $result;
+        return $result;
     }
 }
 
@@ -223,8 +237,13 @@ if (!function_exists('normalize_amount')) {
 if (!function_exists('__image')) {
     function __image($id, $type = 'thumb', $isPath = false)
     {
-        // Optimization: Select only the columns we need ('thumb' and 'images')
-        $image = \App\Models\MediaFile::find($id, ['thumb', 'images']);
+        if (empty($id)) {
+            return avatar('', 'logo');
+        }
+
+        $image = \Illuminate\Support\Facades\Cache::remember("media_file_{$id}", now()->addDays(1), function () use ($id) {
+            return \App\Models\MediaFile::find($id, ['thumb', 'images']);
+        });
 
         if (!$image) {
             return avatar('', 'logo');
@@ -251,37 +270,61 @@ if (!function_exists('__image')) {
 if (!function_exists('avatar')) {
     function avatar($img = '', $type = 'profile')
     {
-        // 1. Handle comma-separated strings (take the first one)
-        if (is_string($img) && strpos($img, ',') !== false) {
-            $img = explode(',', $img)[0];
-        }
+        $cacheKey = "avatar_" . (is_scalar($img) ? $img : md5(serialize($img))) . '_' . $type;
 
-        // 2. Handle Database ID
-        if (is_numeric($img)) {
-            // Optimization: Select only 'thumb'
-            $media = \App\Models\MediaFile::find($img, ['thumb']);
-            $img = $media->thumb ?? null;
-        }
+        return \Illuminate\Support\Facades\Cache::remember($cacheKey, now()->addDays(1), function () use ($img, $type) {
+            // 1. Handle comma-separated strings (take the first one)
+            if (is_string($img) && strpos($img, ',') !== false) {
+                $img = explode(',', $img)[0];
+            }
 
-        // 3. Determine default image based on type
-        $defaultPath = $type === 'profile'
-            ? 'assets/images/avatar.png'
-            : 'assets/images/empty.png';
+            // 2. Handle Database ID
+            if (is_numeric($img)) {
+                $media = \App\Models\MediaFile::find($img, ['thumb']);
+                $img = $media->thumb ?? null;
+            }
 
-        // 4. If image is empty, return default
-        if (empty($img)) {
-            return asset($defaultPath);
-        }
+            // 3. Determine default image based on type
+            $defaultPath = $type === 'profile'
+                ? 'assets/images/avatar.png'
+                : 'assets/images/empty.jpg';
 
-        // 5. Check if file exists
-        // Bug Fix: We use public_path() to check the file on the server disk, 
-        // rather than checking the URL string directly.
-        if (file_exists(public_path($img))) {
-            return asset($img);
-        }
+            // 4. If image is empty, return default
+            if (empty($img)) {
+                return asset($defaultPath);
+            } else {
+                // 5. Check if file exists
+                if (file_exists(public_path($img))) {
+                    return asset($img);
+                } else {
+                    // 6. Fallback to default if file not found
+                    return asset($defaultPath);
+                }
+            }
+        });
+    }
+}
 
-        // 6. Fallback to default if file not found
-        return asset($defaultPath);
+
+if (!function_exists('setCache')) {
+    function setCache($type, callable $callback, $vendorId = null, $userId = null)
+    {
+        $cacheTtl = 3600;
+        return Cache::remember(makeCacheKey($type, $vendorId, $userId), $cacheTtl, $callback);
+    }
+}
+
+
+
+
+
+if (!function_exists('makeCacheKey')) {
+
+    function makeCacheKey(string $type, $vendorId = null, $userId = null): string
+    {
+        $vendorId = $vendorId ?? __activeVendor('id');
+        $userId = $userId ?? Auth::id();
+        return "vendor_{$type}:{$vendorId}:user_{$userId}";
     }
 }
 

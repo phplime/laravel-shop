@@ -329,7 +329,7 @@ if (!function_exists('__mainContent')) {
         $request = request();
 
         // If it's an AJAX request, return only the partial view
-        if ($request->ajax() || $request->get('isAjax') == 1) {
+        if ($request->ajax() || $request->input('isAjax') == 1) {
             return response()->view($viewPath, $data);
         }
 
@@ -559,5 +559,67 @@ if (!function_exists('is_test')) {
     function is_test()
     {
         return 0;
+    }
+}
+
+if (!function_exists('__setTemp')) {
+
+    function __setTemp(string $key = 'temp', $data = null, int $minutes = 5): void
+    {
+        if ($data === null) {
+            return;
+        }
+
+        $cacheKey = 'temp_session_' . $key;
+
+        // If key exists and both old and new data are arrays, merge them
+        if (\Illuminate\Support\Facades\Cache::has($cacheKey)) {
+            $existingData = \Illuminate\Support\Facades\Cache::get($cacheKey);
+
+            if (is_array($existingData) && is_array($data)) {
+                $data = array_merge($existingData, $data);
+            }
+        }
+
+        \Illuminate\Support\Facades\Cache::put($cacheKey, $data, now()->addMinutes($minutes));
+    }
+}
+
+if (!function_exists('__getTemp')) {
+
+    function __getTemp(string $key, $default = null)
+    {
+        $cacheKey = 'temp_session_' . $key;
+        return \Illuminate\Support\Facades\Cache::get($cacheKey, $default);
+    }
+}
+
+if (!function_exists('__forgetTemp')) {
+
+    function __forgetTemp(string $key): void
+    {
+        $cacheKey = 'temp_session_' . $key;
+        \Illuminate\Support\Facades\Cache::forget($cacheKey);
+    }
+}
+
+if (!function_exists('__hasTemp')) {
+
+    function __hasTemp(string $key): bool
+    {
+        $cacheKey = 'temp_session_' . $key;
+        return \Illuminate\Support\Facades\Cache::has($cacheKey);
+    }
+}
+
+if (!function_exists('__pagination')) {
+
+    function __pagination($key, $class = 'ci-pagination')
+    {
+        $html = '';
+        $html .= '<div class="' . $class . '">';
+        $html .= $key->links('pagination::bootstrap-4');
+        $html .= '</div>';
+        return $html;
     }
 }

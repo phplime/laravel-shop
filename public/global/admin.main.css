@@ -349,9 +349,9 @@ button.cartUpdate {
 ----------------------------------------------*/
 .module-body {
     min-height: 250px;
-    background: #fff;
+    background: var(--card-background);
     border-radius: 5px 5px 0 0;
-    box-shadow: 0 0 5px #eee;
+    box-shadow: 0 0 5px var(--box-shadow);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -370,8 +370,8 @@ button.cartUpdate {
 }
 
 .module-footer {
-    background: #fff;
-    border-top: 1px solid #eee;
+    background: var(--card-background);
+    border-top: 1px solid var(--border-color);
     border-radius: 0 0 5px 5px;
 }
 
@@ -383,7 +383,7 @@ button.cartUpdate {
 
 .module-footer ul li {
     width: 100%;
-    border-right: 1px solid #eee;
+    border-right: 1px solid var(--border-color);
     text-align: center;
 }
 
@@ -402,8 +402,9 @@ ul.moudleUl {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
-    background: #fff;
+    background: var(--card-background);
     padding: 10px;
+    color: var(--color);
 }
 
 ul.moudleUl li a {
@@ -461,11 +462,11 @@ label.is_primary {
     align-items: center;
     background: var(--theme-color);
     border-radius: 5px;
-    color: #fff;
+    color: var(--background-color);
 }
 
 .vendorPanel .vandorSingleModule {
-    color: #ffffff;
+    color: var(--background-color);
 }
 
 .vendorPanel .vandorSingleModule {
@@ -481,7 +482,7 @@ label.is_primary {
 
 .vendorPanel .dropdown-menu {
     width: 100%;
-    background: #343a40;
+    background: var(--background-color);
     padding: 0;
     margin: 0;
     margin-top: 2px;
@@ -494,10 +495,10 @@ label.is_primary {
 }
 
 .vendorPanel .vandorSingleModule {
-    color: #fff;
+    color: var(--background-color);
     padding: 8px 10px;
     width: 100%;
-    border-bottom: 1px solid #4b545c;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .vendorPanel a.dropdown-item {

@@ -20,7 +20,7 @@
                     <div class="module-body">
                         <?= __status($row->id, $row->status, 'module_list') ?>
                         <div class="iconArea">
-                            <img src="<?= asset("assets/backend/modules/{$row->slug}.svg") ?>"
+                            <img src="<?= asset("assets/backend/images/modules/{$row->slug}.svg") ?>"
                             alt="<?= $row->slug ?>">
                         </div>
                         <div class="moduleDetails">

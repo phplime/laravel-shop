@@ -290,44 +290,7 @@ class BaseRepository
 
 
 
-    public function get_category_by_select_ln_data()
-    {
-        $query = DB::table('vendor_category_list')
-            ->where('user_id', Auth::id())
-            ->where('vendor_id', __activeVendor('id'))
-            ->orderBy('created_at', 'DESC')
-            ->get();
 
-        // Get Lang Category name
-        foreach ($query as $key => $value) {
-            $query[$key]->category_names = DB::table('vendor_category_list_ln')->where('category_id', $value->id)->where('language', app()->getLocale())->value('category_name');
-        }
-
-        // Count Category Items
-        foreach ($query as $key => $cat) {
-            $items = DB::table('vendor_item_list')->where('category_id', $cat->id)->get();
-            $query[$key]->total_items = $items->count();
-        }
-
-        return $query;
-    }
-
-
-
-    public function get_vendor_category($user_id)
-    {
-        $query = DB::table('vendor_category_list')
-            ->where('user_id', $user_id)
-            ->where('vendor_id', __activeVendor('id'))
-            ->orderBy('created_at', 'DESC')
-            ->get();
-
-        foreach ($query as $key => $value) {
-            $query[$key]->category_names = DB::table('vendor_category_list_ln')->where('category_id', $value->id)->get();
-        }
-
-        return $query;
-    }
 
 
     public function get_country_list()
@@ -346,8 +309,7 @@ class BaseRepository
 
         if ($query) {
             $this->update($query->id, $data, $table);
-        }else
-        {
+        } else {
             $data[$check_column] = $check_id;
             $data['language'] = $lang;
             $this->create($data, $table);
@@ -363,27 +325,6 @@ class BaseRepository
 
 
 
-    public function get_subcategories($user_id)
-    {
-        $categories = DB::table('vendor_category_list as c')
-            ->where('c.user_id', $user_id)
-            ->where('c.vendor_id', __activeVendor('id'))
-            ->select('c.id as cat_id', 'c.thumb as category_img')
-            ->orderBy('c.created_at', 'DESC')
-            ->get();
-
-        foreach ($categories as $cat) {
-            $cat->subcategory = DB::table('vendor_subcategory_list')
-                ->where('category_id', $cat->cat_id)
-                ->get();
-        }
-
-        $categories = $categories->filter(function ($item) {
-            return $item->subcategory->count() > 0;
-        })->values();
-
-        return $categories;
-    }
 
 
 
@@ -393,51 +334,10 @@ class BaseRepository
     }
 
 
-
-    public function get_vendor_products()
-    {
-        $cat_id = null;
-        if (isset($_GET['category']) && !empty($_GET['category'])) {
-            $get_name = strtolower(str_replace(['-', '_', ' '], ' ', $_GET['category']));
-            $cat_id = DB::table('vendor_category_list_ln')->where('category_name', $get_name)->value('category_id');
-        }
-
-        $query = DB::table('vendor_item_list')->where('user_id', Auth::id())->where('vendor_id', __activeVendor('id'));
-
-        if(!empty($cat_id)){
-            $query->where('category_id', $cat_id);
-        }
-
-        $items = $query->get();
+ 
+    
 
 
-        foreach ($items as $key => $value) {
-            $items[$key]->item_names = $this->get_lang_data($value->id, 'item_id', 'vendor_item_list_ln');
-        }
-
-        return $items;
-    }
-
-
-
-    public function get_vendor_product_id($id)
-    {
-        $item = DB::table('vendor_item_list')
-        ->where([
-            ['id', '=', $id],
-            ['user_id', '=', Auth::id()],
-            ['vendor_id', '=', __activeVendor('id')],
-        ])
-        ->first();
-
-        if (!$item) {
-            return null;
-        }
-
-        $item->item_details = $this->get_lang_data($id, 'item_id', 'vendor_item_list_ln');
-
-        return $item;
-    }
 
 
 
@@ -454,7 +354,7 @@ class BaseRepository
 
         if (!empty($taxs)) {
             $item_tax = DB::table('vendor_tax_list as t')->whereIn('t.id', $taxs)->where('t.status', 1)->select('t.*')->get();
-        }else{
+        } else {
             $item_tax = 0;
         }
 
@@ -462,48 +362,18 @@ class BaseRepository
     }
 
 
-    public function get_my_addons_by_item_id($item_id)
-    {
-        $addon_title = DB::table('vendor_extra_title_list')
-                        ->where([
-                            ['vendor_id', '=', __activeVendor('id')],
-                            ['user_id', '=', Auth::id()],
-                            ['item_id', '=', $item_id],
-                        ])->get();
 
-
-        foreach ($addon_title as $key => $value) {
-            $query = DB::table('item_extra_list as ex')
-                        ->join('vendor_addon_library as l', 'l.id', '=', 'ex.addon_id', 'left')
-                        ->where('ex.item_id', $item_id)
-                        ->where('ex.extra_title_id', $value->id)
-                        ->select('ex.*','ex.id as item_extra_id','l.price','l.max_select_qty','ex.price as item_extra_price','ex.max_select_qty as item_extra_max_select_qty')
-                        ->get();
-
-            foreach ($query as $key1 => $value) {
-                $query[$key1]->extranames = DB::table('vendor_addon_library_ln')->where('addon_id', $value->addon_id)->get();
-            }
-
-            $addon_title[$key]->extra_list = $query;
-        }
-
-        foreach ($addon_title as $key => $value) {
-            $addon_title[$key]->names = DB::table('vendor_extra_title_list_ln')->where('extra_title_id', $value->id)->get();
-        }
-
-        return $addon_title;
-    }
 
 
 
     public function get_ln_data($table, $check_id, $isActive = false)
     {
-        $lnTable = $table.'_ln';
+        $lnTable = $table . '_ln';
 
 
         $query = DB::table($table)->where('user_id', Auth::id())->where('vendor_id',  __activeVendor('id'));
 
-        if ($isActive === true ) {
+        if ($isActive === true) {
             $query->where('status', 1);
         }
 
@@ -519,7 +389,7 @@ class BaseRepository
 
 
 
-    public function get_page_ln_data_by_slug(string $table, string $check_id, ?string $slug = null, ?string $language = null )
+    public function get_page_ln_data_by_slug(string $table, string $check_id, ?string $slug = null, ?string $language = null)
     {
         $lnTable = $table . '_ln';
 
@@ -534,16 +404,16 @@ class BaseRepository
         $result = $query->get();
 
         foreach ($result as $item) {
-            $item->_names = $this->get_ln($item->id, $check_id, $lnTable, $language );
+            $item->_names = $this->get_ln($item->id, $check_id, $lnTable, $language);
         }
 
         return !empty($slug) ? ($result->first() ?? null) : $result;
     }
 
 
-    public function get_ln( int $id, string $column_name, string $table, ?string $language = null )
+    public function get_ln(int $id, string $column_name, string $table, ?string $language = null)
     {
-        $query = DB::table($table) ->where($column_name, $id);
+        $query = DB::table($table)->where($column_name, $id);
 
         if (!empty($language)) {
             $query->where('language', $language);
@@ -552,6 +422,21 @@ class BaseRepository
         return $query->get();
     }
 
-
-
+    /**
+     * Efficiently save (insert or update) language data.
+     *
+     * @param int $insertId The ID of the parent record.
+     * @param string $foreignKey The foreign key column in the translation table.
+     * @param string $translationTable The name of the translation table.
+     * @param array $languageData Data keyed by language code. Example: ['en' => ['name' => 'Val'], 'bn' => ['name' => 'Val']]
+     */
+    public function saveLanguageData($insertId, $foreignKey, $translationTable, $languageData)
+    {
+        foreach ($languageData as $lang => $data) {
+            DB::table($translationTable)->updateOrInsert(
+                [$foreignKey => $insertId, 'language' => $lang],
+                $data
+            );
+        }
+    }
 }
