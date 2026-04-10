@@ -25,8 +25,8 @@
 <link rel="stylesheet" href="{{ asset('assets/backend/css/default.css?t=' . time()) }}">
 <link rel="stylesheet" href="{{ asset('assets/backend/css/reset.css?t=' . time()) }}">
 <link rel="stylesheet" href="{{ asset('assets/backend/css/theme-toggle.css?t=' . time()) }}">
-<link rel="stylesheet" href="{{ asset('global/admin.main.css') }}">
-<link rel="stylesheet" href="{{ asset('global/admin.responsive.css') }}">
+<link rel="stylesheet" href="{{ asset('global/admin.main.css?t=' . time()) }}">
+<link rel="stylesheet" href="{{ asset('global/admin.responsive.css?t=' . time()) }}">
 
 <!-- Main js cdn -->
 <script src="{{ asset('assets/plugins/jquery.main.js') }}"></script>

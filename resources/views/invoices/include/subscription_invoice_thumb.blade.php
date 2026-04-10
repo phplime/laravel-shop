@@ -135,8 +135,8 @@
 <div class="card subscribeInvoiceCard">
     <div class="invoiceHeader headerTop">
         <div class="invoiceCompany invoiceLeft">
-            <p>{{ lang('order_no'); }} : # {{ $invoice_info['order_id'] }}</p>
-            <p>{{ lang('date'); }} : {{ makeDate($invoice_info['created_at'],'fulldatetime') }}</p>
+            <p>{{ lang('order_no') }} : # {{ $invoice_info['order_id'] }}</p>
+            <p>{{ lang('date') }} : {{ makeDate($invoice_info['created_at'],'fulldatetime') }}</p>
             @if (isset($page_title) && $page_title != 'Payment Method')
             <p class="mt-5"><label
                     class="label bg-<?= $invoice_info['is_payment'] == 1 ? "success" : "warning"; ?>"><?= $invoice_info['is_payment'] == 1 ? lang('paid') : lang('pending'); ?></label>
@@ -195,7 +195,7 @@
                                 <b>{{ admin_currency_position($invoice_info['subtotal']) }}</b>
                             </p>
 
-                            <p><span clas>{{ lang('tax') }} <small class="text-muted fz-12">({{ $invoice_info['tax_percent'] }}%)</small >: </span>
+                            <p><span clas>{{ lang('tax') }} <small class="text-muted fz-12">({{ $invoice_info['tax_percent'] }}%)</small>: </span>
                                 <span clas>{{ admin_currency_position($invoice_info['tax_fee']) }}</span>
                             </p>
                             <p><b>{{ lang('total') }} : </b> <b>{{ admin_currency_position($invoice_info['total']) }}</b></p>

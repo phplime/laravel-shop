@@ -1,5 +1,14 @@
 (function ($) {
-    const loader1 = $('<div class="loader-container"><div class="loader"></div></div>');
+    window.loader = {
+        show: () => $('.if-overlay').addClass('show'),
+        hide: () => $('.if-overlay').removeClass('show'),
+    };
+    $(function () {
+        if ($('.if-overlay').length === 0) {
+            $('<div class="if-overlay"><div class="if-spinner"></div></div>').appendTo('body');
+        }
+    });
+
     window.MSG = function (type = 'success', msg = '') {
         msg = msg == '' ? successMsg : msg;
         if (getType(type) == 'success') {
@@ -1087,7 +1096,11 @@
     ----------------------------------------------*/
 
     window.__request = function (thisForm, URL) {
-        loader1.appendTo('body');
+        loader.show();
+
+        // Clear previous errors
+        $('.field-error').text('').hide();
+        $('.ck-input').removeClass('is-invalid');
 
         const formDataSerialized = $(thisForm).serialize();
 
@@ -1101,19 +1114,62 @@
                 'X-Requested-With': 'XMLHttpRequest'
             },
         };
+
         return axios.post(URL, formDataSerialized, config)
             .then(function (response) {
                 return response.data;
             })
             .catch(function (error) {
-                console.error('Error fetching data:', error); // Debugging line
-                alert('Error fetching data. Please try again.'); // User alert
-                throw error; // Re-throw the error to propagate it
+                if (error.response && error.response.status === 422) {
+                    const errors = error.response.data.errors;
+                    Object.keys(errors).forEach(key => {
+                        const $field = $(`#err-${key}`);
+                        if ($field.length) {
+                            $field.text(errors[key][0]).show();
+                            $(`[name="${key}"]`).addClass('is-invalid');
+                        }
+                    });
+
+                    // Also show a general error if no specific fields matched
+                    if (!Object.keys(errors).length) {
+                        alert('Validation failed. Please check your inputs.');
+                    }
+                } else {
+                    console.error('Error fetching data:', error);
+                    alert('Error processing your request. Please try again.');
+                }
+                throw error;
             })
             .finally(function () {
-                // Hide and remove the loader
-                loader1.remove();
+                loader.hide();
             });
+    }
+
+
+
+
+    window.validateForm = function () {
+        let isValid = true;
+
+        $('.item_extra_list.required-section').each(function () {
+            var section = $(this);
+            var requiredCount = parseInt(section.data('limit'));
+            var inputs = section.find('input.itemExtras:checked');
+            console.log(requiredCount, inputs.length);
+            if (inputs.length < requiredCount) {
+                isValid = false;
+                section.find('.errorMessage').text(`${select_at_least} ${requiredCount} ${options}`);
+                scrollToActiveElement('.errorMessage');
+            } else {
+                section.find('.errorMessage').text('');
+            }
+        });
+
+        setTimeout(() => {
+            $('.errorMessage').html('');
+        }, 4000);
+
+        return isValid;
     }
 
 
@@ -1130,7 +1186,7 @@
         }
 
         // Create and show the loader
-        loader1.appendTo('body');
+        loader.show();
 
         const config = {
             method: method,
@@ -1154,7 +1210,7 @@
             .finally(function () {
                 // Hide and remove the loader
                 setTimeout(() => {
-                    loader1.remove();
+                    loader.hide();
                 }, 200);
             });
     }
@@ -1199,7 +1255,7 @@
             e.preventDefault();
             const pageUrl = target.getAttribute("href");
 
-            loader1.appendTo('body');
+            loader.show();
 
             fetch(pageUrl, {
                 headers: {
@@ -1223,11 +1279,11 @@
                     }
 
                     history.pushState({}, "", pageUrl);
-                    loader1.remove();
+                    loader.hide();
                 })
                 .catch(err => {
                     console.error(err);
-                    loader1.remove();
+                    loader.hide();
                 });
         }
     });
@@ -1279,7 +1335,7 @@
 
 
     window.loadAjaxContent__ = function (pageUrl) {
-        loader1.appendTo('body');
+        loader.show();
 
         fetch(pageUrl, {
             headers: {
@@ -1298,7 +1354,7 @@
                     document.querySelector("#mainContent").innerHTML = newContent.innerHTML;
                     document.querySelector(".ci-paginationArea").innerHTML = newPagination.innerHTML;
                     history.pushState({}, "", pageUrl);
-                    loader1.remove();
+                    loader.hide();
                 } else {
                     // Fallback: if no AJAX content found, do full page reload
                     window.location.href = pageUrl;
@@ -1410,6 +1466,10 @@
     };
 
 
+
+
+
+
 })(jQuery);
 
 
@@ -1450,4 +1510,78 @@
             requestAnimationFrame(tick);
         });
     };
+
+
 })(jQuery);
+
+
+
+
+// ─── Setup ────────────────────────────────────────────────────────────────────
+
+
+
+// ─── Core Function ────────────────────────────────────────────────────────────
+
+async function fetchItem($el) {
+
+    const url = resolveUrl($el);
+    const target = $el.data('target') || null;
+    const modal = $el.data('modal') || null;
+
+    if (!url) return console.warn('[fetchItem] No URL could be resolved.');
+    if (!target) return console.warn('[fetchItem] No data-target defined.');
+
+    $el.prop('disabled', true);
+    loader.show();
+
+    try {
+
+        const { data } = await axios.get(url, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+
+        if (data?.st !== 1) return console.warn('[fetchItem] Bad response', data);
+
+        // ── Render ────────────────────────────────────────────────────────────
+
+        $(target).html(data.load);  // always load into target
+
+        if (modal) {
+            $(modal).modal('show'); // if modal, open it after loading
+            // Wait for modal animation to roughly complete before hiding overlay
+            setTimeout(() => loader.hide(), 300);
+        } else {
+            loader.hide();
+        }
+
+    } catch (err) {
+        console.error('[fetchItem] Failed:', err);
+        loader.hide();
+    } finally {
+        $el.prop('disabled', false);
+    }
+}
+
+function resolveUrl($el) {
+
+    // If data-url is set, use it directly
+    if ($el.data('url')) return $el.data('url');
+
+    const data = $el.data();
+    const isGet = $el.data('fetchItem') === 'get';
+    const reserved = ['url', 'target', 'modal', 'fetchItem'];
+
+    // Filter out reserved keys
+    const entries = Object.entries(data).filter(([key]) => !reserved.includes(key));
+
+    if (!entries.length) return console.warn('[fetchItem] No parameters found.') || null;
+
+    if (isGet) {
+        // → ?key=value&key=value
+        return '?' + new URLSearchParams(Object.fromEntries(entries)).toString();
+    } else {
+        // → /value/value
+        return '/' + entries.map(([, v]) => v).join('/');
+    }
+}

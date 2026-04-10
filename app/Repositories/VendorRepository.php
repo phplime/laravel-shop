@@ -136,8 +136,9 @@ class VendorRepository extends BaseRepository
             $q->where('subcategory_id', request('subcategory')))
             ->when(request('q'), fn($q) =>
             $q->where('name', 'like', '%' . request('q') . '%'))
-            ->paginate(request('per_page', 2))
+            ->paginate(request('per_page', 10))
             ->withQueryString();
+
 
         Item::loadTranslations($items);
 
@@ -169,10 +170,10 @@ class VendorRepository extends BaseRepository
     public function getProductByIdWithDetails($id, $vendorId = null, $language = null)
     {
         $vendorId = $this->vendorId($vendorId);
-
+        $identifier = is_numeric($id) ? 'id' : 'uid';
         $item = Item::query()
             ->with(['category', 'subcategory'])
-            ->where('id', $id)
+            ->where($identifier, $id)
             ->where('user_id', $this->userId)
             ->where('vendor_id', $vendorId)
             ->first();

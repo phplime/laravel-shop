@@ -1,20 +1,21 @@
 <?php
 
+use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\admin\LanguageController;
-use App\Http\Controllers\Admin\AuthController as AdminAuthController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\FrontendController;
-use App\Http\Controllers\MediaFileController;
 use App\Http\Controllers\Admin\ModuleController;
 use App\Http\Controllers\admin\PackageController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\CssController;
+use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\MediaFileController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\Vendor\DashboardController as VendorDashboardController;
 use App\Http\Controllers\Vendor\OrderController;
@@ -24,6 +25,9 @@ use App\Http\Controllers\Vendor\ProfileController as VendorProfileController;
 use App\Http\Controllers\Vendor\ReportController;
 use App\Http\Controllers\Vendor\SettingsController as VendorSettingsController;
 use App\Http\Controllers\Vendor\StaffController;
+use Illuminate\Support\Facades\Route;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -100,13 +104,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         localizedRoute('/add_new_module', [ModuleController::class, 'add_new_module'], 'add_new_module');
     });
 
-    // Media Routes
-    Route::prefix('media')->name('media.')->group(function () {
-        localizedRoute('/show', [MediaFileController::class, 'index'], 'show');
-        localizedRoute('/save', [MediaFileController::class, 'upload'], 'save');
-        localizedRoute('/delete', [MediaFileController::class, 'delete'], 'delete');
-        localizedRoute('/select', [MediaFileController::class, 'select'], 'select');
-    });
+
 
     // Settings Routes
     Route::prefix('settings')->name('settings.')->group(function () {
@@ -206,12 +204,14 @@ Route::middleware(['auth', 'vendor'])->prefix('vendor')->name('vendor.')->group(
     });
 
     // Media Routes for Vendor
-    Route::prefix('media')->name('media.')->group(function () {
-        localizedRoute('/show', [MediaFileController::class, 'index'], 'show');
-        localizedRoute('/save', [MediaFileController::class, 'upload'], 'save');
-        localizedRoute('/delete', [MediaFileController::class, 'delete'], 'delete');
-        localizedRoute('/select', [MediaFileController::class, 'select'], 'select');
-    });
+
+});
+
+Route::prefix('media')->name('media.')->group(function () {
+    localizedRoute('/show', [MediaFileController::class, 'index'], 'show');
+    localizedRoute('/save', [MediaFileController::class, 'upload'], 'save');
+    localizedRoute('/delete', [MediaFileController::class, 'delete'], 'delete');
+    localizedRoute('/select', [MediaFileController::class, 'select'], 'select');
 });
 
 $urlStyle = config('localization.url_style', 'query');
@@ -223,5 +223,47 @@ if ($urlStyle === 'suffix') {
     });
 }
 
-// Catch-all Profile Route (Must be last)
-Route::get('/{slug}', [ProfileController::class, 'index'])->name('profile.show');
+
+
+// Cart Routes
+Route::prefix('cart')->name('cart.')->group(function () {
+    Route::get('/',            [CartController::class, 'index'])->name('index');
+    Route::post('/add',        [CartController::class, 'add'])->name('add');
+    Route::patch('/{cartItem}', [CartController::class, 'update'])->name('update');
+    Route::delete('/{cartItem}', [CartController::class, 'remove'])->name('remove');
+    Route::delete('/',         [CartController::class, 'clear'])->name('clear');
+});
+
+// Checkout Routes
+Route::prefix('checkout')->name('checkout.')->group(function () {
+    Route::get('/',             [CheckoutController::class, 'index'])->name('index');
+    Route::post('/order-type',  [CheckoutController::class, 'setOrderType'])->name('order-type');
+    Route::post('/tip',         [CheckoutController::class, 'setTip'])->name('tip');
+    Route::post('/coupon',      [CheckoutController::class, 'applyCoupon'])->name('coupon.apply');
+    Route::delete('/coupon',    [CheckoutController::class, 'removeCoupon'])->name('coupon.remove');
+
+    // Logic Routes
+    Route::post('/guest', [ProfileController::class, 'saveGuest'])->name('guest');
+    Route::post('/otp/send', [ProfileController::class, 'sendOtp'])->name('otp.send');
+    Route::post('/otp/verify', [ProfileController::class, 'verifyOtp'])->name('otp.verify');
+    Route::post('/promo/apply', [ProfileController::class, 'applyPromo'])->name('promo.apply');
+    Route::delete('/promo/remove', [ProfileController::class, 'removePromo'])->name('promo.remove');
+    Route::post('/place-order', [ProfileController::class, 'placeOrder'])->name('place-order');
+});
+
+// Vendor-Specific Customer Facing Routes
+Route::group(['prefix' => '{username}'], function () {
+    // Vendor Shop Home
+    Route::get('/', [ProfileController::class, 'index'])->name('profile.show');
+
+    // Other Shop Pages
+    Route::get('/menu', [ProfileController::class, 'menu'])->name('profile.menu');
+    Route::get('/items', [ProfileController::class, 'all_items'])->name('profile.items');
+    Route::get('/special', [ProfileController::class, 'special_items'])->name('profile.special');
+    Route::get('/orders', [ProfileController::class, 'my_order'])->name('profile.my_orders');
+    Route::get('/order/{order_id}', [ProfileController::class, 'view_order'])->name('profile.view_order');
+    Route::get('/checkout', [ProfileController::class, 'checkout'])->name('checkout');
+
+    // Item Details
+    Route::get('/item/{slug}', [ProfileController::class, 'item_details'])->name('item.details');
+});

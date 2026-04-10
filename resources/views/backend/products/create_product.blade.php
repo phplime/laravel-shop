@@ -173,12 +173,12 @@
                                     @php
                                     $itemDetails = null;
                                     if (isset($item) && $item) {
-                                        $translations = $item->getTranslations();
-                                        $itemDetails = $translations->where('language', $lang->slug)->first();
+                                    $translations = $item->getTranslations();
+                                    $itemDetails = $translations->where('language', $lang->slug)->first();
                                     }
                                     @endphp
 
-                          
+
 
 
                                     <div class="tab-pane fade  {{ ($key == 0) ? 'show active':'' }}" id="{{ $lang->slug }}" role="tabpanel"
@@ -252,10 +252,7 @@
                                     <option value="">{{ __('select') }}</option>
                                     @foreach ($allergen_list as $allergen)
                                     <option value="{{ $allergen->id }}">
-                                        {{ __names(
-												$allergen->_names,
-												'allergen_name'
-											); }}
+                                        {{ __names($allergen->_names, 'allergen_name') }}
                                     </option>
                                     @endforeach
                                 </select>

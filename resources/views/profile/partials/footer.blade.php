@@ -1,3 +1,5 @@
+
+@livewireScripts
 <script>
     $(function() {
         $('[data-toggle="tooltip"]').tooltip()
@@ -11,4 +13,4 @@
 <script src="{{ asset('assets/plugins/bootstrap/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('assets/frontend/slider/slick.min.js') }}"></script>
 <script src="{{ asset('assets/frontend/slider/custom-slider.js') }}"></script>
-<script src="{{ asset('global/main.js') }}"></script>
+<script src="{{ asset('global/main.js?t='.time()) }}"></script>

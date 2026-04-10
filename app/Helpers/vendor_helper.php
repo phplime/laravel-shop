@@ -145,6 +145,16 @@ if (!function_exists('_ID')) {
                         ->where('username', $id)
                         ->value('id') ?? 0;
                 }
+            } elseif (request()->route('slug')) {
+                return DB::table('vendor_list')
+                    ->where('username', request()->route('slug'))
+                    ->value('id') ?? 0;
+            } elseif (request()->route('username')) {
+                return DB::table('vendor_list')
+                    ->where('username', request()->route('username'))
+                    ->value('id') ?? 0;
+            } elseif (session()->has('active_vendor_id')) {
+                return session('active_vendor_id');
             } elseif (request()->has('vendor_id')) {
                 return request('vendor_id');
             } elseif (request()->has('u')) {
@@ -165,6 +175,43 @@ if (!function_exists('_ID')) {
         $cache[$key] = $result;
 
         return $result;
+    }
+}
+
+if (!function_exists('__activeOwnerId')) {
+    function __activeOwnerId($vendorId = null)
+    {
+        // 1. Resolve vendorId if not provided
+        $vendorId = $vendorId ?: _ID();
+        if ($vendorId <= 0) return 0;
+
+        static $ownerCache = [];
+        if (!isset($ownerCache[$vendorId])) {
+            $ownerCache[$vendorId] = DB::table('vendor_list')
+                ->where('id', $vendorId)
+                ->value('user_id') ?? 0;
+        }
+        
+        return $ownerCache[$vendorId];
+    }
+}
+
+if (!function_exists('__activeOwner')) {
+    function __activeOwner($column = 'id')
+    {
+        $ownerId = __activeOwnerId();
+        if ($ownerId <= 0) return null;
+
+        static $ownerDataCache = [];
+        if (!isset($ownerDataCache[$ownerId])) {
+            $ownerDataCache[$ownerId] = DB::table('users')->where('id', $ownerId)->first();
+        }
+
+        if (is_null($column) || $column == 'all') {
+            return $ownerDataCache[$ownerId];
+        }
+
+        return $ownerDataCache[$ownerId]->$column ?? null;
     }
 }
 
@@ -414,7 +461,140 @@ if (!function_exists('__variantPrice')) {
         return $html;
     }
 }
+if (!function_exists('__price')) {
 
+    function __price($row, $shop_id = null, $class = 'item', $is_only_price = false)
+    {
+        $base = app(\App\Repositories\BaseRepository::class);
+
+        $row = is_array($row) ? (object) $row : $row;
+
+        if (empty($row)) {
+            return '';
+        }
+
+        $html = '';
+        $onlyPrice = '';
+        $currentPrice = '';
+        $discountPrice = '';
+
+        $html .= '<div class="itemVariantArea ' . e($class) . '">';
+
+        // ================= VARIANT ITEMS =================
+        if (isset($row->is_variants) && $row->is_variants == 1) {
+
+            $variants = [];
+
+            if ($row instanceof \App\Models\Item) {
+                $translations = $row->getTranslations();
+            } else {
+                $translations = $base->get_variants_by_item_id($row->id);
+            }
+
+            foreach ($translations as $var) {
+
+                if (empty($var->variants)) continue;
+
+                $decoded = json_decode($var->variants);
+
+                if (
+                    json_last_error() !== JSON_ERROR_NONE ||
+                    empty($decoded) ||
+                    !is_object($decoded) ||
+                    empty($decoded->variant_options)
+                ) {
+                    continue;
+                }
+
+                $variants = $decoded;
+                break; // use first valid one
+            }
+
+            if (!empty($variants)) {
+
+                $html .= '<p class="variantTags mt-5px">'
+                    . e($variants->variant_name ?? '')
+                    . ' <b class="variantPrice"></b></p>';
+
+                $html .= '<div class="itemVariants isVariant">';
+
+                foreach ($variants->variant_options as $key => $value) {
+
+                    if (empty($value->price)) continue;
+
+                    $active = $key == 0 ? 'active' : '';
+                    $checked = $key == 0 ? 'checked' : '';
+
+                    $html .= '<label class="variant-btn ' . $active . '">';
+                    $html .= '<input type="radio"
+                                    name="item_size"
+                                    data-price="' . e($value->price) . '"
+                                    data-variants="' . e($value->name) . '"
+                                    value="' . $key . '" ' . $checked . '>';
+                    $html .= e($value->name);
+                    $html .= '</label>';
+
+                    if ($key == 0) {
+                        $onlyPrice = "<span class='Itemprice'>"
+                            . __currency_position($value->price, $shop_id)
+                            . "</span>";
+                    }
+                }
+
+                $html .= '</div>';
+                $html .= '<input type="hidden" name="is_variants" value="1">';
+            }
+        }
+        // ================= NON VARIANT ITEMS =================
+        else {
+
+            $html .= '<div class="itemVariants mt-7px">';
+
+            if (!empty($row->price)) {
+
+                $currentPrice = __currency_position($row->price, $shop_id);
+
+                $html .= '<label class="variant-btn active">';
+                $html .= '<input type="radio"
+                                name="item_size"
+                                data-price="' . e($row->price) . '"
+                                data-size=""
+                                data-size-title=""
+                                value="' . e($row->price) . '"
+                                checked>';
+
+                $html .= '<div class="priceGroup">';
+                $html .= '<span class="variantPrice">'
+                    . $currentPrice
+                    . '</span>';
+
+                if (!empty($row->previous_price)) {
+
+                    $discountPrice = __currency_position($row->previous_price, $shop_id);
+
+                    $html .= '<span class="previous_price">'
+                        . $discountPrice
+                        . '</span>';
+                }
+
+                $html .= '</div>';
+                $html .= '</label>';
+
+                $onlyPrice = "<span class='Itemprice'>{$currentPrice}</span>"
+                    . (!empty($discountPrice)
+                        ? " <span class='previous_price'>{$discountPrice}</span>"
+                        : "");
+            }
+
+            $html .= '</div>';
+            $html .= '<input type="hidden" name="is_variants" value="0">';
+        }
+
+        $html .= '</div>';
+
+        return $is_only_price ? $onlyPrice : $html;
+    }
+}
 
 
 if (!function_exists('__vegType')) {

@@ -61,13 +61,28 @@ if (!function_exists('__request')) {
 if (!function_exists('user')) {
     function user($key = null)
     {
-        $user = \Illuminate\Support\Facades\Auth::user();
+        $user = Auth::guard('customer')->check() 
+            ? Auth::guard('customer')->user() 
+            : Auth::user();
 
         if (is_null($key)) {
             return $user;
         }
 
         return $user?->$key ?? null;
+    }
+}
+
+if (!function_exists('customer')) {
+    function customer($key = null)
+    {
+        $customer = Auth::guard('customer')->user();
+
+        if (is_null($key)) {
+            return $customer;
+        }
+
+        return $customer?->$key ?? null;
     }
 }
 
@@ -620,6 +635,42 @@ if (!function_exists('__pagination')) {
         $html .= '<div class="' . $class . '">';
         $html .= $key->links('pagination::bootstrap-4');
         $html .= '</div>';
+        return $html;
+    }
+}
+if (!function_exists('__cartOrder')) {
+    /**
+     * Render order totals (subtotal, tax, discount, total) consistently
+     * @param array $summary The summary object from OrderService
+     * @return string HTML rows for the totals
+     */
+    function __cartOrder(array $summary): string
+    {
+        $details = $summary['details'] ?? [];
+        if (empty($details)) {
+            $service = app(\App\Services\OrderService::class);
+            $details = $service->get_total_details($summary);
+        }
+
+        $html = '';
+        foreach ($details as $row) {
+            $value = (float) $row['value'];
+            $labelClass = $row['is_total'] ? 'big' : '';
+            
+            // Handle display logic for subtotal vs others
+            $valueStyle = '';
+            if ($row['type'] === 'subtotal') {
+                $valueStyle = 'color:var(--green);font-weight:700';
+            } elseif (!$row['is_total']) {
+                $valueStyle = 'color:var(--text-muted)';
+            }
+
+            $html .= '<div class="cart-row-total ' . $labelClass . '">';
+            $html .= '<span>' . e($row['label']) . '</span>';
+            $html .= '<span style="' . $valueStyle . '">' . __currency_position($value) . '</span>';
+            $html .= '</div>';
+        }
+
         return $html;
     }
 }

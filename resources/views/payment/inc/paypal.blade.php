@@ -37,10 +37,10 @@
         <div class="card-footer mt-10">
             @if ($order_info['is_vendor'] == 1)
             <button
-                type="submit" name="pay_now" id="pay_now" class="btn btn-success pay_now"> {{ __('pay_now') }} &nbsp;({{ isset($invoice_info['total']) ? _currency_position($invoice_info['total'], $order_info['vendor_id']) : ''; }} ) <i class="icofont-paypal"></i> </button>
+                type="submit" name="pay_now" id="pay_now" class="btn btn-success pay_now"> {{ __('pay_now') }} &nbsp;({{ isset($invoice_info['total']) ? admin_currency_position($invoice_info['total'], $order_info['vendor_id']) : '' }} ) <i class="icofont-paypal"></i> </button>
             @else
             <button
-                type="submit" name="pay_now" id="pay_now" class="btn btn-primary btn-block pay_now"> {{ __('pay_now') }} &nbsp;({{ isset($invoice_info['total']) ? admin_currency_position($invoice_info['total']) : ''; }} ) </button>
+                type="submit" name="pay_now" id="pay_now" class="btn btn-primary btn-block pay_now"> {{ __('pay_now') }} &nbsp;({{ isset($invoice_info['total']) ? admin_currency_position($invoice_info['total']) : '' }} ) </button>
             @endif
         </div>
         @endif

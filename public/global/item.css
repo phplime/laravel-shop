@@ -2,7 +2,17 @@
        item details modal           
 ----------------------------------------------*/
 .singleItemPage .modal-header {
-    padding: 7px;
+    padding: .5rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--card-color);
+}
+
+.singleItemPage {
+    background: var(--card-color);
+}
+
+.singleItemPage .modal-footer {
+    border-color: var(--border);
 }
 
 .increaseDecrease {
@@ -12,14 +22,27 @@
 .itemTitle h4 {
     display: flex;
     align-items: center;
-    font-size: 1.2rem;
-    color: #000;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
 }
 
 .singleItemContent,
 .item_extra_details {
-    padding: 5px 10px;
+    padding: 1.5rem;
+}
+
+.singleItemContent {
+    padding-bottom: 0;
+}
+
+.item_extra_details {
     padding-top: 1rem;
+}
+
+.detailsArea {
+    margin-bottom: 10px;
 }
 
 .modalFooterArea {
@@ -45,19 +68,25 @@
 }
 
 .modalIncreateArea span {
-    width: 30px;
-    height: 30px;
-    font-size: 1.2rem;
-    background: #b2b2b2;
-    color: #fff;
+    width: 36px;
+    height: 36px;
+    font-size: 1.1rem;
+    background: var(--bg-soft);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
     text-align: center;
-    padding: 0;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 5px;
+    transition: all 0.2s;
+}
+
+.modalIncreateArea span:hover {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
 }
 
 .modalIncreateArea input::-webkit-outer-spin-button,
@@ -70,9 +99,7 @@
 
 .itemVariants input[name='item_size'],
 .itemVariants input[name='price'] {
-    position: absolute;
-    clip: rect(0, 0, 0, 0);
-    pointer-events: none;
+    display: none;
 }
 
 .itemVariants {
@@ -85,7 +112,6 @@
 .itemVariants label.variant-btn {
     background: var(--soft-background);
     padding: 5px 20px;
-    font-size: .8rem;
     cursor: pointer;
     border-radius: 0;
     font-weight: 500;
@@ -97,6 +123,7 @@
     background-color: #000;
     color: #fff !important;
     border-color: #000;
+    border: 0;
 }
 
 .itemVariants label.variant-btn:first-child {
@@ -184,6 +211,8 @@ h5.extrasHeading {
 }
 
 .custom-checkbox input[type=checkbox] {
+    appearance: none;
+    -webkit-appearance: none;
     background-color: var(--soft-background) !important;
 }
 
@@ -213,10 +242,11 @@ custom-radio-2
 }
 
 .custom-radio-2 input[type=radio] {
+    --ratio: 1.3rem;
     border: 0;
-    background-color: #eee;
-    height: 1.2rem;
-    width: 1.2rem;
+    background-color: var(--soft-background);
+    height: var(--ratio);
+    width: var(--ratio);
     margin: 0;
     float: none;
     flex-shrink: 0;
@@ -247,7 +277,16 @@ custom-radio-2
 .custom-radio-2 input,
 .custom-checkbox input {
     outline: 0 !important;
-    border-color: transparent;
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    width: 1.5rem;
+    height: 1.5rem;
+    transition: all 0.2s;
+}
+
+.custom-checkbox input:checked {
+    background-color: var(--primary) !important;
+    border-color: var(--primary);
 }
 
 .custom-radio-2 input[type=radio].error {
@@ -262,6 +301,11 @@ custom-radio-2
 ul.extraUl li label p {
     display: flex;
     align-items: center;
+    gap: 5px;
+}
+
+ul.extraUl li label {
+    font-weight: 600;
 }
 
 .itemPopupModal .modal-header {
@@ -294,18 +338,27 @@ label.custom-checkbox.extraLabel {
 .increaseDecrease input {
     width: 30px;
     text-align: center;
+    outline: none !important;
+    border: 0;
+    background: transparent;
 }
 
 .increaseDecrease a {
     height: 25px;
     width: 25px;
-    background: #eee;
+    background: var(--soft-background);
     border-radius: 50%;
     text-align: center;
     flex: 0 0 25px;
     display: flex;
     justify-content: center;
     line-height: 24px;
+}
+
+.increaseDecrease a:hover {
+    background-color: var(--theme-color);
+    color: var(--white-text);
+    transition: all .3s ease-in-out;
 }
 
 li.extraLabel {
@@ -323,10 +376,6 @@ span.checkboxSection {
     flex: 1;
 }
 
-.increaseDecrease a:hover {
-    color: #fff !important;
-    transition: all .3s ease-in-out;
-}
 
 .prevent-default {
     pointer-events: none;
@@ -403,7 +452,7 @@ span.checkboxSection {
 }
 
 .singleItem .itemTopHeader .itemImg {
-    min-height: 400px;
+    min-height: 300px;
 }
 
 #item_details .variantPrice {
@@ -430,7 +479,7 @@ span.vegType {
 span.vegType span {
     height: 16px;
     width: 16px;
-    border: 1px solid #fff;
+    border: 1px solid var(--border-color);
     position: relative;
     margin-right: 10px;
     display: inline-block;
@@ -440,7 +489,7 @@ span.vegType span::before {
     content: "";
     height: 8px;
     width: 8px;
-    background: #fff;
+    background: var(--soft-background);
     position: absolute;
     border-radius: 100%;
     left: 50%;
@@ -500,7 +549,7 @@ h4.itemTitle {
 }
 
 .modalPrice .variantPrice {
-    color: #fff !important;
+    color: var(--color) !important;
 }
 
 .itemVariants label.variant-btn {
@@ -542,4 +591,69 @@ h4.itemTitle {
     .itemPopupModal .modal-dialog {
         max-width: 100%;
     }
+}
+
+.hidden {
+    display: none;
+}
+
+.variantArea ul {
+    display: flex;
+    align-items: center;
+}
+
+.variantArea ul li a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--background-color);
+    font-size: 14px;
+    padding: 3px 10px;
+    color: var(--white-text);
+}
+
+.variantArea ul li {
+    border-right: 1px solid var(--border);
+}
+
+.variantArea ul li:last-child {
+    border-right: none;
+}
+
+.variantArea ul li:last-child a {
+    border-top-right-radius: .5rem;
+    border-bottom-right-radius: .5rem;
+}
+
+.variantArea ul li:first-child a {
+    border-top-left-radius: .5rem;
+    border-bottom-left-radius: .5rem;
+}
+
+.mt-5px {
+    margin-top: 5px;
+}
+
+.mt-7px {
+    margin-top: 7px;
+}
+
+.mb-5px {
+    margin-bottom: 5px;
+}
+
+.extraUl .custom-radio-2 input[type=radio] {
+    background-color: var(--soft-background) !important;
+    border-color: var(--soft-background) !important;
+}
+
+.addToCartArea {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.item_extra_list.required {
+    padding-bottom: 1rem;
 }

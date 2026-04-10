@@ -1,0 +1,1 @@
+<span class="cart-badge" id="cartCount">{{ $count }}</span>

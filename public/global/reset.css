@@ -1,0 +1,262 @@
+:root {
+    /* Brand */
+    --theme-color: #0dcd94;
+    --themeColor: #0dcd94;
+    --default-color: #ff1867;
+    --green: #2ECC71;
+    --green-dark: #27ae60;
+    --orange: #e8621a;
+
+    /* Text on coloured / dark surfaces */
+    --white-text: #ffffff;
+    --dark-text: #c2c7d0;
+    /* muted on dark bg   */
+    --light-text: #4b566b;
+    /* body text on light  */
+
+    /* Shared surfaces & effects */
+    --surface: #ffffff;
+    --surface2: #f0f0eb;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --tr: 0.25s cubic-bezier(.4, 0, .2, 1);
+    --text-muted: #9ca3af;
+}
+
+
+/* ── Light Theme ────────────────────────────────────────── */
+.theme-light {
+    /* Backgrounds */
+    --background-color: #f4f6f8;
+    /* slightly cooler than before */
+    --body-color: #f4f6f8;
+    --body-color-bg: #f4f6f8;
+    --nav-bg: #ffffff;
+    --nav-color: #ffffff;
+
+    /* Surfaces */
+    --card-color: #fff9f9;
+    --soft-background: #eaeaea;
+    --card-soft: #f9fafb;
+    --surface: #ffffff;
+    --surface2: #f0f2f5;
+
+    /* Text */
+    --color: #4b566b;
+    --text: #4b566b;
+    --nav-text: #6b7280;
+
+    /* Borders & shadows */
+    --border: #e5e7eb;
+    --border-color: #e5e7eb;
+    --box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    --box-shadow-soft: 0 1px 4px rgba(0, 0, 0, 0.04);
+
+    /* Overlays */
+    --after-bg-color: rgba(0, 0, 0, 0.35);
+
+    /* Inputs */
+    --input-bg: #ffffff;
+    --input-color: #4b566b;
+    --input-border: #e5e7eb;
+}
+
+
+/* ── Dark Theme ─────────────────────────────────────────── */
+.theme-dark {
+    /* Backgrounds – richer deep navy instead of pure black */
+    --background-color: #0f1623;
+    --body-color: #0f1623;
+    --body-color-bg: #0f1623;
+    --nav-bg: #0f1623;
+    --nav-color: #0f1623;
+
+    /* Surfaces – layered so cards lift off the background */
+    --card-color: hsl(217deg 23% 19%);
+    --soft-background: #1a2235;
+    --card-soft: #1e2840;
+    --surface: #1a2235;
+    --surface2: #1e2840;
+
+    /* Text */
+    --color: #cbd5e1;
+    /* slate-300 – easier on eyes than pure white */
+    --text: #cbd5e1;
+    --nav-text: #94a3b8;
+    /* slate-400 */
+    --text-muted: #64748b;
+    /* slate-500 */
+
+    /* Borders & shadows */
+    --border: rgba(255, 255, 255, 0.08);
+    --border-color: rgba(255, 255, 255, 0.08);
+    --box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+    --box-shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.35);
+
+    /* Overlays */
+    --after-bg-color: rgba(0, 0, 0, 0.55);
+
+    /* Inputs */
+    --input-bg: #1a2235;
+    --input-color: #cbd5e1;
+    --input-border: rgba(255, 255, 255, 0.1);
+
+    /* Override shared tokens for dark surfaces */
+    --shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   GLOBAL RESET
+══════════════════════════════════════════════════════════ */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+}
+
+[dir="rtl"] {
+    direction: rtl;
+    text-align: right;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+        "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+        "Helvetica Neue", sans-serif;
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
+    background-color: var(--background-color);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color var(--tr), color var(--tr);
+}
+
+/* ── Images ─────────────────────────────────────────────── */
+img,
+picture,
+video,
+canvas,
+svg {
+    display: block;
+    max-width: 100%;
+}
+
+img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ── Lists ──────────────────────────────────────────────── */
+ul,
+ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* ── Typography defaults ────────────────────────────────── */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--text);
+    line-height: 1.25;
+    font-weight: 700;
+}
+
+p {
+    color: var(--text);
+    padding: 0;
+    margin: 0;
+}
+
+a {
+    color: var(--theme-color);
+    text-decoration: none;
+    transition: color var(--tr);
+}
+
+a:hover {
+    color: var(--green-dark);
+    text-decoration: none;
+}
+
+/* ── Form elements ──────────────────────────────────────── */
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--theme-color);
+}
+
+input,
+textarea,
+select {
+    color: var(--input-color);
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 8px;
+    transition: border-color var(--tr), box-shadow var(--tr);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: var(--theme-color);
+    box-shadow: 0 0 0 3px rgba(13, 205, 148, 0.15);
+}
+
+/* ── Scrollbar (webkit) ─────────────────────────────────── */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+/* ── Selection highlight ────────────────────────────────── */
+::selection {
+    background: rgba(13, 205, 148, 0.2);
+    color: var(--text);
+}
+
+
+.hidden {
+    display: none;
+}

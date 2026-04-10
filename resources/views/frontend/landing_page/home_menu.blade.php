@@ -43,7 +43,7 @@
                     URL Defaults: {{ json_encode(app('url')->getDefaultParameters()) }}<br>
                     Test Route: {{ url('login') }}<br>
                     Test url: {{ url('login') }}<br>
-                    utl style: {{ config('localization.url_style', 'query'); }}<br>
+                    utl style: {{ config('localization.url_style', 'query') }}<br>
                 </div>
 
             </div>

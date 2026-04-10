@@ -1,29 +1,10 @@
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="icon" type="image/png" href="{{ asset('frontend/images/title-logo.png') }}">
-    <title>Shop | {{ $page_title ?? 'Admin Panel' }}</title>
-
-    @include('backend.partials.header')
-</head>
-
-<body class="sidebar-mini layout-fixed layout-navbar-fixed theme-light">
-    <div class="wrapper">
-        {{ $page_title }}
-        @include('backend.admin.layouts.admin_menu')
-        @include('backend.admin.layouts.admin_sidebar')
-
-        {{ $slot }}
-
-        @include('backend.partials.footer')
-
-        @stack('scripts')
+@extends('backend.admin.layouts.app')
+@section('content')
+    <div class="content-wrapper">
+        <section class="content">
+            <div class="container-fluid pt-3">
+                {{ $slot }}
+            </div>
+        </section>
     </div>
-</body>
-
-</html>
+@endsection

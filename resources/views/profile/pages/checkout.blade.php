@@ -1,109 +1,228 @@
-<x-profile-layout>
+{{-- resources/views/profile/pages/checkout.blade.php --}}
+@extends('profile.layouts.app')
+@section('title', 'Checkout')
 
-    <section class="checkoutSection">
-        <div class="container">
-            <a href="{{ url('kinbo') }}" class="back-btn"><i class="icofont-arrow-left"></i> Black</a>
-            <div class="row">
-                <div class="col-md-12 col-lg-8 col-sm-12">
+@section('content')
+<div class="toast-stack" id="toastStack"></div>
 
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="guestLogin">
-                                <label class="custom-checkbox m-0">
-                                    <input type="checkbox" name="is_guest_login" class="" value="1">
-                                    <span>Login as Guest</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="card-body checkout_loginBody">
-                            @include('profile.pages.checkout_login')
-                        </div>
-                    </div>
+<div class="checkout-page">
+    <div class="checkout-wrap">
 
-                    @include('profile.pages.checkout_leftContent')
-
-                </div><!-- col./ -->
-                <div class="col-md-12 col-lg-4 col-sm-12">
-                    @include('profile.pages.checkout_rightContent')
-                </div>
-            </div><!-- row./ -->
+        {{-- Heading --}}
+        <div class="ck-heading">
+            <a href="{{ url()->previous() }}" class="back-btn"><i class="bi bi-arrow-left"></i></a>
+            <h1>Checkout</h1>
         </div>
-    </section>
 
+        {{-- ═══════════════ LEFT ═══════════════ --}}
+        <div class="checkout-left">
+            {{-- STEP 1 – ORDER TYPE --}}
+            @include('profile.common_layouts.checkout_content.steps.order_type')
 
-    <!-- Add Address Modal -->
-    <div class="modal fade" id="add_address" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <form action="" method="post">
-                    @csrf
-                    <div class="modal-header">
-                        <h5 class="modal-title">Shopping Address</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="">Address <span class="error">*</span></label>
-                            <textarea name="address" class="form-control" cols="3" rows="3" placeholder="Address shopping..."></textarea>
-                        </div>
-                        <div class="form-group mb-0">
-                            <label for="">Address Label</label>
-                            <div class="addressLabel_area">
-                                <label class="address_label_btn active">
-                                    <i class="fa-solid fa-house-chimney"></i> Home
-                                    <input type="radio" name="address_label" class="d-none" value="home"
-                                        checked>
-                                </label>
-                                <label class="address_label_btn">
-                                    <i class="icofont-briefcase fz-20"></i> Office
-                                    <input type="radio" name="address_label" class="d-none" value="office">
-                                </label>
-                                <label class="address_label_btn">
-                                    <i class="icofont-folder-plus"></i> Others
-                                    <input type="radio" name="address_label" class="d-none" value="others">
-                                </label>
-                            </div>
-                            <div class="form-group other_labelInput mt-15" style="display: none">
-                                <input type="text" name="other_label" class="form-control"
-                                    placeholder="Others label">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary"><i class="icofont-hand-drag1"></i>&nbsp; Save
-                            changes</button>
-                    </div>
-                </form>
-            </div>
+            {{-- STEP 2 – YOUR DETAILS --}}
+            @include('profile.common_layouts.checkout_content.steps.details')
+
+            {{-- STEP 3 – PAYMENT --}}
+            @include('profile.common_layouts.checkout_content.steps.payment')
+        </div>{{-- /left --}}
+
+        {{-- ═══════════════ RIGHT: ORDER SUMMARY ═══════════════ --}}
+        <div>
+            <livewire:cart.summary page="checkout" />
         </div>
-    </div>
 
-    <!-- Terms Modal  -->
-    <div class="modal fade" id="termsModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Terms and Conditions</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis beatae a, rem non rerum sapiente
-                    eaque doloribus itaque ad at dolores fuga magni quam minima ratione alias repudiandae quas
-                    necessitatibus! Officiis possimus, incidunt eos atque ducimus blanditiis neque et quidem ab dolorem
-                    ex explicabo ratione tempore odit alias, mollitia laudantium, suscipit aperiam natus repellat
-                    commodi itaque deserunt sit aspernatur! Quos, corporis magnam! Voluptatem delectus, deserunt debitis
-                    ex nostrum earum non asperiores odit excepturi soluta porro, vero, commodi laborum pariatur rem quod
-                    error unde beatae natus inventore mollitia sapiente! Animi unde odit officia saepe inventore iste
-                    beatae minus numquam excepturi nihil?
-                </div>
-            </div>
-        </div>
-    </div>
+    </div>{{-- /checkout-wrap --}}
+</div>{{-- /checkout-page --}}
+@endsection
 
+@push('scripts')
+<script>
+    $(function() {
+        let customerAuth = `<?= auth('customer')->check() ? 'true' : 'false' ?>`;
 
-</x-profile-layout>
+        /* ═══ CK – minimal UI logic ═══ */
+        window.CK = {
+
+            /* Step 1: Order Type toggle */
+            selectOrderType: function(el) {
+                $('.ot-option').removeClass('selected');
+                $(el).addClass('selected');
+                var type = $(el).data('type');
+                $('#orderTypeInput').val(type);
+                $('#dineSection').toggleClass('show', type === 'dine_in');
+                $('#deliverySection').toggleClass('show', type === 'delivery');
+            },
+
+            pinLocation: function() {
+                if (!navigator.geolocation) return alert('Geolocation not supported');
+                var $lbl = $('#mapLabel').text('Locating…');
+                navigator.geolocation.getCurrentPosition(
+                    function(p) {
+                        $lbl.text('📍 ' + p.coords.latitude.toFixed(4) + ', ' + p.coords.longitude.toFixed(4));
+                    },
+                    function() {
+                        $lbl.text('Could not get location – enter manually.');
+                    }
+                );
+            },
+
+            /* Step 2: Auth tab switching */
+            switchAuth: function(tab, panel) {
+                $('.lt-tab').removeClass('active').filter(tab).addClass('active');
+                $('.lt-panel').removeClass('active');
+                $('#panel-' + panel).addClass('active');
+            },
+
+            togglePwd: function() {
+                var $i = $('#pwdInput'),
+                    show = $i.attr('type') === 'password';
+                $i.attr('type', show ? 'text' : 'password');
+                $('#pwdEye').attr('class', show ? 'bi bi-eye-slash' : 'bi bi-eye');
+            },
+
+            /* OTP helpers */
+            otpNext: function(inp, i) {
+                if (inp.value && i < 3) $('#otp' + (i + 1)).focus();
+            },
+            otpBack: function(e, i) {
+                if (e.key === 'Backspace' && !e.target.value && i > 0) $('#otp' + (i - 1)).focus();
+            },
+
+            /* Step 3: Payment toggle */
+            selectPayment: function(el) {
+                $('.pay-option').removeClass('selected');
+                $(el).addClass('selected');
+                var method = $(el).data('method');
+                $('#payMethodInput').val(method);
+                $('#cardPanel').toggleClass('show', method === 'card' || method === 'stripe');
+                $('#mpesaPanel').toggleClass('show', method === 'mpesa');
+            },
+
+            /* Promo */
+            applyPromo: function() {
+                var $f = $('<form>').append($('#promoInput').clone().attr('name', 'code'));
+                __request($f, '{{ route("checkout.promo.apply") }}').then(function(res) {
+                    if (res.discount !== undefined) {
+                        $('#totDiscount').text('— Ksh ' + Number(res.discount).toLocaleString());
+                        $('#totTotal').text('Ksh ' + Number(res.total).toLocaleString());
+                        $('#promoApplyBtn').hide();
+                        $('#promoInput').prop('disabled', true);
+                        $('#promoRemoveBtn').css('display', 'flex');
+                    }
+                });
+            },
+
+            removePromo: function() {
+                $.ajax({
+                    url: '{{ route("checkout.promo.remove") }}',
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                }).done(function(res) {
+                    $('#totDiscount').text('— Ksh 0');
+                    $('#totTotal').text('Ksh ' + Number(res.total).toLocaleString());
+                    $('#promoApplyBtn').show();
+                    $('#promoInput').prop('disabled', false).val('');
+                    $('#promoRemoveBtn').hide();
+                });
+            },
+
+            /* Place Order – collect all named inputs from checkout area */
+            placeOrder: function() {
+                var $btn = $('#placeOrderBtn');
+                var originalHtml = $btn.html();
+
+                // Basic check if auth required
+                if (customerAuth == false) {
+                    // Alert if no auth, maybe highlight details section
+                    window.scrollTo({
+                        top: $('.checkout-left').offset().top,
+                        behavior: 'smooth'
+                    });
+                    alert('Please provide your details first (Step 2).');
+                    return;
+                }
+
+                $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Processing...');
+
+                // We can just gather all inputs from checkout-left that are NOT inside other forms
+                var data = {};
+                $('.checkout-left').find('input[name], select[name], textarea[name]').each(function() {
+                    var $el = $(this);
+                    // Only take inputs not inside other active forms OR from specific sections
+                    if ($el.attr('name')) {
+                        data[$el.attr('name')] = $el.val();
+                    }
+                });
+
+                // Use __request with a mock form or just call axios directly if we want more control
+                // But let's stick to __request for consistency
+                var $tempForm = $('<form>').hide();
+                $.each(data, function(k, v) {
+                    $tempForm.append($('<input>').attr('type', 'hidden').attr('name', k).val(v));
+                });
+                $('body').append($tempForm);
+
+                __request($tempForm, '{{ url("place-order") }}').then(function(res) {
+                    if (res.order_id) {
+                        $btn.html('<i class="bi bi-check-circle-fill"></i> Order Placed! 🎉')
+                            .css('background', 'linear-gradient(135deg,#22c55e,#16a34a)');
+                        setTimeout(function() {
+                            window.location.href = res.redirect_url;
+                        }, 1800);
+                    }
+                    $tempForm.remove();
+                }).catch(function() {
+                    $btn.prop('disabled', false).html(originalHtml);
+                    $tempForm.remove();
+                });
+            }
+        };
+
+        /* ── Auth form submissions via __request() ── */
+        if (customerAuth == false) {
+
+            $('#guestForm').on('submit', function() {
+                __request(this, '{{ route("checkout.guest") }}').then(function(res) {
+                    $('#guestAlert').html('<div class="ck-alert success"><i class="bi bi-check-circle-fill"></i> ' + (res.message || 'Details saved!') + '</div>');
+                });
+            });
+
+            $('#otpSendForm').on('submit', function() {
+                __request(this, '{{ route("checkout.otp.send") }}').then(function(res) {
+                    $('#otpEntry').show();
+                    $('#otpPhoneDisplay').text($('#otpPhone').val());
+                    $('#otpPhoneHidden').val($('#otpPhone').val());
+                    $('#otp0').focus();
+                });
+            });
+
+            $('#otpVerifyForm').on('submit', function() {
+                // Combine OTP digits into one hidden field
+                var code = $('#otp0').val() + $('#otp1').val() + $('#otp2').val() + $('#otp3').val();
+                $(this).find('[name=otp]').remove();
+                $(this).append('<input type="hidden" name="otp" value="' + code + '">');
+                __request(this, '{{ route("checkout.otp.verify") }}').then(function(res) {
+                    $('#otpEntry').hide();
+                    $('#otpVerified').css('display', 'flex');
+                });
+            });
+
+            $('#loginForm').on('submit', function() {
+                __request(this, '{{ url("/login") }}').then(function(res) {
+                    setTimeout(function() {
+                        location.reload();
+                    }, 800);
+                });
+            });
+
+        }
+
+        /* Login tabs */
+        $('.login-tabs .lt-tab').on('click', function() {
+            CK.switchAuth(this, $(this).data('panel') || $(this).text().trim().toLowerCase());
+        });
+    });
+</script>
+@endpush

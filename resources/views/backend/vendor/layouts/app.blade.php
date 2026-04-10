@@ -8,7 +8,7 @@
     <link rel="icon" type="image/png" href="{{ asset('assets/frontend/images/title-logo.png') }}">
     <title>Shop | {{ $page_title ?? '' }}</title>
 
-    @include('backend.vendor.partials.header')
+    @include('backend.components.header',['role' => 'vendor'])
 </head>
 
 <body class="sidebar-mini layout-fixed layout-navbar-fixed theme-light">
@@ -19,7 +19,7 @@
 
             @yield('content')
 
-            @include('backend.vendor.partials.footer')
+            @include('backend.components.footer')
 
         </div>
     </div>

@@ -462,11 +462,15 @@ label.is_primary {
     align-items: center;
     background: var(--theme-color);
     border-radius: 5px;
-    color: var(--background-color);
+    color: var(--color);
 }
 
 .vendorPanel .vandorSingleModule {
-    color: var(--background-color);
+    color: #fff;
+}
+
+.dropdown-item .vandorSingleModule {
+    color: var(--color) !important;
 }
 
 .vendorPanel .vandorSingleModule {
@@ -495,7 +499,6 @@ label.is_primary {
 }
 
 .vendorPanel .vandorSingleModule {
-    color: var(--background-color);
     padding: 8px 10px;
     width: 100%;
     border-bottom: 1px solid var(--border-color);

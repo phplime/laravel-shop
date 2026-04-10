@@ -1,4 +1,3 @@
-
 </div><!-- container -->
 </div><!-- content -->
 </div><!-- content-wrapper./ -->
@@ -52,43 +51,43 @@
 </div><!-- defaultSidebar -->
 
 @if (session('success'))
-    <script>
-        new Notify({
-            status: 'success',
-            title: "{{ __('success') }}",
-            text: "{{ session('success') }}",
-            effect: 'slide',
-            speed: 300,
-            autoclose: true,
-            showCloseButton: true,
-            gap: 20,
-            distance: 20,
-            customClass: 'ci-notify',
-            type: 'filled', // or 'filled' outline
-            progress: true, // Enable progress bar
-            progressDuration: 1000,
-        });
-    </script>
+<script>
+    new Notify({
+        status: 'success',
+        title: "{{ __('success') }}",
+        text: "{{ session('success') }}",
+        effect: 'slide',
+        speed: 300,
+        autoclose: true,
+        showCloseButton: true,
+        gap: 20,
+        distance: 20,
+        customClass: 'ci-notify',
+        type: 'filled', // or 'filled' outline
+        progress: true, // Enable progress bar
+        progressDuration: 1000,
+    });
+</script>
 @endif
 
 @if (session('error'))
-    <script>
-        new Notify({
-            status: 'error',
-            title: "{{ __('error') }}",
-            text: "{{ session('error') }}",
-            effect: 'slide',
-            speed: 300,
-            autoclose: true,
-            showCloseButton: true,
-            gap: 20,
-            distance: 20,
-            customClass: 'ci-notify',
-            type: 'filled', // or 'filled' outline
-            progress: true, // Enable progress bar
-            progressDuration: 1000,
-        });
-    </script>
+<script>
+    new Notify({
+        status: 'error',
+        title: "{{ __('error') }}",
+        text: "{{ session('error') }}",
+        effect: 'slide',
+        speed: 300,
+        autoclose: true,
+        showCloseButton: true,
+        gap: 20,
+        distance: 20,
+        customClass: 'ci-notify',
+        type: 'filled', // or 'filled' outline
+        progress: true, // Enable progress bar
+        progressDuration: 1000,
+    });
+</script>
 @endif
 
 
